@@ -2,6 +2,8 @@
 
 @theme {
     --animate-fade-in: fade-in 0.5s ease-out;
+    --animate-fade-in-up: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-scale-in: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 
     @keyframes fade-in {
         0% {
@@ -12,6 +14,30 @@
         100% {
             opacity: 1;
             transform: translateY(0);
+        }
+    }
+
+    @keyframes fade-in-up {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scale-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.92);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1);
         }
     }
 }

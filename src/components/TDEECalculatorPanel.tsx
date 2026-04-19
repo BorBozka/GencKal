@@ -9,7 +9,7 @@ interface TDEECalculatorPanelProps {
 
 const cinsiyetOptions: { key: Cinsiyet; label: string }[] = [
     { key: "erkek", label: "Erkek" },
-    { key: "kadin", label: "Kadın" },
+    { key: "kadın", label: "Kadın" },
 ];
 
 const aktiviteOptions: { key: AktiviteSeviyesi; label: string; desc: string }[] = [
@@ -22,27 +22,27 @@ const aktiviteOptions: { key: AktiviteSeviyesi; label: string; desc: string }[] 
 
 export default function TDEECalculatorPanel({ data, handleChange, setField }: TDEECalculatorPanelProps) {
     return (
-        <div className="w-full bg-white text-gray-800 rounded-3xl p-8 shadow-xl border border-gray-100 flex flex-col font-sans">
-            <h3 className="text-xl font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">
+        <div className="w-full flex flex-col font-sans">
+            <h3 className="text-lg font-bold text-white/90 mb-5 border-b border-white/10 pb-3">
                 TDEE (Günlük Enerji İhtiyacı) Verileri
             </h3>
 
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6">
                 {/* Üst Satır: 4'lü Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
                     {/* 1. Cinsiyet */}
-                    <div className="space-y-3">
-                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Cinsiyet</label>
-                        <div className="flex gap-3 h-[48px]">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-indigo-200/70 uppercase tracking-widest">Cinsiyet</label>
+                        <div className="flex gap-2 h-[44px]">
                             {cinsiyetOptions.map((option) => (
                                 <button
                                     key={option.key}
                                     type="button"
                                     onClick={() => setField("cinsiyet", option.key)}
-                                    className={`flex-1 rounded-xl border-2 transition-all font-semibold text-sm flex items-center justify-center ${data.cinsiyet === option.key
-                                            ? "bg-indigo-600 border-indigo-600 text-white shadow-md"
-                                            : "bg-gray-50 border-gray-100 hover:border-indigo-200 text-gray-700 hover:bg-white"
+                                    className={`flex-1 rounded-xl border transition-all font-semibold text-sm flex items-center justify-center ${data.cinsiyet === option.key
+                                        ? "bg-emerald-500/90 border-emerald-400/50 text-white shadow-[0_0_15px_rgba(16,185,129,0.25)]"
+                                        : "bg-white/5 border-white/10 hover:border-white/25 text-white/60 hover:text-white/80 hover:bg-white/10"
                                         }`}
                                 >
                                     {option.label}
@@ -52,70 +52,70 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                     </div>
 
                     {/* 2. Boy (Manuel Input) */}
-                    <div className="space-y-3">
-                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Boy</label>
-                        <div className="relative h-[48px]">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-indigo-200/70 uppercase tracking-widest">Boy</label>
+                        <div className="relative h-[44px]">
                             <input
                                 type="number"
                                 name="boy"
                                 value={data.boy || ""}
                                 onChange={handleChange}
-                                className="w-full h-full bg-gray-50 border-2 border-gray-100 rounded-xl pl-4 pr-12 font-bold text-xl text-gray-900 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                className="w-full h-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 font-bold text-lg text-white focus:bg-white/10 focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-white/20"
                                 placeholder="175"
                             />
-                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">cm</span>
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-300/50 font-medium text-sm">cm</span>
                         </div>
                     </div>
 
                     {/* 3. Kilo (Manuel Input) */}
-                    <div className="space-y-3">
-                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Kilo</label>
-                        <div className="relative h-[48px]">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-indigo-200/70 uppercase tracking-widest">Kilo</label>
+                        <div className="relative h-[44px]">
                             <input
                                 type="number"
                                 name="kilo"
                                 value={data.kilo || ""}
                                 onChange={handleChange}
-                                className="w-full h-full bg-gray-50 border-2 border-gray-100 rounded-xl pl-4 pr-12 font-bold text-xl text-gray-900 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                className="w-full h-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 font-bold text-lg text-white focus:bg-white/10 focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-white/20"
                                 placeholder="75"
                             />
-                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">kg</span>
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-300/50 font-medium text-sm">kg</span>
                         </div>
                     </div>
 
                     {/* 4. Yaş (Manuel Input) */}
-                    <div className="space-y-3">
-                        <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Yaş</label>
-                        <div className="relative h-[48px]">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-indigo-200/70 uppercase tracking-widest">Yaş</label>
+                        <div className="relative h-[44px]">
                             <input
                                 type="number"
                                 name="yas"
                                 value={data.yas || ""}
                                 onChange={handleChange}
-                                className="w-full h-full bg-gray-50 border-2 border-gray-100 rounded-xl pl-4 pr-12 font-bold text-xl text-gray-900 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                className="w-full h-full bg-white/5 border border-white/10 rounded-xl pl-4 pr-12 font-bold text-lg text-white focus:bg-white/10 focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20 outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-white/20"
                                 placeholder="25"
                             />
-                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">yaş</span>
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-300/50 font-medium text-sm">yaş</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Alt Satır: Aktivite Seviyesi */}
-                <div className="space-y-3">
-                    <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Aktivite Seviyesi</label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-indigo-200/70 uppercase tracking-widest">Aktivite Seviyesi</label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
                         {aktiviteOptions.map((option) => (
                             <button
                                 key={option.key}
                                 type="button"
                                 onClick={() => setField("aktiviteSeviyesi", option.key)}
-                                className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center justify-center text-center h-[80px] ${data.aktiviteSeviyesi === option.key
-                                        ? "bg-indigo-600 border-indigo-600 text-white shadow-md"
-                                        : "bg-gray-50 border-gray-100 hover:border-indigo-200 text-gray-700 hover:bg-white"
+                                className={`p-3 rounded-xl border transition-all flex flex-col items-center justify-center text-center h-[70px] ${data.aktiviteSeviyesi === option.key
+                                    ? "bg-emerald-500/90 border-emerald-400/50 text-white shadow-[0_0_15px_rgba(16,185,129,0.25)]"
+                                    : "bg-white/5 border-white/10 hover:border-white/25 text-white/60 hover:text-white/80 hover:bg-white/10"
                                     }`}
                             >
-                                <span className="font-semibold text-sm mb-1">{option.label}</span>
-                                <span className={`text-[10px] ${data.aktiviteSeviyesi === option.key ? "text-indigo-200" : "text-gray-400"
+                                <span className="font-semibold text-sm mb-0.5">{option.label}</span>
+                                <span className={`text-[10px] ${data.aktiviteSeviyesi === option.key ? "text-emerald-100" : "text-white/30"
                                     }`}>
                                     {option.desc}
                                 </span>
