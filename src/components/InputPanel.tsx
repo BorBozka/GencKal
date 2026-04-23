@@ -1,10 +1,16 @@
+// Dosya Yolu: src/components/InputPanel.tsx
 import React from "react";
-import { KullaniciProfil } from "../types";
+// 1. DÜZELTME: "type" anahtar kelimesi eklendi (Derleyici optimizasyonu için)
+import type { KullaniciProfil } from "../types";
 
 export interface InputPanelProps {
     data: KullaniciProfil["fizikselVeriler"];
     handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-    setField: (name: keyof KullaniciProfil["fizikselVeriler"], value: any) => void;
+    // 2. DÜZELTME: "any" kaldırıldı. Değerin, fizikselVeriler objesindeki özelliklerden birinin tipi olacağı garanti altına alındı.
+    setField: <K extends keyof KullaniciProfil["fizikselVeriler"]>(
+        name: K,
+        value: KullaniciProfil["fizikselVeriler"][K]
+    ) => void;
 }
 
 export default function InputPanel({ data, handleChange }: InputPanelProps) {
@@ -18,7 +24,6 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
 
     return (
         <div className="w-full max-w-[600px] md:w-[600px] bg-white text-gray-800 rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] p-8 pl-12 md:pl-32 h-auto flex flex-col font-sans relative z-30 mx-auto">
-
             <div className="space-y-8 w-full mt-2">
                 {sliders.map(slider => (
                     <div key={slider.name} className="flex flex-col w-full">

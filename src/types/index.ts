@@ -27,8 +27,9 @@ export interface DietPreferencesData {
 
 export interface MealItem {
     name: string;
-    cal: string;
+    cal: number;
     fullText: string;
+    macros: MacroDistribution;
 }
 
 export interface MealCard {
@@ -40,4 +41,17 @@ export interface MacroDistribution {
     protein: number;
     fat: number;
     carb: number;
+}
+
+export interface DiyetVerileri {
+    diyetTipi: string;
+    ogunSayisi: number;
+    alerjenler: string[];
+    kullanilanTakviyeler: string[];
+    hedef: Hedef;
+}
+
+export interface KullaniciProfil {
+    fizikselVeriler: FizikselVeriler;
+    diyetVerileri: DiyetVerileri;
 }
