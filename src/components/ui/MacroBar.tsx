@@ -24,13 +24,13 @@ export const MacroBar: React.FC<MacroBarProps> = ({ label, percent, grams, color
 
   return (
     <div className="flex items-center gap-3">
-      {/* 1. ETİKET RENGİ: Slate yerine parent bileşenle uyumlu indigo-200/50 kullanıldı */}
-      <span className="text-indigo-200/50 text-[10px] font-bold uppercase tracking-widest w-14 text-right shrink-0">
+      {/* 1. ETİKET */}
+      <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest w-14 text-right shrink-0">
         {label}
       </span>
 
-      {/* 2. ÇUBUK ARKA PLANI: Koyu slate yerine, cam efektli panele oturacak yarı saydam katman eklendi */}
-      <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden shadow-inner">
+      {/* 2. ÇUBUK ARKA PLANI */}
+      <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden">
         <motion.div
           className="h-full rounded-full"
           style={{ background: color }}
@@ -40,8 +40,8 @@ export const MacroBar: React.FC<MacroBarProps> = ({ label, percent, grams, color
         />
       </div>
 
-      {/* 3. DEĞER METNİ: Kontrast için saf beyaz tutuldu */}
-      <span className="text-white text-xs font-bold w-12 text-right">
+      {/* 3. DEĞER METNİ */}
+      <span className="text-slate-900 text-xs font-bold w-12 text-right">
         {animate ? (grams !== undefined ? `${grams}g` : `${percent}%`) : "—"}
       </span>
     </div>

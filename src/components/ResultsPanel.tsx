@@ -1,4 +1,5 @@
 import React from "react";
+import { getBMICategory } from "../utils/calculations";
 
 interface ResultsPanelProps {
     calculatedBMI: number;
@@ -10,19 +11,7 @@ interface ResultsPanelProps {
 }
 
 export default function ResultsPanel({ calculatedBMI, leanMass, bodyFat, kilo, ffmi, normalizedFfmi }: ResultsPanelProps) {
-    let bmiLabel = "Normal";
-
-    if (calculatedBMI > 0) {
-        if (calculatedBMI < 18.5) {
-            bmiLabel = "Zayıf";
-        } else if (calculatedBMI < 25) {
-            bmiLabel = "Normal";
-        } else if (calculatedBMI < 30) {
-            bmiLabel = "Fazla Kilolu";
-        } else {
-            bmiLabel = "Obez";
-        }
-    }
+    const { label: bmiLabel } = getBMICategory(calculatedBMI);
 
     const arcLength = 188.5; // (270 degrees out of 360 with radius 40)
     const progressPercent = calculatedBMI > 0 ? Math.min(100, Math.max(0, (calculatedBMI / 40) * 100)) : 0;

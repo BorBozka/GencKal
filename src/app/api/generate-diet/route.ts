@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-// 1. YENİ EKLENTİ: SchemaType import edildi
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import { generatedPlanSchema } from "../../../types";
+
+// --- Rate Limiter (Basit Bellek İçi) ---
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+function checkRateLimit(ip: string): boolean {
+    const now = Date.now();
+    const userLimit = rateLimitMap.get(ip);
+    if (!userLimit || now > userLimit.resetTime) {
+        rateLimitMap.set(ip, { count: 1, resetTime: now + 60000 }); // 1 dakika
+        return true;
+    }
+    if (userLimit.count >= 5) return false; // Max 5 istek / dakika
+    userLimit.count += 1;
+    return true;
+}
 
 // --- Tip Tanımları ---
 interface GenerateDietRequestBody {
@@ -10,9 +24,8 @@ interface GenerateDietRequestBody {
     allergies?: string;
 }
 
-// --- DÜZELTME 2: Gemini için Kesin JSON Şeması ---
-// Bu şema, yapay zekanın string yerine kesinlikle number dönmesini garanti eder.
-const dietSchema = {
+// Gemini Native Schema
+const dietSchema: Schema = {
     type: SchemaType.OBJECT,
     properties: {
         macros: {
@@ -77,6 +90,11 @@ function validateBody(body: unknown): GenerateDietRequestBody {
 
 export async function POST(request: NextRequest) {
     try {
+        const ip = request.headers.get("x-forwarded-for") || "anonymous";
+        if (!checkRateLimit(ip)) {
+            return NextResponse.json({ error: "Çok fazla istek gönderdiniz. Lütfen 1 dakika bekleyin." }, { status: 429 });
+        }
+
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
             throw new Error("GEMINI_API_KEY tanımlı değil.");
@@ -94,30 +112,12 @@ export async function POST(request: NextRequest) {
         const systemPrompt = `Sen profesyonel bir diyetisyensin. Sana verilen parametrelere göre günlük bir beslenme planı oluşturacaksın.
 
 KRİTİK KURALLAR:
-1. Çıktın kesinlikle ve SADECE geçerli bir JSON objesi olmalı.
-2. Üst düzey "macros" alanı günlük toplam makro değerlerini GRAM cinsinden sayı olarak içermeli.
-3. Her öğün için en az 2, en fazla 5 yiyecek önerisi yap.
-4. "cal" alanı sadece sayı olmalı. Örnek: 160.
-5. "macros" alanı o yiyeceğe ait protein, yağ ve karbonhidrat değerlerini GRAM cinsinden sayı olarak içermeli.
-6. fullText alanında yiyeceğin miktarını (örn: 2 adet, 150g vb.) ve kısa açıklamasını Türkçe olarak yaz.
-
-Beklenen JSON Şeması:
-{
-  "macros": { "protein": 120, "fat": 60, "carb": 150 },
-  "meals": [
-    {
-      "title": "Öğün 1 — Kahvaltı",
-      "items": [
-        {
-          "name": "Yumurta",
-          "cal": 160,
-          "fullText": "2 adet haşlanmış yumurta",
-          "macros": { "protein": 12, "fat": 10, "carb": 1 }
-        }
-      ]
-    }
-  ]
-}`;
+1. Her öğün için en az 2, en fazla 4 yiyecek önerisi yap.
+2. 'fullText' alanı KISA olmalı: sadece miktar ve isim yaz (örn: "2 adet haşlanmış yumurta", "150g ızgara tavuk göğsü"). Açıklama EKLEME.
+3. 'name' alanı en fazla 3 kelime olmalı.
+4. Her yiyecek maddesinin 'macros' alanında o yiyeceğe ait protein, fat ve carb değerlerini gram cinsinden gerçekçi şekilde hesapla.
+5. Üst düzey 'macros' alanı, tüm yiyeceklerin makro değerlerinin toplamına eşit olmalı.
+6. Değerleri hesaplarken gerçekçi ve tutarlı ol.`;
 
         const userPrompt = `
 - Hedef Kalori: ${targetCalories} kcal
@@ -125,34 +125,59 @@ Beklenen JSON Şeması:
 - Öğün Sayısı: ${mealsPerDay}
 - ${allergyNote}`;
 
-        // --- DÜZELTME 3: Model Ayarları ---
+        const safetySettings = [
+            {
+                category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+                threshold: HarmBlockThreshold.BLOCK_NONE,
+            },
+            {
+                category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+                threshold: HarmBlockThreshold.BLOCK_NONE,
+            }
+        ];
+
         const model = genAI.getGenerativeModel({
             model: "gemini-2.5-flash",
+            systemInstruction: systemPrompt,
+            safetySettings,
             generationConfig: {
-                maxOutputTokens: 4096,
+                maxOutputTokens: 8192,
+                responseMimeType: "application/json",
+                responseSchema: dietSchema as Schema,
             }
         });
 
-        const result = await model.generateContent([systemPrompt, userPrompt]);
+        // 30 saniyelik timeout koruması
+        const generatePromise = model.generateContent(userPrompt);
+        const timeoutPromise = new Promise<never>((_, reject) => 
+            setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. (30s)")), 30000)
+        );
+        
+        const result = await Promise.race([generatePromise, timeoutPromise]);
         const rawText = result.response.text();
 
-        // 5. JSON Temizleme ve Parse
+        // JSON Temizleme ve Parse
         let cleanedJSON = rawText.trim();
-        // Markdown blokları varsa temizle
         cleanedJSON = cleanedJSON.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
-        // Trailing comma (Sondaki virgül) hatasını temizle: objelerin veya dizilerin sonundaki gereksiz virgüller
         cleanedJSON = cleanedJSON.replace(/,\s*([\]}])/g, "$1");
-        
-        const parsed = JSON.parse(cleanedJSON);
 
-        // Validasyonumuzu yine de yapalım, ne olur ne olmaz.
-        if (!parsed.macros || typeof parsed.macros.protein !== "number") {
-            console.error("Yapay Zeka Şemaya Uymadı:", parsed);
-            throw new Error("AI yanıtı beklenen yapıya uymuyor.");
+        try {
+            const parsed = JSON.parse(cleanedJSON);
+
+            // Zod ile Runtime Type Checking
+            const validatedResult = generatedPlanSchema.safeParse(parsed);
+            if (!validatedResult.success) {
+                console.error("Zod Şema İhlali:", validatedResult.error);
+                throw new Error("AI yanıtı beklenen yapıya uymuyor.");
+            }
+
+            return NextResponse.json(validatedResult.data, { status: 200 });
+
+        } catch (parseError) {
+            console.error("Saf AI Çıktısı (Parse Edilemeyen):", cleanedJSON.substring(0, 500));
+            console.error("Parse Hatası:", parseError);
+            throw new Error("Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin.");
         }
-
-        return NextResponse.json(parsed, { status: 200 });
-
     } catch (err) {
         console.error("Backend İşlem Hatası:", err);
         return NextResponse.json(

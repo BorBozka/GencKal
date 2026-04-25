@@ -1,7 +1,7 @@
 // src/components/EducationalSection.tsx
 import React from "react";
 
-export default function EducationalSection() {
+const EducationalSection = React.memo(function EducationalSection() {
     return (
         <section className="bg-white text-gray-800 pt-8 pb-16 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
@@ -136,3 +136,6 @@ export default function EducationalSection() {
         </section>
     );
 }
+);
+
+export default EducationalSection;

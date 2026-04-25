@@ -18,7 +18,7 @@ export default function TargetSimulator({ currentWeight, leanMass, currentBodyFa
     const minWeight = Math.ceil(leanMass);
 
     return (
-        <div className="w-[320px] xl:w-[350px] bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 shadow-2xl flex flex-col shrink-0 animate-fade-in-right">
+        <div className="w-full max-w-[320px] xl:max-w-[350px] bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 shadow-2xl flex flex-col shrink-0 animate-fade-in-right">
 
             {/* Net ve Temiz Başlık */}
             <h3 className="text-xl font-bold text-white mb-8">Hedef Simülatörü</h3>

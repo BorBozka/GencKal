@@ -1,3 +1,30 @@
+import { z } from "zod";
+
+export const generatedPlanSchema = z.object({
+    macros: z.object({
+        protein: z.number(),
+        fat: z.number(),
+        carb: z.number(),
+    }),
+    meals: z.array(
+        z.object({
+            title: z.string(),
+            items: z.array(
+                z.object({
+                    name: z.string(),
+                    cal: z.number(),
+                    fullText: z.string(),
+                    macros: z.object({
+                        protein: z.number(),
+                        fat: z.number(),
+                        carb: z.number(),
+                    }),
+                })
+            ),
+        })
+    ),
+});
+
 export type Cinsiyet = "erkek" | "kadın";
 
 export type AktiviteSeviyesi =
@@ -9,6 +36,8 @@ export type AktiviteSeviyesi =
 
 export type Hedef = "kilo_al" | "kilo_koruma" | "kilo_ver";
 
+export type DiyetTipi = "standart" | "karnivor" | "vejetaryen" | "vegan" | "keto";
+
 export interface FizikselVeriler {
     boy: number;
     kilo: number;
@@ -19,17 +48,11 @@ export interface FizikselVeriler {
     agirlikCalisiyorMu: boolean;
 }
 
-export interface DietPreferencesData {
-    mealsPerDay: number;
-    dietType: string;
-    allergies?: string;
-}
-
 export interface MealItem {
     name: string;
     cal: number;
     fullText: string;
-    macros: MacroDistribution;
+    macros?: MacroDistribution;
 }
 
 export interface MealCard {
@@ -44,7 +67,7 @@ export interface MacroDistribution {
 }
 
 export interface DiyetVerileri {
-    diyetTipi: string;
+    diyetTipi: DiyetTipi;
     ogunSayisi: number;
     alerjenler: string[];
     kullanilanTakviyeler: string[];

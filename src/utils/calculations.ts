@@ -105,8 +105,12 @@ export function calculateTDEE(fizikselVeriler: FizikselVeriler): number {
     return Number(tdee.toFixed(0));
 }
 
-export const calculateMacroGrams = (totalCalories: number, percentage: number, macroType: 'protein' | 'carb' | 'fat'): number => {
+export const calculateMacroGrams = (
+    totalCalories: number,
+    percentage: number,
+    macroType: 'protein' | 'carb' | 'fat'
+): number => {
     const caloriesFromMacro = totalCalories * (percentage / 100);
-    const divisor = macroType === 'fat' ? 9 : 4; // Yağ 1g = 9 kcal, Protein/Karb 1g = 4 kcal
+    const divisor = macroType === 'fat' ? 9 : 4;
     return Math.round(caloriesFromMacro / divisor);
 };

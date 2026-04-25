@@ -23,7 +23,7 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
     ];
 
     return (
-        <div className="w-full max-w-[600px] md:w-[600px] bg-white text-gray-800 rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] p-8 pl-12 md:pl-32 h-auto flex flex-col font-sans relative z-30 mx-auto">
+        <div className="w-full max-w-[600px] md:w-[600px] bg-white text-gray-800 rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] p-6 md:p-8 md:pl-32 h-auto flex flex-col font-sans relative z-30 mx-auto">
             <div className="space-y-8 w-full mt-2">
                 {sliders.map(slider => (
                     <div key={slider.name} className="flex flex-col w-full">
@@ -60,27 +60,6 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
                     </div>
                 ))}
             </div>
-
-            <style>{`
-                input[type=range]::-webkit-slider-thumb {
-                    -webkit-appearance: none;
-                    background: #6366f1;
-                    height: 24px;
-                    width: 24px;
-                    border-radius: 50%;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                    cursor: pointer;
-                    margin-top: -8px;
-                    border: 3px solid white;
-                }
-                input[type=range]::-webkit-slider-runnable-track {
-                    width: 100%;
-                    height: 8px;
-                    cursor: pointer;
-                    background: transparent; 
-                    border-radius: 9999px;
-                }
-            `}</style>
         </div>
     );
 }

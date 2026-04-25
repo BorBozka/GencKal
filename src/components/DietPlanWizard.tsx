@@ -3,12 +3,13 @@
 
 import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Flame, Utensils, Dumbbell, ChevronRight, Save, AlertTriangle, RotateCcw } from "lucide-react";
+import { Flame, Utensils, Dumbbell, ChevronRight, Save, AlertTriangle, RotateCcw } from "lucide-react";
 
 import DietPreferencesForm, { type DietPreferencesData } from "./DietPreferencesForm";
 import { MacroBar } from "./ui/MacroBar";
 import { SkeletonLoading } from "./ui/SkeletonLoading";
 import { MealCardComponent } from "./ui/MealCardComponent";
+import { useToast } from "./ui/Toast";
 import type { MealCard, MacroDistribution } from "../types";
 
 interface DietPlanWizardProps {
@@ -18,11 +19,13 @@ interface DietPlanWizardProps {
 }
 
 export default function DietPlanWizard({ targetCalories, selectedPlanName, onBack }: DietPlanWizardProps) {
+    const { toast } = useToast();
     const [step, setStep] = useState<"form" | "generating">("form");
     const [formData, setFormData] = useState<DietPreferencesData | null>(null);
     const [generatedPlan, setGeneratedPlan] = useState<{ macros: MacroDistribution; meals: MealCard[] } | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isSaved, setIsSaved] = useState(false);
 
     const handleGenerate = useCallback(async (data: DietPreferencesData) => {
         setFormData(data);
@@ -43,16 +46,42 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
             }
             const plan = await response.json();
             setGeneratedPlan(plan);
+            setIsSaved(false);
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Beklenmeyen bir hata oluştu.");
+            const msg = err instanceof Error ? err.message : "Beklenmeyen bir hata oluştu.";
+            setError(msg);
+            toast("error", "Plan oluşturulamadı", msg);
         } finally {
             setIsLoading(false);
         }
-    }, [targetCalories]);
+    }, [targetCalories, toast]);
 
     const handleRetry = useCallback(() => {
         if (formData) handleGenerate(formData);
     }, [formData, handleGenerate]);
+
+    const handleSavePlan = useCallback(() => {
+        if (!generatedPlan || !formData) return;
+        try {
+            const savedPlan = {
+                id: Date.now(),
+                planName: selectedPlanName,
+                targetCalories,
+                preferences: formData,
+                plan: generatedPlan,
+                savedAt: new Date().toISOString(),
+            };
+            const existing = JSON.parse(localStorage.getItem("genckal_saved_plans") || "[]");
+            existing.unshift(savedPlan);
+            // En fazla 10 plan sakla
+            if (existing.length > 10) existing.pop();
+            localStorage.setItem("genckal_saved_plans", JSON.stringify(existing));
+            setIsSaved(true);
+            toast("success", "Plan kaydedildi!", "Beslenme planınız başarıyla kaydedildi.");
+        } catch {
+            toast("error", "Kayıt başarısız", "Plan kaydedilirken bir hata oluştu.");
+        }
+    }, [generatedPlan, formData, selectedPlanName, targetCalories, toast]);
 
     const macros = generatedPlan?.macros ?? { protein: 0, fat: 0, carb: 0 };
     const showPlanData = !isLoading && !error && generatedPlan !== null;
@@ -64,7 +93,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
     const carbPct = totalCalFromMacros > 0 ? Math.round((macros.carb * 4) / totalCalFromMacros * 100) : 0;
 
     return (
-        <div className="w-full flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
+        <div className="w-full flex-1 flex flex-col lg:flex-row gap-8 min-h-0">
             {/* SOL PANEL (FORM VEYA ÖZET) */}
             <AnimatePresence mode="wait">
                 {step === "form" ? (
@@ -74,80 +103,86 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                         <DietPreferencesForm targetCalories={targetCalories} selectedPlanName={selectedPlanName} onBack={onBack} onSubmit={handleGenerate} />
                     </motion.div>
                 ) : (
-                    <motion.div key="form-summary" layout className="w-full lg:w-[320px] shrink-0"
+                    <motion.div key="form-summary" layout className="w-full lg:w-[340px] shrink-0"
                         initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}>
 
-                        {/* Mobil: yatay ince bilgi çubuğu (Eski tasarıma dönüldü) */}
-                        <div className="lg:hidden bg-white/[0.07] backdrop-blur-xl rounded-2xl p-4 border border-white/10 flex items-center justify-between gap-4">
+                        {/* Mobil: yatay ince bilgi çubuğu */}
+                        <div className="lg:hidden bg-white rounded-3xl p-5 border border-slate-200/80 shadow-soft flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-emerald-500/15 rounded-xl flex items-center justify-center border border-emerald-500/20">
-                                    <Flame className="w-5 h-5 text-emerald-400" />
+                                <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center border border-indigo-100">
+                                    <Flame className="w-5 h-5 text-indigo-500" />
                                 </div>
                                 <div>
-                                    <p className="text-white font-bold text-sm">{targetCalories} kcal</p>
-                                    <p className="text-indigo-200/40 text-[10px]">{selectedPlanName}</p>
+                                    <p className="text-slate-900 font-bold text-sm">{targetCalories} kcal</p>
+                                    <p className="text-slate-500 text-[10px]">{selectedPlanName}</p>
                                 </div>
                             </div>
                             {formData && (
                                 <div className="flex items-center gap-2">
-                                    <span className="text-indigo-200/40 text-[10px]">{formData.mealsPerDay} öğün</span>
-                                    <span className="text-white/10">·</span>
-                                    <span className="text-indigo-200/40 text-[10px] capitalize">{formData.dietType}</span>
+                                    <span className="text-slate-500 text-[10px]">{formData.mealsPerDay} öğün</span>
+                                    <span className="text-slate-300">·</span>
+                                    <span className="text-slate-500 text-[10px] capitalize">{formData.dietType}</span>
                                 </div>
                             )}
                         </div>
 
-                        {/* Masaüstü: dikey özet kartı (Eski tasarıma dönüldü) */}
-                        <div className="hidden lg:flex flex-col bg-white/[0.07] backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)] sticky top-24">
-                            <div className="text-center border-b border-white/10 pb-4 mb-5">
-                                <p className="text-indigo-200/50 text-[10px] uppercase tracking-[0.25em] font-bold mb-1">{selectedPlanName}</p>
-                                <p className="text-white font-black text-3xl">
-                                    {targetCalories} <span className="text-sm font-medium text-indigo-200/50">kcal</span>
+                        {/* Masaüstü: dikey özet kartı */}
+                        <div className="hidden lg:flex flex-col bg-white rounded-3xl p-8 border border-slate-200/80 shadow-soft hover:shadow-hover transition-all duration-300 sticky top-24">
+                            <div className="text-center border-b border-slate-100 pb-5 mb-6">
+                                <p className="text-slate-500 text-[10px] uppercase tracking-[0.25em] font-bold mb-2">{selectedPlanName}</p>
+                                <p className="text-slate-900 font-black text-4xl">
+                                    {targetCalories} <span className="text-base font-medium text-slate-400">kcal</span>
                                 </p>
                             </div>
 
                             {formData && (
-                                <div className="flex flex-col gap-3">
+                                <div className="flex flex-col gap-4">
                                     <div className="flex items-center gap-3 text-sm">
-                                        <Utensils className="w-4 h-4 text-emerald-400/70" />
-                                        <span className="text-indigo-200/50 flex-1">Öğün Sayısı</span>
-                                        <span className="text-white font-bold">{formData.mealsPerDay}</span>
+                                        <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
+                                            <Utensils className="w-4 h-4 text-emerald-500" />
+                                        </div>
+                                        <span className="text-slate-600 flex-1">Öğün Sayısı</span>
+                                        <span className="text-slate-900 font-bold">{formData.mealsPerDay}</span>
                                     </div>
                                     <div className="flex items-center gap-3 text-sm">
-                                        <Dumbbell className="w-4 h-4 text-emerald-400/70" />
-                                        <span className="text-indigo-200/50 flex-1">Diyet Tipi</span>
-                                        <span className="text-white font-bold capitalize">{formData.dietType}</span>
+                                        <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
+                                            <Dumbbell className="w-4 h-4 text-indigo-500" />
+                                        </div>
+                                        <span className="text-slate-600 flex-1">Diyet Tipi</span>
+                                        <span className="text-slate-900 font-bold capitalize">{formData.dietType}</span>
                                     </div>
                                     {formData.allergies && (
                                         <div className="flex items-start gap-3 text-sm mt-1">
-                                            <ChevronRight className="w-4 h-4 text-red-400/60 mt-0.5 shrink-0" />
-                                            <span className="text-indigo-200/50 flex-1">Alerjiler</span>
-                                            <span className="text-red-300/70 font-medium text-xs text-right max-w-[120px]">{formData.allergies}</span>
+                                            <div className="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center shrink-0">
+                                                <ChevronRight className="w-4 h-4 text-red-400" />
+                                            </div>
+                                            <span className="text-slate-600 flex-1">Alerjiler</span>
+                                            <span className="text-red-500 font-medium text-xs text-right max-w-[120px]">{formData.allergies}</span>
                                         </div>
                                     )}
                                 </div>
                             )}
 
                             {showPlanData && (
-                                <div className="mt-6 pt-4 border-t border-white/5 flex flex-col gap-2">
-                                    <p className="text-[10px] text-indigo-200/30 uppercase tracking-widest font-bold mb-1">Makro Hedef</p>
+                                <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col gap-3">
+                                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Makro Hedef</p>
                                     <div className="flex justify-between text-xs">
-                                        <span className="text-indigo-200/40">Protein</span>
-                                        <span className="text-emerald-400 font-bold">{proteinPct}%</span>
+                                        <span className="text-slate-600">Protein</span>
+                                        <span className="text-emerald-600 font-bold">{proteinPct}%</span>
                                     </div>
                                     <div className="flex justify-between text-xs">
-                                        <span className="text-indigo-200/40">Yağ</span>
-                                        <span className="text-amber-400 font-bold">{fatPct}%</span>
+                                        <span className="text-slate-600">Yağ</span>
+                                        <span className="text-amber-600 font-bold">{fatPct}%</span>
                                     </div>
                                     <div className="flex justify-between text-xs">
-                                        <span className="text-indigo-200/40">Karbonhidrat</span>
-                                        <span className="text-blue-400 font-bold">{carbPct}%</span>
+                                        <span className="text-slate-600">Karbonhidrat</span>
+                                        <span className="text-blue-600 font-bold">{carbPct}%</span>
                                     </div>
                                 </div>
                             )}
 
                             <button onClick={() => { setStep("form"); setGeneratedPlan(null); setError(null); }}
-                                className="mt-6 py-2.5 rounded-xl text-indigo-200/40 text-xs font-bold hover:bg-white/5 hover:text-white/60 transition-all border border-transparent hover:border-white/10">
+                                className="mt-6 py-3 rounded-2xl text-slate-400 text-xs font-bold hover:bg-slate-50 hover:text-slate-600 transition-all duration-300 border border-transparent hover:border-slate-200">
                                 ← Düzenle
                             </button>
                         </div>
@@ -156,38 +191,28 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
             </AnimatePresence>
 
             {/* SAĞ PANEL (ÜRETİM ALANI) */}
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
                 {step === "generating" && (
-                    <motion.div key="generation-area" className="flex-1 flex flex-col gap-5 min-h-0 overflow-y-auto pb-8"
+                    <motion.div key="generation-area" className="flex-1 flex flex-col gap-6 min-h-0 overflow-y-auto pb-8"
                         initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}>
-
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 bg-emerald-500/15 rounded-xl flex items-center justify-center border border-emerald-500/20">
-                                <Sparkles className="w-4.5 h-4.5 text-emerald-400" />
-                            </div>
-                            <div>
-                                <h3 className="text-white font-bold text-lg">AI Beslenme Planı</h3>
-                                <p className="text-indigo-200/40 text-xs">
-                                    {isLoading ? "Planınız oluşturuluyor..." : error ? "Bir hata oluştu" : "Planınız hazır!"}
-                                </p>
-                            </div>
-                        </div>
 
                         {isLoading && <SkeletonLoading />}
 
-                        {/* Hata Kartı (Glassmorphism Dark Tema Uyumu) */}
+                        {/* Hata Kartı */}
                         {error && !isLoading && (
                             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-                                className="bg-red-500/10 backdrop-blur-sm rounded-2xl p-5 border border-red-500/20">
-                                <div className="flex items-start gap-3">
-                                    <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                                className="bg-red-50 rounded-3xl p-8 border border-red-200/80 shadow-soft">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center shrink-0">
+                                        <AlertTriangle className="w-5 h-5 text-red-500" />
+                                    </div>
                                     <div className="flex-1">
-                                        <h4 className="text-red-400 font-bold text-sm mb-1">Plan oluşturulamadı</h4>
-                                        <p className="text-red-300/80 text-xs leading-relaxed">{error}</p>
+                                        <h4 className="text-red-600 font-bold text-sm mb-1">Plan oluşturulamadı</h4>
+                                        <p className="text-red-500/80 text-xs leading-relaxed">{error}</p>
                                     </div>
                                 </div>
                                 <button onClick={handleRetry}
-                                    className="mt-4 w-full py-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-300 font-bold text-sm transition-all border border-red-500/30 flex items-center justify-center gap-2">
+                                    className="mt-5 w-full py-3.5 rounded-2xl bg-red-100 hover:bg-red-200 text-red-600 font-bold text-sm transition-all duration-300 border border-red-200 flex items-center justify-center gap-2">
                                     <RotateCcw className="w-4 h-4" /> Tekrar Dene
                                 </button>
                             </motion.div>
@@ -195,32 +220,32 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
 
                         {showPlanData && (
                             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-                                className="bg-white/[0.05] backdrop-blur-sm rounded-2xl p-5 border border-white/10">
-                                <h4 className="text-[10px] text-indigo-200/50 uppercase tracking-[0.2em] font-bold mb-4">Kalori & Makro Dağılımı</h4>
+                                className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-soft hover:shadow-hover transition-all duration-300">
+                                <h4 className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-5">Kalori & Makro Dağılımı</h4>
 
-                                <div className="flex items-baseline gap-2 mb-5">
-                                    <span className="text-white font-black text-3xl">{targetCalories}</span>
-                                    <span className="text-indigo-200/40 text-sm font-medium">kcal / gün</span>
+                                <div className="flex items-baseline gap-2 mb-6">
+                                    <span className="text-slate-900 font-black text-4xl">{targetCalories}</span>
+                                    <span className="text-slate-500 text-sm font-medium">kcal / gün</span>
                                 </div>
 
-                                <div className="flex flex-col gap-3">
+                                <div className="flex flex-col gap-4">
                                     <MacroBar label="Protein" percent={proteinPct} grams={macros.protein} color="linear-gradient(90deg, #10b981, #34d399)" delay={0} animate={true} />
                                     <MacroBar label="Yağ" percent={fatPct} grams={macros.fat} color="linear-gradient(90deg, #f59e0b, #fbbf24)" delay={200} animate={true} />
                                     <MacroBar label="Karb" percent={carbPct} grams={macros.carb} color="linear-gradient(90deg, #3b82f6, #60a5fa)" delay={400} animate={true} />
                                 </div>
 
-                                <div className="flex gap-3 mt-4 pt-3 border-t border-white/5">
+                                <div className="flex gap-4 mt-6 pt-4 border-t border-slate-100">
                                     <div className="flex-1 text-center">
-                                        <p className="text-emerald-400 font-bold text-sm">{macros.protein}g</p>
-                                        <p className="text-indigo-200/30 text-[10px] mt-0.5">Protein</p>
+                                        <p className="text-emerald-600 font-bold text-base">{macros.protein}g</p>
+                                        <p className="text-slate-500 text-[10px] mt-1">Protein</p>
                                     </div>
                                     <div className="flex-1 text-center">
-                                        <p className="text-amber-400 font-bold text-sm">{macros.fat}g</p>
-                                        <p className="text-indigo-200/30 text-[10px] mt-0.5">Yağ</p>
+                                        <p className="text-amber-600 font-bold text-base">{macros.fat}g</p>
+                                        <p className="text-slate-500 text-[10px] mt-1">Yağ</p>
                                     </div>
                                     <div className="flex-1 text-center">
-                                        <p className="text-blue-400 font-bold text-sm">{macros.carb}g</p>
-                                        <p className="text-indigo-200/30 text-[10px] mt-0.5">Karbonhidrat</p>
+                                        <p className="text-blue-600 font-bold text-base">{macros.carb}g</p>
+                                        <p className="text-slate-500 text-[10px] mt-1">Karbonhidrat</p>
                                     </div>
                                 </div>
                             </motion.div>
@@ -228,7 +253,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
 
                         {/* ÖĞÜN KARTLARI — 2 Sütunlu Grid */}
                         {showPlanData && (
-                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                                 {generatedPlan.meals.map((meal, i) => (
                                     <MealCardComponent key={i} meal={meal} index={i} startTyping={true} />
                                 ))}
@@ -238,15 +263,32 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                         {showPlanData && (
                             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="mt-2">
-                                <button className="w-full py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all shadow-[0_0_25px_rgba(16,185,129,0.35)] hover:shadow-[0_0_35px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2.5 animate-pulse"
-                                    style={{ animationDuration: "2s" }}>
-                                    <Save className="w-4.5 h-4.5" /> Planı Kaydet
+                                <button
+                                    onClick={handleSavePlan}
+                                    disabled={isSaved}
+                                    className={`w-full py-4 rounded-3xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2.5 ${
+                                        isSaved
+                                            ? "bg-emerald-50 text-emerald-600 border border-emerald-200 cursor-default"
+                                            : "bg-[#3E3AAF] hover:bg-[#4f46a8] text-white shadow-[0_4px_20px_rgba(62,58,175,0.3)] hover:shadow-[0_8px_30px_rgba(62,58,175,0.4)]"
+                                    }`}
+                                >
+                                    <Save className="w-4 h-4" /> {isSaved ? "✓ Kaydedildi" : "Planı Kaydet"}
                                 </button>
                             </motion.div>
                         )}
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Mobil Geri Dönüş Butonu (Sadece küçük ekranlarda görünür) */}
+            <div className="sm:hidden flex-none text-center pt-4 pb-2 w-full">
+                <button
+                    onClick={onBack}
+                    className="text-slate-400 hover:text-slate-700 font-bold transition-colors flex items-center justify-center gap-2 mx-auto"
+                >
+                    <span>&larr;</span> Geri Dön
+                </button>
+            </div>
         </div>
     );
 }

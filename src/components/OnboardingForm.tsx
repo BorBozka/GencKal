@@ -1,7 +1,7 @@
 "use client";
 
 // 1. Core / React Imports
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 // 2. Types & Interfaces
 import {
@@ -24,7 +24,7 @@ import TDEECalculatorPanel from "./TDEECalculatorPanel";
 import DietPlanWizard from "./DietPlanWizard";
 
 export default function OnboardingForm() {
-    const [step, setStep] = useState<number>(1);
+    const [step, setStep] = useState<1 | 2 | 3>(1);
     const [errorLine, setErrorLine] = useState<string | null>(null);
     const [selectedPlan, setSelectedPlan] = useState<{ name: string; calories: number } | null>(null);
 
@@ -61,7 +61,7 @@ export default function OnboardingForm() {
     );
 
     // --- ETKİLEŞİM YÖNETİCİLERİ (Handlers) ---
-    const handleFizikselChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleFizikselChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         let finalValue: string | number | boolean = value;
 
@@ -72,9 +72,9 @@ export default function OnboardingForm() {
             ...prev,
             fizikselVeriler: { ...prev.fizikselVeriler, [name]: finalValue }
         }));
-    };
+    }, []);
 
-    const setFizikselAlan = <K extends keyof KullaniciProfil["fizikselVeriler"]>(
+    const setFizikselAlan = useCallback(<K extends keyof KullaniciProfil["fizikselVeriler"]>(
         name: K,
         value: KullaniciProfil["fizikselVeriler"][K]
     ) => {
@@ -82,32 +82,35 @@ export default function OnboardingForm() {
             ...prev,
             fizikselVeriler: { ...prev.fizikselVeriler, [name]: value }
         }));
-    };
+    }, []);
 
-    const handleProceedToDiet = () => {
-        if (boy < 100 || boy > 230 || kilo < 30 || kilo > 300 || yas < 15 || yas > 100) {
-            setErrorLine("Lütfen fiziksel değerlerinizi kontrol edin (Boy: 100-230, Kilo: 30-300, Yaş: 15-100).");
+    const handleProceedToDiet = useCallback(() => {
+        setFormData(prev => {
+            const { boy, kilo, yas } = prev.fizikselVeriler;
+            if (boy < 100 || boy > 230 || kilo < 30 || kilo > 300 || yas < 15 || yas > 100) {
+                setErrorLine("Lütfen fiziksel değerlerinizi kontrol edin (Boy: 100-230, Kilo: 30-300, Yaş: 15-100).");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return prev;
+            }
+            setErrorLine(null);
+            setStep(2);
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
-        }
-        setErrorLine(null);
-        setStep(2);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+            return prev;
+        });
+    }, []);
 
-    const handleSelectPlan = (name: string, calories: number) => {
+    const handleSelectPlan = useCallback((name: string, calories: number) => {
         setSelectedPlan({ name, calories });
         setStep(3);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    }, []);
 
 
 
     // --- RENDER ---
     if (step === 3 && selectedPlan) {
         return (
-            <div className="min-h-screen w-full bg-[#3E3AAF] flex flex-col font-sans text-white overflow-x-hidden"
-                style={{ background: "linear-gradient(135deg, #2d2a7c 0%, #3E3AAF 40%, #4f46a8 70%, #3730a3 100%)" }}>
+            <div className="min-h-screen w-full bg-gradient-to-br from-white to-slate-50 flex flex-col font-sans text-slate-900 overflow-x-hidden">
                 <header className="sticky top-0 z-50 flex-none flex justify-between items-center py-3 px-6 md:px-12 bg-[#3E3AAF]/95 backdrop-blur-md text-white font-medium text-[15px] border-b border-white/10 shadow-sm">
                     <div className="flex items-center gap-3 font-bold text-xl tracking-tight">
                         <div className="flex items-center gap-1">
@@ -127,7 +130,7 @@ export default function OnboardingForm() {
                         <a href="#" className="hover:text-indigo-200 transition-colors text-sm">İletişim</a>
                     </div>
                 </header>
-                <div className="flex-1 flex py-8 px-4 sm:px-6 max-w-[1500px] mx-auto w-full">
+                <div className="flex-1 flex py-10 px-4 sm:px-8 max-w-[1500px] mx-auto w-full">
                     <DietPlanWizard
                         targetCalories={selectedPlan.calories}
                         selectedPlanName={selectedPlan.name}
@@ -230,11 +233,20 @@ export default function OnboardingForm() {
                 </div>
 
             </div>
+
+            {/* --- MOBİL: Sabit Alt CTA Butonu (sm ve üstünde header'da görünür, burada gizlenir) --- */}
+            <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/90 backdrop-blur-md border-t border-slate-200">
+                <button
+                    onClick={handleProceedToDiet}
+                    className="w-full py-3.5 rounded-2xl bg-[#3E3AAF] hover:bg-[#4f46a8] text-white font-bold text-sm transition-all shadow-[0_4px_20px_rgba(62,58,175,0.3)] flex items-center justify-center gap-2"
+                >
+                    Diyet Planı Oluştur →
+                </button>
+            </div>
         </div>
     ) : (
-        /* --- 2. ADIM: DİYET PLANI (Modernize Edilmiş Dark Theme) --- */
-        <div className="min-h-screen w-full bg-[#3E3AAF] flex flex-col font-sans text-white overflow-x-hidden"
-            style={{ background: "linear-gradient(135deg, #2d2a7c 0%, #3E3AAF 40%, #4f46a8 70%, #3730a3 100%)" }}>
+        /* --- 2. ADIM: DİYET PLANI (Premium SaaS Açık Tema) --- */
+        <div className="min-h-screen w-full bg-slate-50 flex flex-col font-sans text-slate-900 overflow-x-hidden">
 
             {/* --- STEP 2 HEADER --- */}
             <header className="sticky top-0 z-50 flex-none flex justify-between items-center py-3 px-6 md:px-12 bg-[#3E3AAF]/95 backdrop-blur-md text-white font-medium text-[15px] border-b border-white/10 shadow-sm">
@@ -258,24 +270,13 @@ export default function OnboardingForm() {
             </header>
 
             {/* --- ANA İÇERİK (Scroll Edilebilir) --- */}
-            <div className="flex-1 w-full max-w-[1500px] mx-auto px-4 sm:px-6 py-8 overflow-y-auto">
-
-                {/* Sayfa Başlığı */}
-                <div className="text-center mb-8 animate-fade-in">
-                    <h1 className="text-[32px] sm:text-[38px] font-normal tracking-wide text-white drop-shadow-sm mb-1 font-sans">
-                        Size Özel Diyet Planları
-                    </h1>
-                    <p className="text-[14px] sm:text-[15px] text-indigo-200/70 font-light tracking-wide">
-                        TDEE değerinize göre kişiselleştirilmiş beslenme programınızı oluşturun
-                    </p>
-                </div>
+            <div className="flex-1 w-full max-w-[1500px] mx-auto px-4 sm:px-8 py-10 overflow-y-auto">
 
                 {/* Üst Alan: TDEE Hesaplama + Skor */}
                 <div className="flex flex-col lg:flex-row gap-6 mb-8">
 
                     {/* SOL: TDEE Hesaplama Paneli */}
-                    <div className="flex-1 bg-white/[0.07] backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)] animate-fade-in-up">
-                        <h3 className="text-xs font-bold text-indigo-200/50 mb-4 tracking-[0.2em] uppercase">Hesaplama Detayları</h3>
+                    <div className="flex-1 bg-white rounded-3xl p-8 border border-slate-200/60 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in-up">
                         <TDEECalculatorPanel
                             data={formData.fizikselVeriler}
                             handleChange={handleFizikselChange}
@@ -284,19 +285,19 @@ export default function OnboardingForm() {
                     </div>
 
                     {/* SAĞ: TDEE Skor Gösterimi */}
-                    <div className="lg:w-[340px] flex-none bg-white/[0.07] backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)] flex flex-col items-center justify-center text-center relative overflow-hidden animate-scale-in"
+                    <div className="lg:w-[340px] flex-none bg-gradient-to-br from-indigo-50/50 via-white to-slate-50/30 rounded-3xl p-8 border border-slate-200/60 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center justify-center text-center relative overflow-hidden animate-scale-in"
                         style={{ animationDelay: "0.15s" }}>
                         {/* Arka plan glow efekti */}
-                        <div className="absolute inset-0 opacity-30"
-                            style={{ background: "radial-gradient(circle at 50% 40%, rgba(16,185,129,0.4) 0%, transparent 70%)" }}
+                        <div className="absolute inset-0 opacity-15"
+                            style={{ background: "radial-gradient(circle at 50% 30%, rgba(79,70,229,0.25) 0%, transparent 65%)" }}
                         />
                         <div className="relative z-10">
-                            <h2 className="text-[10px] uppercase tracking-[0.25em] text-indigo-200/50 font-bold mb-3">Günlük Kalori İhtiyacınız (TDEE)</h2>
-                            <p className="text-white font-black text-6xl md:text-7xl drop-shadow-[0_0_30px_rgba(16,185,129,0.3)] flex items-baseline gap-2 justify-center">
-                                {calculatedTDEE} <span className="text-2xl font-medium text-indigo-200/60">kcal</span>
+                            <h2 className="text-[10px] uppercase tracking-[0.25em] text-slate-400 font-bold mb-3">Günlük Kalori İhtiyacınız (TDEE)</h2>
+                            <p className="text-indigo-900 font-extrabold text-6xl md:text-7xl flex items-baseline gap-2 justify-center">
+                                {calculatedTDEE} <span className="text-2xl font-medium text-slate-500">kcal</span>
                             </p>
-                            <p className="text-indigo-200/40 mt-4 max-w-xs text-xs md:text-sm leading-relaxed">
-                                Aşağıdan hedefinize uygun planı seçerek LLM destekli programınızı oluşturun.
+                            <p className="text-slate-500 mt-4 max-w-xs text-xs md:text-sm leading-relaxed">
+                                Hedefinize uygun planı seçerek AI destekli programınızı oluşturun.
                             </p>
                         </div>
                     </div>
@@ -306,73 +307,73 @@ export default function OnboardingForm() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-8">
 
                     {/* Kilo Al Kartı */}
-                    <div className="group bg-white/[0.07] backdrop-blur-xl rounded-3xl p-6 border border-white/10 flex flex-col items-center text-center hover:border-emerald-400/40 hover:shadow-[0_0_40px_rgba(16,185,129,0.15)] transition-all duration-300 cursor-pointer animate-fade-in-up"
+                    <div className="group bg-white rounded-3xl p-8 border border-slate-200/60 shadow-sm flex flex-col items-center text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer animate-fade-in-up"
                         style={{ animationDelay: "0.2s" }}>
-                        <div className="w-14 h-14 bg-emerald-500/15 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-500/25 transition-colors border border-emerald-500/20">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                        <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-emerald-200 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-600">
                                 <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                                 <polyline points="16 7 22 7 22 13"></polyline>
                             </svg>
                         </div>
-                        <h3 className="text-lg font-bold text-white mb-1">Kilo Al (Bulking)</h3>
-                        <p className="text-emerald-400 font-black text-3xl mb-2">
-                            {calculatedTDEE + 500} <span className="text-xs text-indigo-200/40 font-medium">kcal</span>
+                        <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Al (Bulking)</h3>
+                        <p className="text-indigo-600 font-extrabold text-3xl mb-2">
+                            {calculatedTDEE + 500} <span className="text-xs text-slate-400 font-medium">kcal</span>
                         </p>
-                        <p className="text-indigo-200/40 text-xs mb-6 flex-1 leading-relaxed max-w-[220px]">
+                        <p className="text-slate-500 text-xs mb-6 flex-1 leading-relaxed max-w-[220px]">
                             Kas kütlenizi artırmak için güvenli kalori fazlası.
                         </p>
                         <button
                             onClick={() => handleSelectPlan("Kilo Al (Bulking)", calculatedTDEE + 500)}
-                            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white/70 font-bold hover:bg-emerald-500 hover:border-emerald-400/50 hover:text-white hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all text-sm">
+                            className="w-full py-3.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 font-bold hover:bg-slate-200 transition-all duration-300 text-sm">
                             Bu Planı Seç
                         </button>
                     </div>
 
                     {/* Kilo Koru Kartı (Mevcut Durum) */}
-                    <div className="group bg-white/[0.1] backdrop-blur-xl rounded-3xl p-6 border-2 border-emerald-400/40 flex flex-col items-center text-center shadow-[0_0_30px_rgba(16,185,129,0.12)] transition-all duration-300 relative animate-fade-in-up"
+                    <div className="group bg-white rounded-3xl p-8 border-2 border-indigo-500 flex flex-col items-center text-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative animate-fade-in-up"
                         style={{ animationDelay: "0.3s" }}>
-                        <div className="absolute -top-3.5 bg-emerald-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.4)] z-10">
+                        <div className="absolute -top-3.5 bg-indigo-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md z-10">
                             MEVCUT DURUM
                         </div>
-                        <div className="w-14 h-14 bg-emerald-500/15 rounded-2xl flex items-center justify-center text-2xl mb-4 border border-emerald-500/20">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                        <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mb-5">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                                 <polyline points="12 5 19 12 12 19"></polyline>
                             </svg>
                         </div>
-                        <h3 className="text-lg font-bold text-white mb-1">Kilo Koru (Maintain)</h3>
-                        <p className="text-emerald-400 font-black text-3xl mb-2">
-                            {calculatedTDEE} <span className="text-xs text-indigo-200/40 font-medium">kcal</span>
+                        <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Koru (Maintain)</h3>
+                        <p className="text-indigo-600 font-extrabold text-3xl mb-2">
+                            {calculatedTDEE} <span className="text-xs text-slate-400 font-medium">kcal</span>
                         </p>
-                        <p className="text-indigo-200/40 text-xs mb-6 flex-1 leading-relaxed max-w-[220px]">
+                        <p className="text-slate-500 text-xs mb-6 flex-1 leading-relaxed max-w-[220px]">
                             Mevcut formunuzu korumak için tam enerji ihtiyacınız.
                         </p>
                         <button
                             onClick={() => handleSelectPlan("Kilo Koru (Maintain)", calculatedTDEE)}
-                            className="w-full py-3 rounded-xl bg-emerald-500 border border-emerald-400/50 text-white font-bold hover:bg-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] transition-all text-sm">
+                            className="w-full py-3.5 rounded-2xl bg-indigo-600 border border-indigo-600 text-white font-bold hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-300 text-sm">
                             Bu Planı Seç
                         </button>
                     </div>
 
                     {/* Kilo Ver Kartı */}
-                    <div className="group bg-white/[0.07] backdrop-blur-xl rounded-3xl p-6 border border-white/10 flex flex-col items-center text-center hover:border-emerald-400/40 hover:shadow-[0_0_40px_rgba(16,185,129,0.15)] transition-all duration-300 cursor-pointer animate-fade-in-up"
+                    <div className="group bg-white rounded-3xl p-8 border border-slate-200/60 shadow-sm flex flex-col items-center text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer animate-fade-in-up"
                         style={{ animationDelay: "0.4s" }}>
-                        <div className="w-14 h-14 bg-emerald-500/15 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-500/25 transition-colors border border-emerald-500/20">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                        <div className="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-amber-200 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
                                 <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
                                 <polyline points="16 17 22 17 22 11"></polyline>
                             </svg>
                         </div>
-                        <h3 className="text-lg font-bold text-white mb-1">Kilo Ver (Cutting)</h3>
-                        <p className="text-emerald-400 font-black text-3xl mb-2">
-                            {calculatedTDEE - 500} <span className="text-xs text-indigo-200/40 font-medium">kcal</span>
+                        <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Ver (Cutting)</h3>
+                        <p className="text-indigo-600 font-extrabold text-3xl mb-2">
+                            {calculatedTDEE - 500} <span className="text-xs text-slate-400 font-medium">kcal</span>
                         </p>
-                        <p className="text-indigo-200/40 text-xs mb-6 flex-1 leading-relaxed max-w-[220px]">
+                        <p className="text-slate-500 text-xs mb-6 flex-1 leading-relaxed max-w-[220px]">
                             Sağlıklı yağ yakımı için ~500 kcal kalori açığı.
                         </p>
                         <button
                             onClick={() => handleSelectPlan("Kilo Ver (Cutting)", calculatedTDEE - 500)}
-                            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white/70 font-bold hover:bg-emerald-500 hover:border-emerald-400/50 hover:text-white hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all text-sm">
+                            className="w-full py-3.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 font-bold hover:bg-slate-200 transition-all duration-300 text-sm">
                             Bu Planı Seç
                         </button>
                     </div>
@@ -384,7 +385,7 @@ export default function OnboardingForm() {
             <div className="sm:hidden flex-none text-center pb-6">
                 <button
                     onClick={() => setStep(1)}
-                    className="text-indigo-200/50 hover:text-white font-bold transition-colors flex items-center justify-center gap-2 mx-auto"
+                    className="text-slate-400 hover:text-slate-700 font-bold transition-colors flex items-center justify-center gap-2 mx-auto"
                 >
                     <span>&larr;</span> Ana Sayfa
                 </button>

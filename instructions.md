@@ -1,0 +1,1 @@
+Kod yazarken her zaman coding-standards skill'indeki prensiplere (Surgical changes, Simplicity first, Think before coding) uygun hareket et.
