@@ -107,7 +107,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                         initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}>
 
                         {/* Mobil: yatay ince bilgi çubuğu */}
-                        <div className="lg:hidden bg-white rounded-3xl p-5 border border-slate-200/80 shadow-soft flex items-center justify-between gap-4">
+                        <div className="lg:hidden bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-5 flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center border border-indigo-100">
                                     <Flame className="w-5 h-5 text-indigo-500" />
@@ -127,25 +127,25 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                         </div>
 
                         {/* Masaüstü: dikey özet kartı */}
-                        <div className="hidden lg:flex flex-col bg-white rounded-3xl p-8 border border-slate-200/80 shadow-soft hover:shadow-hover transition-all duration-300 sticky top-24">
-                            <div className="text-center border-b border-slate-100 pb-5 mb-6">
-                                <p className="text-slate-500 text-[10px] uppercase tracking-[0.25em] font-bold mb-2">{selectedPlanName}</p>
-                                <p className="text-slate-900 font-black text-4xl">
-                                    {targetCalories} <span className="text-base font-medium text-slate-400">kcal</span>
+                        <div className="hidden lg:flex flex-col bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-8 hover:shadow-hover transition-all duration-300 sticky top-24">
+                            <div className="text-center border-b border-indigo-100/60 pb-5 mb-6">
+                                <p className="text-indigo-800 text-[10px] uppercase tracking-[0.25em] font-bold mb-2">{selectedPlanName}</p>
+                                <p className="text-slate-900 font-extrabold text-4xl">
+                                    {targetCalories} <span className="text-base font-medium text-slate-500">kcal</span>
                                 </p>
                             </div>
 
                             {formData && (
                                 <div className="flex flex-col gap-4">
                                     <div className="flex items-center gap-3 text-sm">
-                                        <div className="w-8 h-8 bg-cyan-50 rounded-lg flex items-center justify-center">
-                                            <Utensils className="w-4 h-4 text-cyan-500" />
+                                        <div className="w-8 h-8 bg-indigo-100/50 rounded-lg flex items-center justify-center">
+                                            <Utensils className="w-4 h-4 text-indigo-500" />
                                         </div>
                                         <span className="text-slate-600 flex-1">Öğün Sayısı</span>
                                         <span className="text-slate-900 font-bold">{formData.mealsPerDay}</span>
                                     </div>
                                     <div className="flex items-center gap-3 text-sm">
-                                        <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
+                                        <div className="w-8 h-8 bg-indigo-100/50 rounded-lg flex items-center justify-center">
                                             <Dumbbell className="w-4 h-4 text-indigo-500" />
                                         </div>
                                         <span className="text-slate-600 flex-1">Diyet Tipi</span>
@@ -164,11 +164,11 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                             )}
 
                             {showPlanData && (
-                                <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col gap-3">
+                                <div className="mt-6 pt-5 border-t border-indigo-100/60 flex flex-col gap-3">
                                     <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Makro Hedef</p>
                                     <div className="flex justify-between text-xs">
                                         <span className="text-slate-600">Protein</span>
-                                        <span className="text-cyan-600 font-bold">{proteinPct}%</span>
+                                        <span className="text-emerald-600 font-bold">{proteinPct}%</span>
                                     </div>
                                     <div className="flex justify-between text-xs">
                                         <span className="text-slate-600">Yağ</span>
@@ -182,7 +182,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                             )}
 
                             <button onClick={() => { setStep("form"); setGeneratedPlan(null); setError(null); }}
-                                className="mt-6 py-3 rounded-2xl text-slate-400 text-xs font-bold hover:bg-slate-50 hover:text-slate-600 transition-all duration-300 border border-transparent hover:border-slate-200">
+                                className="mt-6 py-3 rounded-2xl text-indigo-600 text-xs font-bold hover:bg-indigo-50 hover:text-indigo-800 transition-all duration-300 border border-transparent hover:border-indigo-100">
                                 ← Düzenle
                             </button>
                         </div>
@@ -220,7 +220,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
 
                         {showPlanData && (
                             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-                                className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-soft hover:shadow-hover transition-all duration-300">
+                                className="bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-8 hover:shadow-hover transition-all duration-300">
                                 <h4 className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-5">Kalori & Makro Dağılımı</h4>
 
                                 <div className="flex items-baseline gap-2 mb-6">
@@ -260,22 +260,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                             </div>
                         )}
 
-                        {showPlanData && (
-                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className="mt-2">
-                                <button
-                                    onClick={handleSavePlan}
-                                    disabled={isSaved}
-                                    className={`w-full py-4 rounded-3xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2.5 ${
-                                        isSaved
-                                            ? "bg-cyan-50 text-cyan-600 border border-cyan-200 cursor-default"
-                                            : "bg-[#3E3AAF] hover:bg-[#4f46a8] text-white shadow-[0_4px_20px_rgba(62,58,175,0.3)] hover:shadow-[0_8px_30px_rgba(62,58,175,0.4)]"
-                                    }`}
-                                >
-                                    <Save className="w-4 h-4" /> {isSaved ? "✓ Kaydedildi" : "Planı Kaydet"}
-                                </button>
-                            </motion.div>
-                        )}
+
                     </motion.div>
                 )}
             </AnimatePresence>

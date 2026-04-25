@@ -58,7 +58,7 @@ export default function DietPreferencesForm({
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="w-full max-w-4xl mx-auto bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-soft hover:shadow-hover transition-all duration-300 flex flex-col gap-8 animate-fade-in-up font-sans"
+            className="w-full max-w-4xl mx-auto bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-8 sm:p-10 hover:shadow-hover transition-all duration-300 flex flex-col gap-8 animate-fade-in-up font-sans"
         >
             {/* --- BAŞLIK --- */}
             <div className="text-center border-b border-slate-100 pb-6">

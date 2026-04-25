@@ -30,7 +30,7 @@ export const MacroBar: React.FC<MacroBarProps> = ({ label, percent, grams, color
       </span>
 
       {/* 2. ÇUBUK ARKA PLANI */}
-      <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden">
+      <div className="flex-1 h-3.5 bg-slate-100 rounded-full overflow-hidden">
         <motion.div
           className="h-full rounded-full"
           style={{ background: color }}

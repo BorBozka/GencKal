@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const FacebookIcon = ({ className }: { className?: string }) => (
@@ -10,10 +12,25 @@ const TwitterIcon = ({ className }: { className?: string }) => (
 );
 
 export default function ContactPage() {
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 10) {
+                setIsScrolled(true);
+            } else {
+                setIsScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
         <div className="min-h-screen bg-white text-slate-800 font-sans flex flex-col">
             {/* Header */}
-            <header className="w-full flex justify-between items-center py-6 px-8 md:px-16">
+            <header className={`sticky top-0 z-50 w-full flex justify-between items-center px-8 md:px-16 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-4' : 'bg-transparent py-6'}`}>
                 <Link href="/" className="flex items-center gap-3 font-bold text-xl tracking-tight text-indigo-700">
                     <div className="flex items-center gap-1">
                         <div className="w-1.5 h-4 bg-indigo-700 rounded-full"></div>

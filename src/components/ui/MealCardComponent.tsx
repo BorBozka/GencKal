@@ -21,13 +21,13 @@ function TypewriterLine({ text, startTyping }: { text: string; startTyping: bool
 function MacroBadges({ protein, fat, carb }: { protein: number; fat: number; carb: number }) {
     return (
         <div className="flex items-center gap-1.5 mt-1.5">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-cyan-50 border border-cyan-100 text-cyan-700 text-[10px] font-semibold leading-none">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-medium leading-none">
                 P {protein}g
             </span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-amber-50 border border-amber-100 text-amber-700 text-[10px] font-semibold leading-none">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-medium leading-none">
                 Y {fat}g
             </span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-blue-50 border border-blue-100 text-blue-700 text-[10px] font-semibold leading-none">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-medium leading-none">
                 K {carb}g
             </span>
         </div>
@@ -50,7 +50,7 @@ export const MealCardComponent: React.FC<MealCardProps> = ({ meal, index, startT
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-white border border-slate-200/80 shadow-soft rounded-3xl p-6 hover:shadow-hover hover:border-slate-300 transition-all duration-300"
+            className="bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-6 hover:shadow-hover hover:border-indigo-200 transition-all duration-300"
         >
             {/* Öğün Başlığı + Toplam Kalori */}
             <div className="flex items-center justify-between mb-4">
@@ -68,7 +68,7 @@ export const MealCardComponent: React.FC<MealCardProps> = ({ meal, index, startT
             {/* Yiyecek Listesi */}
             <div className="flex flex-col divide-y divide-slate-100">
                 {meal.items.map((item, i) => (
-                    <div key={i} className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0">
+                    <div key={i} className="flex flex-col gap-1 py-4 px-2 hover:bg-slate-50 transition-colors duration-150 rounded-lg">
                         {/* Üst satır: İsim + Kalori */}
                         <div className="flex items-center justify-between">
                             <TypewriterLine text={item.fullText} startTyping={startTyping} />
