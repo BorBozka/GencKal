@@ -21,7 +21,7 @@ function TypewriterLine({ text, startTyping }: { text: string; startTyping: bool
 function MacroBadges({ protein, fat, carb }: { protein: number; fat: number; carb: number }) {
     return (
         <div className="flex items-center gap-1.5 mt-1.5">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] font-semibold leading-none">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-cyan-50 border border-cyan-100 text-cyan-700 text-[10px] font-semibold leading-none">
                 P {protein}g
             </span>
             <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-amber-50 border border-amber-100 text-amber-700 text-[10px] font-semibold leading-none">

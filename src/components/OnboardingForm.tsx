@@ -2,6 +2,7 @@
 
 // 1. Core / React Imports
 import React, { useState, useMemo, useCallback } from "react";
+import Link from 'next/link';
 
 // 2. Types & Interfaces
 import {
@@ -123,11 +124,11 @@ export default function OnboardingForm() {
                     <div className="hidden sm:flex items-center gap-6">
                         <button
                             onClick={() => setStep(1)}
-                            className="bg-emerald-500 hover:bg-emerald-400 text-white px-5 py-2 rounded-full font-bold transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] text-sm tracking-wide flex items-center gap-2"
+                            className="bg-cyan-500 hover:bg-cyan-400 text-white px-5 py-2 rounded-full font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] text-sm tracking-wide flex items-center gap-2"
                         >
                             <span>&larr;</span> Ana Sayfa
                         </button>
-                        <a href="#" className="hover:text-indigo-200 transition-colors text-sm">İletişim</a>
+                        <Link href="/iletisim" className="hover:text-indigo-200 transition-colors text-sm">İletişim</Link>
                     </div>
                 </header>
                 <div className="flex-1 flex py-10 px-4 sm:px-8 max-w-[1500px] mx-auto w-full">
@@ -159,11 +160,11 @@ export default function OnboardingForm() {
                     <div className="hidden sm:flex items-center gap-6">
                         <button
                             onClick={handleProceedToDiet}
-                            className="bg-emerald-500 hover:bg-emerald-400 text-white px-5 py-2 rounded-full font-bold transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] text-sm tracking-wide"
+                            className="bg-cyan-500 hover:bg-cyan-400 text-white px-5 py-2 rounded-full font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] text-sm tracking-wide"
                         >
                             Diyet Planı Oluştur
                         </button>
-                        <a href="#" className="hover:text-indigo-200 transition-colors text-sm">İletişim</a>
+                        <Link href="/iletisim" className="hover:text-indigo-200 transition-colors text-sm">İletişim</Link>
                     </div>
                 </header>
 
@@ -186,7 +187,7 @@ export default function OnboardingForm() {
                         )}
 
                         <div className="relative flex flex-col xl:flex-row justify-center items-center xl:items-stretch gap-6 mt-2 w-full mb-4 max-w-[1400px] mx-auto">
-                            <div className="relative flex flex-col md:flex-row w-full max-w-4xl justify-center items-center md:items-stretch">
+                            <div className="relative flex flex-col md:flex-row w-full max-w-4xl justify-center items-center md:items-center">
                                 <div className="z-20 w-full md:w-auto flex justify-center md:justify-end">
                                     <ResultsPanel
                                         calculatedBMI={calculatedBMI}
@@ -261,11 +262,11 @@ export default function OnboardingForm() {
                 <div className="hidden sm:flex items-center gap-6">
                     <button
                         onClick={() => setStep(1)}
-                        className="bg-emerald-500 hover:bg-emerald-400 text-white px-5 py-2 rounded-full font-bold transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] text-sm tracking-wide flex items-center gap-2"
+                        className="bg-cyan-500 hover:bg-cyan-400 text-white px-5 py-2 rounded-full font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] text-sm tracking-wide flex items-center gap-2"
                     >
                         <span>&larr;</span> Ana Sayfa
                     </button>
-                    <a href="#" className="hover:text-indigo-200 transition-colors text-sm">İletişim</a>
+                    <Link href="/iletisim" className="hover:text-indigo-200 transition-colors text-sm">İletişim</Link>
                 </div>
             </header>
 
@@ -309,8 +310,8 @@ export default function OnboardingForm() {
                     {/* Kilo Al Kartı */}
                     <div className="group bg-white rounded-3xl p-8 border border-slate-200/60 shadow-sm flex flex-col items-center text-center hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer animate-fade-in-up"
                         style={{ animationDelay: "0.2s" }}>
-                        <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-emerald-200 transition-colors">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-600">
+                        <div className="w-14 h-14 bg-cyan-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-cyan-200 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-600">
                                 <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                                 <polyline points="16 7 22 7 22 13"></polyline>
                             </svg>

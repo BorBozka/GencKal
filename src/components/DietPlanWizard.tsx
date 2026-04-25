@@ -138,8 +138,8 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                             {formData && (
                                 <div className="flex flex-col gap-4">
                                     <div className="flex items-center gap-3 text-sm">
-                                        <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
-                                            <Utensils className="w-4 h-4 text-emerald-500" />
+                                        <div className="w-8 h-8 bg-cyan-50 rounded-lg flex items-center justify-center">
+                                            <Utensils className="w-4 h-4 text-cyan-500" />
                                         </div>
                                         <span className="text-slate-600 flex-1">Öğün Sayısı</span>
                                         <span className="text-slate-900 font-bold">{formData.mealsPerDay}</span>
@@ -168,7 +168,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                                     <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Makro Hedef</p>
                                     <div className="flex justify-between text-xs">
                                         <span className="text-slate-600">Protein</span>
-                                        <span className="text-emerald-600 font-bold">{proteinPct}%</span>
+                                        <span className="text-cyan-600 font-bold">{proteinPct}%</span>
                                     </div>
                                     <div className="flex justify-between text-xs">
                                         <span className="text-slate-600">Yağ</span>
@@ -229,14 +229,14 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                                 </div>
 
                                 <div className="flex flex-col gap-4">
-                                    <MacroBar label="Protein" percent={proteinPct} grams={macros.protein} color="linear-gradient(90deg, #10b981, #34d399)" delay={0} animate={true} />
+                                    <MacroBar label="Protein" percent={proteinPct} grams={macros.protein} color="linear-gradient(90deg, #06b6d4, #67e8f9)" delay={0} animate={true} />
                                     <MacroBar label="Yağ" percent={fatPct} grams={macros.fat} color="linear-gradient(90deg, #f59e0b, #fbbf24)" delay={200} animate={true} />
                                     <MacroBar label="Karb" percent={carbPct} grams={macros.carb} color="linear-gradient(90deg, #3b82f6, #60a5fa)" delay={400} animate={true} />
                                 </div>
 
                                 <div className="flex gap-4 mt-6 pt-4 border-t border-slate-100">
                                     <div className="flex-1 text-center">
-                                        <p className="text-emerald-600 font-bold text-base">{macros.protein}g</p>
+                                        <p className="text-cyan-600 font-bold text-base">{macros.protein}g</p>
                                         <p className="text-slate-500 text-[10px] mt-1">Protein</p>
                                     </div>
                                     <div className="flex-1 text-center">
@@ -268,7 +268,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                                     disabled={isSaved}
                                     className={`w-full py-4 rounded-3xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2.5 ${
                                         isSaved
-                                            ? "bg-emerald-50 text-emerald-600 border border-emerald-200 cursor-default"
+                                            ? "bg-cyan-50 text-cyan-600 border border-cyan-200 cursor-default"
                                             : "bg-[#3E3AAF] hover:bg-[#4f46a8] text-white shadow-[0_4px_20px_rgba(62,58,175,0.3)] hover:shadow-[0_8px_30px_rgba(62,58,175,0.4)]"
                                     }`}
                                 >

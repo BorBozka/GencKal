@@ -18,16 +18,16 @@ export default function TargetSimulator({ currentWeight, leanMass, currentBodyFa
     const minWeight = Math.ceil(leanMass);
 
     return (
-        <div className="w-full max-w-[320px] xl:max-w-[350px] bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 shadow-2xl flex flex-col shrink-0 animate-fade-in-right">
+        <div className="w-full max-w-[320px] xl:max-w-[350px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.85)] p-8 flex flex-col shrink-0 animate-fade-in-right">
 
             {/* Net ve Temiz Başlık */}
-            <h3 className="text-xl font-bold text-white mb-8">Hedef Simülatörü</h3>
+            <h3 className="text-xl font-bold text-white text-center mb-4">Hedef Simülatörü</h3>
 
             {/* Sadece Veri Odaklı Slider Alanı */}
-            <div className="space-y-4 mb-8">
-                <div className="flex justify-between items-end text-white font-medium text-sm">
-                    <span>Hedef Kilo</span>
-                    <span className="text-2xl text-emerald-400 font-bold">{targetWeight} kg</span>
+            <div className="space-y-6 my-auto py-4">
+                <div className="flex flex-col items-center justify-center text-white font-medium gap-1">
+                    <span className="text-indigo-200/80 text-sm">Hedef Kilo</span>
+                    <span className="text-4xl text-cyan-400 font-black tracking-tight">{targetWeight} <span className="text-xl text-cyan-400/80 font-bold">kg</span></span>
                 </div>
 
                 <input
@@ -36,10 +36,10 @@ export default function TargetSimulator({ currentWeight, leanMass, currentBodyFa
                     max={currentWeight}
                     value={targetWeight}
                     onChange={(e) => setTargetWeight(Number(e.target.value))}
-                    className="w-full h-2 bg-indigo-900/50 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+                    className="w-full h-2.5 bg-indigo-900/60 rounded-lg appearance-none cursor-pointer accent-cyan-400"
                 />
 
-                <div className="flex justify-between text-[11px] text-indigo-300">
+                <div className="flex justify-between text-[11px] text-indigo-300/80 font-medium px-1">
                     <span>Min: {minWeight} kg</span>
                     <span>Mevcut: {currentWeight} kg</span>
                 </div>

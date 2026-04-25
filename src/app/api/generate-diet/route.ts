@@ -147,10 +147,10 @@ KRİTİK KURALLAR:
             }
         });
 
-        // 30 saniyelik timeout koruması
+        // 120 saniyelik timeout koruması
         const generatePromise = model.generateContent(userPrompt);
         const timeoutPromise = new Promise<never>((_, reject) => 
-            setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. (30s)")), 30000)
+            setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. Lütfen tekrar deneyin.")), 120000)
         );
         
         const result = await Promise.race([generatePromise, timeoutPromise]);

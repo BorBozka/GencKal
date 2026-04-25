@@ -19,29 +19,30 @@ export default function ResultsPanel({ calculatedBMI, leanMass, bodyFat, kilo, f
     const fatMass = (kilo * bodyFat) / 100;
 
     return (
-        <div className="w-full md:w-[320px] bg-[#222144] text-white rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.85)] p-8 py-10 z-30 relative transition-transform mb-8 md:mb-0 h-auto md:h-[440px] flex flex-col font-sans">
+        <div className="w-full md:w-[320px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.85)] p-8 py-10 z-30 relative transition-transform mb-8 md:mb-0 h-auto md:min-h-[440px] flex flex-col font-sans">
 
             {/* Dairesel İlerleme Çubuğu SVG */}
-            <div className="relative w-40 h-40 mx-auto mt-2 mb-auto">
+            <div className="relative w-48 h-48 mx-auto mt-2 mb-6">
                 <svg className="w-full h-full" viewBox="0 0 100 100">
                     <defs>
                         <linearGradient id="gaugeGradient" x1="0%" y1="100%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#00E676" />
-                            <stop offset="100%" stopColor="#06b6d4" />
+                            <stop offset="0%" stopColor="#c084fc" />
+                            <stop offset="50%" stopColor="#818cf8" />
+                            <stop offset="100%" stopColor="#22d3ee" />
                         </linearGradient>
                     </defs>
                     <path
                         d="M 21.7 78.3 A 40 40 0 1 1 78.3 78.3"
                         fill="transparent"
-                        stroke="#2f2e5a"
-                        strokeWidth="12"
+                        stroke="rgba(99, 102, 241, 0.2)"
+                        strokeWidth="10"
                         strokeLinecap="round"
                     />
                     <path
                         d="M 21.7 78.3 A 40 40 0 1 1 78.3 78.3"
                         fill="transparent"
                         stroke="url(#gaugeGradient)"
-                        strokeWidth="12"
+                        strokeWidth="10"
                         strokeLinecap="round"
                         strokeDasharray={arcLength}
                         strokeDashoffset={dashOffset}
@@ -59,35 +60,35 @@ export default function ResultsPanel({ calculatedBMI, leanMass, bodyFat, kilo, f
             </div>
 
             {/* Alt Metrikler */}
-            <div className="space-y-4 px-1 pb-1 mt-auto">
+            <div className="flex flex-col gap-4 px-1 pb-1 mt-auto">
                 <div className="flex justify-between items-center text-[13.5px]">
-                    <span className="text-[#656b85] font-normal tracking-wide">Beden Kitle İndeksi</span>
-                    <span className="text-[#656b85] font-medium">{calculatedBMI > 0 ? calculatedBMI.toFixed(2) : '--'}</span>
+                    <span className="text-indigo-200/70 font-normal tracking-wide">Beden Kitle İndeksi</span>
+                    <span className="text-white font-medium">{calculatedBMI > 0 ? calculatedBMI.toFixed(2) : '--'}</span>
                 </div>
                 <div className="flex justify-between items-center text-[13.5px]">
-                    <span className="text-[#656b85] font-normal tracking-wide">BMI Durumu</span>
-                    <span className="text-[#656b85] font-medium">{calculatedBMI > 0 ? bmiLabel : '--'}</span>
+                    <span className="text-indigo-200/70 font-normal tracking-wide">BMI Durumu</span>
+                    <span className="text-white font-medium">{calculatedBMI > 0 ? bmiLabel : '--'}</span>
                 </div>
                 <div className="flex justify-between items-center text-[13.5px]">
-                    <span className="text-[#656b85] font-normal tracking-wide">Yağsız Vücut Kütlesi</span>
-                    <span className="text-[#656b85] font-medium">{leanMass > 0 ? leanMass.toFixed(2) : '--'} kg</span>
+                    <span className="text-indigo-200/70 font-normal tracking-wide">Yağsız Vücut Kütlesi</span>
+                    <span className="text-white font-medium">{leanMass > 0 ? leanMass.toFixed(2) : '--'} kg</span>
                 </div>
                 <div className="flex justify-between items-center text-[13.5px]">
-                    <span className="text-[#656b85] font-normal tracking-wide">Vücut Yağ Kütlesi</span>
-                    <span className="text-[#656b85] font-medium">{bodyFat > 0 ? fatMass.toFixed(2) : '--'} kg</span>
+                    <span className="text-indigo-200/70 font-normal tracking-wide">Vücut Yağ Kütlesi</span>
+                    <span className="text-white font-medium">{bodyFat > 0 ? fatMass.toFixed(2) : '--'} kg</span>
                 </div>
 
                 {ffmi !== undefined && (
                     <div className="flex justify-between items-center text-[13.5px]">
-                        <span className="text-[#656b85] font-normal tracking-wide">FFMI Skoru</span>
+                        <span className="text-indigo-200/70 font-normal tracking-wide">FFMI Skoru</span>
                         <span className="text-white font-medium">{ffmi.toFixed(2)}</span>
                     </div>
                 )}
 
                 {normalizedFfmi !== undefined && (
                     <div className="flex justify-between items-center text-[13.5px]">
-                        <span className="text-[#656b85] font-normal tracking-wide">Normalize FFMI</span>
-                        <span className="text-emerald-400 font-bold">{normalizedFfmi.toFixed(2)}</span>
+                        <span className="text-cyan-400 font-normal tracking-wide">Normalize FFMI</span>
+                        <span className="text-cyan-400 font-bold">{normalizedFfmi.toFixed(2)}</span>
                     </div>
                 )}
             </div>

@@ -4,12 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Sparkles } from "lucide-react";
 
 export const SkeletonLoading: React.FC = () => {
-    const [elapsed, setElapsed] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => setElapsed(prev => prev + 1), 1000);
-        return () => clearInterval(interval);
-    }, []);
+    const [msgIndex, setMsgIndex] = useState(0);
+    const [progress, setProgress] = useState(0);
 
     const statusMessages = [
         "Yapay Zeka analiz ediyor...",
@@ -18,10 +14,28 @@ export const SkeletonLoading: React.FC = () => {
         "Makro dengesi ayarlanıyor...",
         "Son dokunuşlar yapılıyor...",
     ];
-    const currentMsg = statusMessages[Math.min(Math.floor(elapsed / 3), statusMessages.length - 1)];
 
-    // Tahmini ilerleme (15 saniye ortalama süre)
-    const progress = Math.min(95, (elapsed / 15) * 100);
+    useEffect(() => {
+        // Durum mesajlarını 4 saniyede bir değiştir
+        const msgInterval = setInterval(() => {
+            setMsgIndex(prev => Math.min(prev + 1, statusMessages.length - 1));
+        }, 4000);
+
+        // İlerleme çubuğunu yavaşça ilerlet (maks %90)
+        const progressInterval = setInterval(() => {
+            setProgress(prev => {
+                if (prev >= 90) return 90;
+                // Başta hızlı, sonra yavaşlayan ilerleme
+                const increment = Math.max(0.3, (90 - prev) * 0.03);
+                return Math.min(90, prev + increment);
+            });
+        }, 500);
+
+        return () => {
+            clearInterval(msgInterval);
+            clearInterval(progressInterval);
+        };
+    }, []);
 
     return (
         <div className="flex flex-col gap-5 w-full animate-pulse">
@@ -31,8 +45,7 @@ export const SkeletonLoading: React.FC = () => {
                         <Sparkles className="text-[#3E3AAF] w-4 h-4 animate-spin" style={{ animationDuration: "3s" }} />
                     </div>
                     <div className="flex-1">
-                        <span className="text-slate-700 text-sm font-bold block">{currentMsg}</span>
-                        <span className="text-slate-400 text-xs">{elapsed}s geçti</span>
+                        <span className="text-slate-700 text-sm font-bold block">{statusMessages[msgIndex]}</span>
                     </div>
                 </div>
                 {/* İlerleme Çubuğu */}
