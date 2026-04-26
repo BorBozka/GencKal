@@ -37,7 +37,7 @@ export default function ContactPage() {
                         <div className="w-1.5 h-6 bg-indigo-700 rounded-full"></div>
                         <div className="w-1.5 h-4 bg-indigo-700 rounded-full"></div>
                     </div>
-                    genckalcalculator
+                    genckalculator
                 </Link>
                 <nav className="flex items-center gap-8 text-[13px] font-medium text-slate-500">
                     <Link href="/" className="hover:text-indigo-600 transition-colors">Ana Sayfa</Link>
@@ -51,7 +51,7 @@ export default function ContactPage() {
                     <h1 className="text-4xl font-medium text-slate-800 tracking-tight">İletişim</h1>
                     
                     <p className="text-slate-600 text-[15px]">
-                        Bizimle <span className="font-bold text-slate-800">e-posta</span> yoluyla iletişime geçebilirsiniz - <a href="mailto:info@genckalcalculator.com" className="text-indigo-600 hover:underline font-medium">info@genckalcalculator.com</a>
+                        Bizimle <span className="font-bold text-slate-800">e-posta</span> yoluyla iletişime geçebilirsiniz - <a href="mailto:info@genckalculator.com" className="text-indigo-600 hover:underline font-medium">info@genckalculator.com</a>
                     </p>
                     
                     <p className="text-slate-600 text-[15px]">

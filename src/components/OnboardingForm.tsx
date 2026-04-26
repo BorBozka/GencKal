@@ -134,12 +134,12 @@ export default function OnboardingForm() {
                                 <div className={`w-1 h-5 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
                                 <div className={`w-1 h-3 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
                             </div>
-                            <span className="text-[18px]">genckalcalculator</span>
+                            <span className="text-[18px]">genckalculator</span>
                         </div>
                         <div className="hidden sm:flex items-center gap-6">
                             <button
                                 onClick={() => setStep(1)}
-                                className={`transition-colors text-sm font-bold flex items-center gap-1 ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
+                                className={`transition-colors text-sm font-bold flex items-center gap-1 cursor-pointer ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
                             >
                                 <span>&larr;</span> Ana Sayfa
                             </button>
@@ -172,17 +172,17 @@ export default function OnboardingForm() {
                                 <div className={`w-1 h-5 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
                                 <div className={`w-1 h-3 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
                             </div>
-                            <span className="text-[18px]">genckalcalculator</span>
+                            <span className="text-[18px]">genckalculator</span>
                         </div>
                         <div className="hidden sm:flex items-center gap-8">
                             <button
                                 onClick={handleProceedToDiet}
-                                className={`transition-colors text-[13px] font-medium ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white/90 hover:text-white'}`}
+                                className={`transition-colors text-[13px] font-medium cursor-pointer ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white/90 hover:text-white'}`}
                             >
                                 Diyet
                             </button>
-                            <Link 
-                                href="/iletisim" 
+                            <Link
+                                href="/iletisim"
                                 className={`transition-colors text-[13px] font-medium ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white/90 hover:text-white'}`}
                             >
                                 İletişim
@@ -281,12 +281,12 @@ export default function OnboardingForm() {
                             <div className={`w-1 h-5 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
                             <div className={`w-1 h-3 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
                         </div>
-                        <span className="text-[18px]">genckalcalculator</span>
+                        <span className="text-[18px]">genckalculator</span>
                     </div>
                     <div className="hidden sm:flex items-center gap-6">
                         <button
                             onClick={() => setStep(1)}
-                            className={`transition-colors text-sm font-bold flex items-center gap-1 ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
+                            className={`transition-colors text-sm font-bold flex items-center gap-1 cursor-pointer ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
                         >
                             <span>&larr;</span> Ana Sayfa
                         </button>
