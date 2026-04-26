@@ -161,6 +161,7 @@ export default function DietPreferencesForm({
                 <input
                     type="text"
                     {...register("allergies")}
+                    autoComplete="off"
                     placeholder="Örn: Yumurta, Fıstık, Gluten..."
                     className="w-full h-12 bg-slate-50/80 border border-slate-200/60 rounded-2xl px-5 text-slate-800 text-sm font-medium placeholder:text-slate-300 focus:bg-white focus:border-[#3E3AAF]/50 focus:ring-2 focus:ring-[#3E3AAF]/10 outline-none transition-all duration-300"
                 />

@@ -126,23 +126,25 @@ export default function OnboardingForm() {
     if (step === 3 && selectedPlan) {
         return (
             <div className="min-h-screen w-full bg-gradient-to-br from-white to-slate-50 flex flex-col font-sans text-slate-900 overflow-x-hidden">
-                <header className={`sticky top-0 z-50 flex-none flex justify-between items-center py-3 px-6 md:px-12 font-medium text-[15px] transition-all duration-300 ${isScrolled ? 'bg-white text-slate-800 shadow-md border-b border-slate-200' : 'bg-[#3E3AAF]/95 backdrop-blur-md text-white border-b border-white/10 shadow-sm'}`}>
-                    <div className={`flex items-center gap-3 font-bold text-xl tracking-tight ${isScrolled ? 'text-indigo-700' : ''}`}>
-                        <div className="flex items-center gap-1">
-                            <div className={`w-1.5 h-4 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
-                            <div className={`w-1.5 h-6 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
-                            <div className={`w-1.5 h-4 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                <header className={`sticky top-0 z-50 flex-none py-4 px-6 md:px-12 font-medium transition-all duration-300 ${isScrolled ? 'bg-white text-slate-800 shadow-md border-b border-slate-200' : 'bg-[#3E3AAF]/95 backdrop-blur-md text-white border-b border-white/10 shadow-sm'}`}>
+                    <div className="max-w-[1400px] mx-auto w-full flex justify-between items-center">
+                        <div className={`flex items-center gap-2 font-bold text-xl tracking-tight ${isScrolled ? 'text-indigo-700' : ''}`}>
+                            <div className="flex items-center gap-0.5">
+                                <div className={`w-1 h-3 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                                <div className={`w-1 h-5 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                                <div className={`w-1 h-3 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                            </div>
+                            <span className="text-[18px]">genckalcalculator</span>
                         </div>
-                        genckalcalculator
-                    </div>
-                    <div className="hidden sm:flex items-center gap-6">
-                        <button
-                            onClick={() => setStep(1)}
-                            className={`transition-colors text-sm font-bold flex items-center gap-1 ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
-                        >
-                            <span>&larr;</span> Ana Sayfa
-                        </button>
-                        <Link href="/iletisim" className={`transition-colors text-sm ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}>İletişim</Link>
+                        <div className="hidden sm:flex items-center gap-6">
+                            <button
+                                onClick={() => setStep(1)}
+                                className={`transition-colors text-sm font-bold flex items-center gap-1 ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
+                            >
+                                <span>&larr;</span> Ana Sayfa
+                            </button>
+                            <Link href="/iletisim" className={`transition-colors text-sm ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}>İletişim</Link>
+                        </div>
                     </div>
                 </header>
                 <div className="flex-1 flex py-10 px-4 sm:px-8 max-w-[1500px] mx-auto w-full">
@@ -162,28 +164,35 @@ export default function OnboardingForm() {
             <div className="animate-fade-in flex flex-col w-full">
 
                 {/* --- STEP 1 Header (Sticky ve Solid Renk) --- */}
-                <header className={`sticky top-0 z-50 w-full flex justify-between items-center py-3 px-6 md:px-12 font-medium text-[15px] transition-all duration-300 ${isScrolled ? 'bg-white text-slate-800 shadow-md border-b border-slate-200' : 'bg-[#3E3AAF] text-white border-b border-white/10 shadow-sm'}`}>
-                    <div className={`flex items-center gap-3 font-bold text-xl tracking-tight ${isScrolled ? 'text-indigo-700' : ''}`}>
-                        <div className="flex items-center gap-1">
-                            <div className={`w-1.5 h-4 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
-                            <div className={`w-1.5 h-6 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
-                            <div className={`w-1.5 h-4 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                <header className={`sticky top-0 z-50 w-full py-4 px-6 md:px-12 font-medium transition-all duration-300 ${isScrolled ? 'bg-white text-slate-800 shadow-md border-b border-slate-200' : 'bg-[#3E3AAF] text-white border-b border-white/10 shadow-sm'}`}>
+                    <div className="max-w-[1400px] mx-auto w-full flex justify-between items-center">
+                        <div className={`flex items-center gap-2 font-bold text-xl tracking-tight ${isScrolled ? 'text-indigo-700' : ''}`}>
+                            <div className="flex items-center gap-0.5">
+                                <div className={`w-1 h-3 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                                <div className={`w-1 h-5 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                                <div className={`w-1 h-3 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                            </div>
+                            <span className="text-[18px]">genckalcalculator</span>
                         </div>
-                        genckalcalculator
-                    </div>
-                    <div className="hidden sm:flex items-center gap-6">
-                        <button
-                            onClick={handleProceedToDiet}
-                            className={`transition-colors text-sm font-bold ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
-                        >
-                            Diyet
-                        </button>
-                        <Link href="/iletisim" className={`transition-colors text-sm ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}>İletişim</Link>
+                        <div className="hidden sm:flex items-center gap-8">
+                            <button
+                                onClick={handleProceedToDiet}
+                                className={`transition-colors text-[13px] font-medium ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white/90 hover:text-white'}`}
+                            >
+                                Diyet
+                            </button>
+                            <Link 
+                                href="/iletisim" 
+                                className={`transition-colors text-[13px] font-medium ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white/90 hover:text-white'}`}
+                            >
+                                İletişim
+                            </Link>
+                        </div>
                     </div>
                 </header>
 
                 {/* --- ÜST BÖLÜM (Dashboard) --- */}
-                <section className="bg-[#3E3AAF] text-white relative pb-6">
+                <section className="bg-[#3E3AAF] text-white relative pb-0">
                     <div className="w-full mx-auto z-10 flex flex-col items-center mt-2 md:mt-4 px-4">
                         <div className="text-center mb-4">
                             <h1 className="text-[32px] sm:text-[38px] font-normal tracking-wide text-white drop-shadow-sm mb-1 font-sans">
@@ -233,7 +242,7 @@ export default function OnboardingForm() {
                     </div>
 
                     {/* Referans Skalası */}
-                    <div className="w-full relative z-20 mt-2 pb-16 px-4">
+                    <div className="w-full relative z-20 -mt-4 pb-14 px-4">
                         <ReferenceScale
                             score={calculatedFFMI > 0 ? calculatedFFMI : calculatedBMI}
                             type={calculatedFFMI > 0 ? "FFMI" : "BMI"}
@@ -243,7 +252,7 @@ export default function OnboardingForm() {
                 </section>
 
                 {/* --- ALT BÖLÜM (Beyaz Eğitim Alanı) --- */}
-                <div className="relative z-30 w-full bg-white pt-8 -mt-7 shadow-[0_-20px_50px_rgba(0,0,0,0.2)]">
+                <div id="about-section" className="relative z-30 w-full bg-white pt-8 -mt-7 shadow-[0_-20px_50px_rgba(0,0,0,0.2)]">
                     <EducationalSection />
                 </div>
 
@@ -264,23 +273,25 @@ export default function OnboardingForm() {
         <div className="min-h-screen w-full bg-slate-50 flex flex-col font-sans text-slate-900 overflow-x-hidden">
 
             {/* --- STEP 2 HEADER --- */}
-            <header className={`sticky top-0 z-50 flex-none flex justify-between items-center py-3 px-6 md:px-12 font-medium text-[15px] transition-all duration-300 ${isScrolled ? 'bg-white text-slate-800 shadow-md border-b border-slate-200' : 'bg-[#3E3AAF]/95 backdrop-blur-md text-white border-b border-white/10 shadow-sm'}`}>
-                <div className={`flex items-center gap-3 font-bold text-xl tracking-tight ${isScrolled ? 'text-indigo-700' : ''}`}>
-                    <div className="flex items-center gap-1">
-                        <div className={`w-1.5 h-4 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
-                        <div className={`w-1.5 h-6 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
-                        <div className={`w-1.5 h-4 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+            <header className={`sticky top-0 z-50 flex-none py-4 px-6 md:px-12 font-medium transition-all duration-300 ${isScrolled ? 'bg-white text-slate-800 shadow-md border-b border-slate-200' : 'bg-[#3E3AAF]/95 backdrop-blur-md text-white border-b border-white/10 shadow-sm'}`}>
+                <div className="max-w-[1400px] mx-auto w-full flex justify-between items-center">
+                    <div className={`flex items-center gap-2 font-bold text-xl tracking-tight ${isScrolled ? 'text-indigo-700' : ''}`}>
+                        <div className="flex items-center gap-0.5">
+                            <div className={`w-1 h-3 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                            <div className={`w-1 h-5 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                            <div className={`w-1 h-3 rounded-full ${isScrolled ? 'bg-indigo-700' : 'bg-white'}`}></div>
+                        </div>
+                        <span className="text-[18px]">genckalcalculator</span>
                     </div>
-                    genckalcalculator
-                </div>
-                <div className="hidden sm:flex items-center gap-6">
-                    <button
-                        onClick={() => setStep(1)}
-                        className={`transition-colors text-sm font-bold flex items-center gap-1 ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
-                    >
-                        <span>&larr;</span> Ana Sayfa
-                    </button>
-                    <Link href="/iletisim" className={`transition-colors text-sm ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}>İletişim</Link>
+                    <div className="hidden sm:flex items-center gap-6">
+                        <button
+                            onClick={() => setStep(1)}
+                            className={`transition-colors text-sm font-bold flex items-center gap-1 ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}
+                        >
+                            <span>&larr;</span> Ana Sayfa
+                        </button>
+                        <Link href="/iletisim" className={`transition-colors text-sm ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white hover:text-indigo-200'}`}>İletişim</Link>
+                    </div>
                 </div>
             </header>
 
