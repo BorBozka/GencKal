@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Utensils } from "lucide-react";
 import { useTypewriter } from "../../hooks/useTypewriter";
-import { MealCard } from "../../types";
+import { MealCard, MealItem } from "../../types";
 
 // --- DAKTİLO YAZI SATIRI BİLEŞENİ ---
 function TypewriterLine({ text, startTyping }: { text: string; startTyping: boolean }) {
@@ -34,14 +34,135 @@ function MacroBadges({ protein, fat, carb }: { protein: number; fat: number; car
     );
 }
 
+// --- YENİLEME (SWAP) SVG İKONU ---
+function RefreshIcon({ className }: { className?: string }) {
+    return (
+        <svg
+            className={className}
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M21 2v6h-6" />
+            <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+            <path d="M3 22v-6h6" />
+            <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+        </svg>
+    );
+}
+
+// --- SPINNER BİLEŞENİ ---
+function Spinner() {
+    return (
+        <svg
+            className="animate-spin w-4 h-4 text-indigo-500"
+            viewBox="0 0 24 24"
+            fill="none"
+        >
+            <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="3"
+            />
+            <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            />
+        </svg>
+    );
+}
+
+
+// --- İZOLE BESİN SATIRI BİLEŞENİ ---
+interface FoodItemRowProps {
+    item: MealItem;
+    mealId: string;
+    startTyping: boolean;
+    onSwapFood?: (mealId: string, foodId: string) => Promise<void>;
+}
+
+function FoodItemRow({ item, mealId, startTyping, onSwapFood }: FoodItemRowProps) {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSwap = useCallback(async () => {
+        if (isLoading || !onSwapFood) return;
+        setIsLoading(true);
+        try {
+            await onSwapFood(mealId, item.id);
+        } catch (error) {
+            console.error("Besin değişimi sırasında hata oluştu:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [isLoading, onSwapFood, mealId, item.id]);
+
+    return (
+        <div className="flex flex-col gap-1 py-4 px-2 hover:bg-slate-50 transition-colors duration-150 rounded-lg group">
+            {/* Üst satır: İsim + Kalori + Swap Butonu */}
+            <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                    {isLoading ? (
+                        <div className="h-4 w-3/4 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-md animate-pulse" />
+                    ) : (
+                        <TypewriterLine text={item.fullText} startTyping={startTyping} />
+                    )}
+                </div>
+                <div className="flex items-center gap-1.5 ml-3 shrink-0">
+                    {isLoading ? (
+                        <div className="h-3.5 w-10 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-md animate-pulse" />
+                    ) : (
+                        <span className="text-slate-600 text-xs font-semibold tabular-nums">
+                            {item.cal} <span className="text-[9px] text-slate-300 font-normal">kcal</span>
+                        </span>
+                    )}
+                    <button
+                        type="button"
+                        onClick={handleSwap}
+                        disabled={isLoading}
+                        title="Bu besini yenile"
+                        className="text-slate-400 hover:text-indigo-600 transition-colors duration-200 p-1 rounded-md hover:bg-indigo-50 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isLoading ? <Spinner /> : <RefreshIcon className="w-4 h-4" />}
+                    </button>
+                </div>
+            </div>
+            {/* Alt satır: Makro Rozetleri */}
+            {item.macros && !isLoading && (
+                <MacroBadges
+                    protein={item.macros.protein}
+                    fat={item.macros.fat}
+                    carb={item.macros.carb}
+                />
+            )}
+            {item.macros && isLoading && (
+                <div className="flex items-center gap-1.5 mt-1.5">
+                    <div className="h-4 w-12 bg-gradient-to-r from-emerald-100 via-emerald-50 to-emerald-100 rounded-lg animate-pulse" />
+                    <div className="h-4 w-10 bg-gradient-to-r from-amber-100 via-amber-50 to-amber-100 rounded-lg animate-pulse" />
+                    <div className="h-4 w-10 bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 rounded-lg animate-pulse" />
+                </div>
+            )}
+        </div>
+    );
+}
+
 // --- ANA KART BİLEŞENİ PROPLARI ---
 interface MealCardProps {
     meal: MealCard;
     index: number;
     startTyping: boolean;
+    onSwapFood?: (mealId: string, foodId: string) => Promise<void>;
 }
 
-export const MealCardComponent: React.FC<MealCardProps> = ({ meal, index, startTyping }) => {
+export const MealCardComponent: React.FC<MealCardProps> = ({ meal, index, startTyping, onSwapFood }) => {
     // Öğün toplam kalorisi
     const mealTotalCal = meal.items.reduce((sum, item) => sum + item.cal, 0);
 
@@ -67,24 +188,14 @@ export const MealCardComponent: React.FC<MealCardProps> = ({ meal, index, startT
 
             {/* Yiyecek Listesi */}
             <div className="flex flex-col divide-y divide-slate-100">
-                {meal.items.map((item, i) => (
-                    <div key={i} className="flex flex-col gap-1 py-4 px-2 hover:bg-slate-50 transition-colors duration-150 rounded-lg">
-                        {/* Üst satır: İsim + Kalori */}
-                        <div className="flex items-center justify-between">
-                            <TypewriterLine text={item.fullText} startTyping={startTyping} />
-                            <span className="text-slate-600 text-xs font-semibold ml-3 shrink-0 tabular-nums">
-                                {item.cal} <span className="text-[9px] text-slate-300 font-normal">kcal</span>
-                            </span>
-                        </div>
-                        {/* Alt satır: Makro Rozetleri */}
-                        {item.macros && (
-                            <MacroBadges
-                                protein={item.macros.protein}
-                                fat={item.macros.fat}
-                                carb={item.macros.carb}
-                            />
-                        )}
-                    </div>
+                {meal.items.map((item) => (
+                    <FoodItemRow
+                        key={item.id}
+                        item={item}
+                        mealId={meal.id}
+                        startTyping={startTyping}
+                        onSwapFood={onSwapFood}
+                    />
                 ))}
             </div>
         </motion.div>

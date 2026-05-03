@@ -49,6 +49,7 @@ export interface FizikselVeriler {
 }
 
 export interface MealItem {
+    id: string;
     name: string;
     cal: number;
     fullText: string;
@@ -56,6 +57,7 @@ export interface MealItem {
 }
 
 export interface MealCard {
+    id: string;
     title: string;
     items: MealItem[];
 }

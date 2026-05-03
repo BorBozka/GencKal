@@ -10,7 +10,7 @@ import { MacroBar } from "./ui/MacroBar";
 import { SkeletonLoading } from "./ui/SkeletonLoading";
 import { MealCardComponent } from "./ui/MealCardComponent";
 import { useToast } from "./ui/Toast";
-import type { MealCard, MacroDistribution } from "../types";
+import type { MealCard, MealItem, MacroDistribution } from "../types";
 
 interface DietPlanWizardProps {
     targetCalories: number;
@@ -45,7 +45,20 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                 throw new Error(errorData?.error || `Sunucu hatası (${response.status})`);
             }
             const plan = await response.json();
-            setGeneratedPlan(plan);
+
+            // API'den gelen veriye runtime'da benzersiz id ata
+            const planWithIds = {
+                ...plan,
+                meals: plan.meals.map((meal: { title: string; items: { name: string; cal: number; fullText: string; macros?: { protein: number; fat: number; carb: number } }[] }, mealIdx: number) => ({
+                    ...meal,
+                    id: `meal-${mealIdx}-${Date.now()}`,
+                    items: meal.items.map((item: { name: string; cal: number; fullText: string; macros?: { protein: number; fat: number; carb: number } }, itemIdx: number) => ({
+                        ...item,
+                        id: `food-${mealIdx}-${itemIdx}-${Date.now()}`,
+                    })),
+                })),
+            };
+            setGeneratedPlan(planWithIds);
             setIsSaved(false);
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Beklenmeyen bir hata oluştu.";
@@ -82,6 +95,66 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
             toast("error", "Kayıt başarısız", "Plan kaydedilirken bir hata oluştu.");
         }
     }, [generatedPlan, formData, selectedPlanName, targetCalories, toast]);
+
+    // --- Besin Değişimi (Swap) Handler ---
+    const handleSwapFood = useCallback(async (mealId: string, foodId: string) => {
+        if (!generatedPlan || !formData) return;
+
+        // Hedef öğün ve besini bul
+        const targetMeal = generatedPlan.meals.find((m) => m.id === mealId);
+        if (!targetMeal) return;
+        const targetFood = targetMeal.items.find((item) => item.id === foodId);
+        if (!targetFood) return;
+
+        // API'ye istek at
+        const response = await fetch("/api/swap-food", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                currentFood: {
+                    name: targetFood.name,
+                    cal: targetFood.cal,
+                    fullText: targetFood.fullText,
+                    macros: targetFood.macros ?? { protein: 0, fat: 0, carb: 0 },
+                },
+                mealTitle: targetMeal.title,
+                dietType: formData.dietType,
+                allergies: formData.allergies || undefined,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            const msg = errorData?.error || "Besin değişimi başarısız oldu.";
+            throw new Error(msg);
+        }
+
+        const newFood = await response.json();
+
+        // Yeni besine benzersiz id ata
+        const newFoodWithId: MealItem = {
+            ...newFood,
+            id: `food-swapped-${Date.now()}`,
+        };
+
+        // State'i immutable şekilde güncelle — sadece ilgili besini değiştir
+        setGeneratedPlan((prev) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                meals: prev.meals.map((meal) => {
+                    if (meal.id !== mealId) return meal;
+                    return {
+                        ...meal,
+                        items: meal.items.map((item) =>
+                            item.id === foodId ? newFoodWithId : item
+                        ),
+                    };
+                }),
+            };
+        });
+
+    }, [generatedPlan, formData]);
 
     const macros = generatedPlan?.macros ?? { protein: 0, fat: 0, carb: 0 };
     const showPlanData = !isLoading && !error && generatedPlan !== null;
@@ -255,7 +328,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                         {showPlanData && (
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                                 {generatedPlan.meals.map((meal, i) => (
-                                    <MealCardComponent key={i} meal={meal} index={i} startTyping={true} />
+                                    <MealCardComponent key={meal.id} meal={meal} index={i} startTyping={true} onSwapFood={handleSwapFood} />
                                 ))}
                             </div>
                         )}
