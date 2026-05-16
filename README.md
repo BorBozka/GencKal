@@ -1,19 +1,19 @@
-# GençKal Calculator & AI Diet Planner 🚀
+# GençKal Calculator & AI Diyet Planlayıcısı 
 
 GençKal, kullanıcıların Beden Kitle İndeksi (BMI), Yağsız Vücut Kütlesi ve Vücut Yağ Kütlesi gibi önemli sağlık metriklerini hesaplayan, ardından bu verileri kullanarak Yapay Zeka (AI) destekli kişiselleştirilmiş diyet ve takviye planları oluşturan modern bir SaaS platformudur.
 
-## 🌟 Özellikler
+## Özellikler
 * **Canlı Analiz Paneli:** Girilen fiziksel verilere göre anında BMI ve Yağsız Kütle hesaplaması.
 * **İnteraktif Skala:** Matematiksel olarak kusursuz hizalanmış referans değerleri.
 * **Modern UI/UX:** Zengin gradyanlar, asimetrik kart tasarımları ve cam efekti (glassmorphism) detayları.
 * **AI Entegrasyonu:** Kullanıcı verilerine özel diyet planı oluşturma.
 
-## 🛠️ Teknolojiler
+## Teknolojiler
 * Next.js / React
 * Tailwind CSS
 * TypeScript
 
-## 📅 Proje Görev Zaman Çizelgesi (Gantt Şeması)
+## Proje Görev Zaman Çizelgesi (Gantt Şeması)
 
 ```mermaid
 %%{init: {'theme': 'dark', 'gantt': {'sectionFontSize': 14, 'fontSize': 12}}}%%
