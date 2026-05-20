@@ -43,9 +43,9 @@ export default function ContactPage() {
                     </div>
                     GencKalculator
                 </Link>
-                <nav className="flex items-center gap-8 text-[13px] font-medium text-slate-500">
-                    <Link href="/" className="hover:text-indigo-600 transition-colors">Ana Sayfa</Link>
-                    <Link href="/iletisim" className="text-slate-900 font-bold">İletişim</Link>
+                <nav className="flex items-center gap-8 text-base font-normal leading-none text-slate-700">
+                    <Link href="/" className="transition-colors hover:text-indigo-600">Ana Sayfa</Link>
+                    <Link href="/iletisim" className="text-slate-900">İletişim</Link>
                 </nav>
             </header>
 

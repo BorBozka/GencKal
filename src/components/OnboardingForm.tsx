@@ -169,14 +169,14 @@ export default function OnboardingForm() {
                             </div>
                             <span className="text-[18px]">GencKalculator</span>
                         </div>
-                        <div className="hidden sm:flex items-center gap-6">
+                        <div className="hidden sm:flex items-center gap-8">
                             <button
                                 onClick={() => setStep(1)}
-                                className="transition-colors text-sm font-bold flex items-center gap-1 cursor-pointer text-white hover:text-indigo-200"
+                                className="flex cursor-pointer items-center gap-1 text-base font-normal leading-none text-white transition-colors hover:text-indigo-100"
                             >
                                 Ana Sayfa
                             </button>
-                            <Link href="/iletisim" className="transition-colors text-sm text-white hover:text-indigo-200">İletişim</Link>
+                            <Link href="/iletisim" className="text-base font-normal leading-none text-white transition-colors hover:text-indigo-100">İletişim</Link>
                         </div>
                     </div>
                 </header>
@@ -210,13 +210,13 @@ export default function OnboardingForm() {
                         <div className="hidden sm:flex items-center gap-8">
                             <button
                                 onClick={handleProceedToDiet}
-                                className={`transition-colors text-[13px] font-medium cursor-pointer ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white/90 hover:text-white'}`}
+                                className={`cursor-pointer text-base font-normal leading-none transition-colors ${isScrolled ? 'text-slate-700 hover:text-indigo-600' : 'text-white hover:text-indigo-100'}`}
                             >
                                 Diyet
                             </button>
                             <Link
                                 href="/iletisim"
-                                className={`transition-colors text-[13px] font-medium ${isScrolled ? 'text-slate-600 hover:text-indigo-600' : 'text-white/90 hover:text-white'}`}
+                                className={`text-base font-normal leading-none transition-colors ${isScrolled ? 'text-slate-700 hover:text-indigo-600' : 'text-white hover:text-indigo-100'}`}
                             >
                                 İletişim
                             </Link>
@@ -226,7 +226,7 @@ export default function OnboardingForm() {
 
                 {/* --- ÜST BÖLÜM (Dashboard) --- */}
                 <section className="bg-[#3E3AAF] text-white relative pb-0">
-                    <div className="w-full mx-auto z-10 flex flex-col items-center mt-2 md:mt-4 px-4">
+                    <div className="w-full mx-auto z-10 flex flex-col items-center mt-6 md:mt-10 px-4">
                         <div className="text-center mb-4">
                             <h1 className="text-[32px] sm:text-[38px] font-normal tracking-wide text-white drop-shadow-sm mb-1 font-sans">
                                 GencKalculator
@@ -242,35 +242,35 @@ export default function OnboardingForm() {
                             </div>
                         )}
 
-                        <div className="relative flex flex-col xl:flex-row justify-center items-center xl:items-start gap-6 mt-2 w-full mb-4 max-w-[1400px] mx-auto">
-                            <div className="relative flex flex-col md:flex-row w-full max-w-4xl justify-center items-center md:items-center">
-                                <div className="z-20 w-full md:w-auto flex justify-center md:justify-end">
-                                    <ResultsPanel
-                                        calculatedBMI={calculatedBMI}
-                                        leanMass={leanMass}
-                                        bodyFat={yagOrani || 0}
-                                        kilo={kilo}
-                                        ffmi={rawFFMI}
-                                        normalizedFfmi={calculatedFFMI}
-                                    />
-                                </div>
-                                <div className="z-10 w-full md:w-auto md:-ml-12 mt-6 md:mt-0 flex justify-center md:justify-start">
+                        <div className="relative flex flex-col md:flex-row justify-center items-center md:items-center gap-6 md:gap-0 mt-2 w-full mb-4 max-w-[1400px] mx-auto">
+                            <div className="z-20 w-full md:w-auto flex justify-center md:justify-end">
+                                <ResultsPanel
+                                    calculatedBMI={calculatedBMI}
+                                    leanMass={leanMass}
+                                    bodyFat={yagOrani || 0}
+                                    kilo={kilo}
+                                    ffmi={rawFFMI}
+                                    normalizedFfmi={calculatedFFMI}
+                                />
+                            </div>
+                            <div className="z-10 w-full md:w-auto md:-ml-12 mt-0 flex flex-col xl:flex-row items-center justify-center xl:justify-start gap-6">
+                                <div className="w-full md:w-auto flex justify-center md:justify-start">
                                     <InputPanel
                                         data={formData.fizikselVeriler}
                                         handleChange={handleFizikselChange}
                                         setField={setFizikselAlan}
                                     />
                                 </div>
+                                {kilo > 0 && yagOrani >= 0 && (
+                                    <div className="z-20 w-full xl:w-auto flex justify-center">
+                                        <TargetSimulator
+                                            key={kilo}
+                                            currentWeight={kilo}
+                                            leanMass={leanMass}
+                                        />
+                                    </div>
+                                )}
                             </div>
-                            {kilo > 0 && yagOrani >= 0 && (
-                                <div className="z-20 w-full xl:w-auto flex justify-center">
-                                    <TargetSimulator
-                                        key={kilo}
-                                        currentWeight={kilo}
-                                        leanMass={leanMass}
-                                    />
-                                </div>
-                            )}
                         </div>
                     </div>
 
@@ -315,14 +315,14 @@ export default function OnboardingForm() {
                         </div>
                         <span className="text-[18px]">GencKalculator</span>
                     </div>
-                    <div className="hidden sm:flex items-center gap-6">
+                    <div className="hidden sm:flex items-center gap-8">
                         <button
                             onClick={() => setStep(1)}
-                            className="transition-colors text-sm font-bold flex items-center gap-1 cursor-pointer text-white hover:text-indigo-200"
+                            className="flex cursor-pointer items-center gap-1 text-base font-normal leading-none text-white transition-colors hover:text-indigo-100"
                         >
                             Ana Sayfa
                         </button>
-                        <Link href="/iletisim" className="transition-colors text-sm text-white hover:text-indigo-200">İletişim</Link>
+                        <Link href="/iletisim" className="text-base font-normal leading-none text-white transition-colors hover:text-indigo-100">İletişim</Link>
                     </div>
                 </div>
             </header>

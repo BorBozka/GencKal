@@ -18,7 +18,7 @@ export default function ResultsPanel({ calculatedBMI, leanMass, bodyFat, kilo, f
     const fatMass = (kilo * bodyFat) / 100;
 
     return (
-        <div className="w-full md:w-[320px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.85)] p-8 py-10 z-30 relative transition-transform mb-8 md:mb-0 h-auto md:min-h-[440px] flex flex-col font-sans">
+        <div className="w-full md:w-[320px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.36)] p-8 py-10 z-30 relative transition-transform mb-8 md:mb-0 h-auto md:min-h-[440px] flex flex-col font-sans">
 
             {/* Dairesel İlerleme Çubuğu SVG */}
             <div className="relative w-48 h-48 mx-auto mt-2 mb-6">

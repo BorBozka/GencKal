@@ -17,34 +17,39 @@ export default function TargetSimulator({ currentWeight, leanMass }: TargetSimul
 
     const minWeight = Math.ceil(leanMass);
     const maxWeight = currentWeight + 20;
+    const progress = Math.min(100, Math.max(0, ((targetWeight - minWeight) / (maxWeight - minWeight)) * 100));
 
     return (
-        <div className="w-full max-w-[320px] md:w-[320px] xl:w-[350px] h-[440px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.85)] p-8 flex flex-col shrink-0 animate-fade-in-right">
+        <div className="w-full max-w-[320px] md:w-[320px] xl:w-[350px] h-[440px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.36)] p-8 flex flex-col shrink-0 animate-fade-in-right">
 
             {/* Net ve Temiz Başlık */}
             <h3 className="text-xl font-bold text-white text-center mb-6">Hedef Simülatörü</h3>
             {/* Sadece Veri Odaklı Slider Alanı */}
-            <div className="space-y-6 my-auto py-4">
-                <div className="flex flex-col items-center justify-center text-white font-medium gap-1">
-                    <span className="text-indigo-200/80 text-sm">Hedef Kilo</span>
-                    <span className="text-4xl text-cyan-400 font-black tracking-tight">{targetWeight} <span className="text-xl text-cyan-400/80 font-bold">kg</span></span>
-                </div>
-
-                {/* Range Slider Track & Wrapper */}
-                <div className="w-full relative py-2">
-                    <div className="relative h-2 bg-indigo-950/80 rounded-full flex items-center w-full border border-indigo-500/20">
-                        <input
-                            type="range"
-                            min={minWeight}
-                            max={maxWeight}
-                            value={targetWeight}
-                            onChange={(e) => setTargetWeight(Number(e.target.value))}
-                            className="absolute w-full appearance-none bg-transparent cursor-pointer z-20 h-full"
-                        />
+            <div className="my-auto py-4">
+                <div className="mb-6 flex w-full items-center justify-between gap-4">
+                    <span className="text-sm font-bold tracking-wide text-indigo-200/80">Hedef Kilo</span>
+                    <div className="flex min-w-[92px] items-center justify-center rounded-xl border border-white/10 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
+                        <span className="text-2xl font-bold leading-none text-white">{targetWeight}</span>
+                        <span className="ml-1 text-xs font-medium text-indigo-200/80">kg</span>
                     </div>
                 </div>
 
-                <div className="flex justify-between text-[10px] text-indigo-300/80 font-medium px-1">
+                {/* Range Slider Track & Wrapper */}
+                <div className="relative flex w-full items-center py-2">
+                    <input
+                        type="range"
+                        min={minWeight}
+                        max={maxWeight}
+                        value={targetWeight}
+                        onChange={(e) => setTargetWeight(Number(e.target.value))}
+                        style={{
+                            background: `linear-gradient(to right, #22d3ee 0%, #22d3ee ${progress}%, rgba(241,245,249,0.18) ${progress}%, rgba(241,245,249,0.18) 100%)`,
+                        }}
+                        className="h-2 w-full cursor-pointer appearance-none rounded-full outline-none transition-[filter] duration-200 hover:brightness-110 focus-visible:ring-4 focus-visible:ring-cyan-300/20 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-[3px] [&::-moz-range-thumb]:border-cyan-400 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-transform hover:[&::-moz-range-thumb]:scale-110 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-cyan-400 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform hover:[&::-webkit-slider-thumb]:scale-110"
+                    />
+                </div>
+
+                <div className="mt-3 flex justify-between px-1 text-xs font-medium tracking-wide text-indigo-300/80">
                     <span>Min: {minWeight} kg</span>
                     <span>Max: {maxWeight} kg</span>
                 </div>

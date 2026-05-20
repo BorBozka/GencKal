@@ -23,23 +23,24 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
     ];
 
     return (
-        <div className="w-full max-w-[600px] md:w-[600px] bg-white text-gray-800 rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] p-6 md:p-8 md:pl-24 h-auto flex flex-col font-sans relative z-30 mx-auto">
-            <div className="space-y-8 w-full mt-2">
-                {sliders.map(slider => (
-                    <div key={slider.name} className="flex flex-col w-full">
-                        {/* Üst Satır */}
-                        <div className="flex justify-between items-end mb-2 w-full">
-                            <label className="text-[16px] font-bold text-slate-500 tracking-wide">
-                                {slider.label}
-                            </label>
-                            <div className="text-3xl font-black text-slate-800 leading-none flex items-baseline gap-1">
-                                {slider.val}<span className="text-sm text-slate-400 font-bold ml-1">{slider.unit}</span>
-                            </div>
-                        </div>
+        <div className="w-full max-w-[600px] md:w-[600px] bg-white text-gray-800 rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.18)] p-6 md:p-8 md:pl-24 h-auto flex flex-col font-sans relative z-30 mx-auto">
+            <div className="w-full mt-2">
+                {sliders.map(slider => {
+                    const progress = ((slider.val - slider.min) / (slider.max - slider.min)) * 100;
 
-                        {/* Orta Satır (Slider) */}
-                        <div className="w-full relative py-2">
-                            <div className="relative h-2 bg-slate-200 rounded-full flex items-center w-full">
+                    return (
+                        <div key={slider.name} className="mb-6 flex w-full flex-col space-y-3 last:mb-0">
+                            <div className="flex w-full items-center justify-between gap-4">
+                                <label className="text-[15px] font-bold tracking-wide text-slate-500">
+                                    {slider.label}
+                                </label>
+                                <div className="flex min-w-[92px] items-center justify-center rounded-xl border border-slate-100 bg-slate-50 px-3 py-1.5">
+                                    <span className="text-2xl font-bold leading-none text-slate-800">{slider.val}</span>
+                                    <span className="ml-1 text-xs font-medium text-slate-400">{slider.unit}</span>
+                                </div>
+                            </div>
+
+                            <div className="relative flex w-full items-center py-2">
                                 <input
                                     type="range"
                                     name={slider.name}
@@ -47,18 +48,20 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
                                     max={slider.max}
                                     value={slider.val}
                                     onChange={handleChange}
-                                    className="absolute w-full appearance-none bg-transparent cursor-pointer z-20 h-full"
+                                    style={{
+                                        background: `linear-gradient(to right, #4f46e5 0%, #4f46e5 ${progress}%, #f1f5f9 ${progress}%, #f1f5f9 100%)`,
+                                    }}
+                                    className="h-2 w-full cursor-pointer appearance-none rounded-full outline-none transition-[filter] duration-200 hover:brightness-[0.98] focus-visible:ring-4 focus-visible:ring-indigo-100 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-[3px] [&::-moz-range-thumb]:border-indigo-500 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-transform hover:[&::-moz-range-thumb]:scale-110 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-[3px] [&::-webkit-slider-thumb]:border-indigo-500 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform hover:[&::-webkit-slider-thumb]:scale-110"
                                 />
                             </div>
-                        </div>
 
-                        {/* Alt Satır (Min/Max Labels) */}
-                        <div className="flex justify-between items-center mt-1 text-xs text-slate-400 font-medium tracking-wide w-full">
-                            <span>{slider.min} {slider.unit}</span>
-                            <span>{slider.max} {slider.unit}</span>
+                            <div className="flex w-full items-center justify-between text-xs font-medium tracking-wide text-slate-400">
+                                <span>{slider.min} {slider.unit}</span>
+                                <span>{slider.max} {slider.unit}</span>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
