@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import type { ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, AlertTriangle, Info, X } from "lucide-react";
 
@@ -73,7 +74,7 @@ function ToastItem({ toast: t, onDismiss }: { toast: ToastMessage; onDismiss: (i
 // --- PROVIDER ---
 let idCounter = 0;
 
-export function ToastProvider({ children }: { children: React.ReactNode }) {
+export function ToastProvider({ children }: { children: ReactNode }) {
     const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
     const dismiss = useCallback((id: number) => {

@@ -1,9 +1,9 @@
-import React from "react";
+import type { ChangeEvent } from "react";
 import { KullaniciProfil, Cinsiyet, AktiviteSeviyesi } from "../types";
 
 interface TDEECalculatorPanelProps {
     data: KullaniciProfil["fizikselVeriler"];
-    handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+    handleChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     setField: <K extends keyof KullaniciProfil["fizikselVeriler"]>(
         name: K,
         value: KullaniciProfil["fizikselVeriler"][K]
@@ -61,6 +61,8 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                             <input
                                 type="number"
                                 name="boy"
+                                min={100}
+                                max={230}
                                 value={data.boy || ""}
                                 onChange={handleChange}
                                 className="w-full h-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 font-bold text-lg text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-300"
@@ -77,6 +79,8 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                             <input
                                 type="number"
                                 name="kilo"
+                                min={30}
+                                max={300}
                                 value={data.kilo || ""}
                                 onChange={handleChange}
                                 className="w-full h-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 font-bold text-lg text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-300"
@@ -93,6 +97,8 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                             <input
                                 type="number"
                                 name="yas"
+                                min={15}
+                                max={100}
                                 value={data.yas || ""}
                                 onChange={handleChange}
                                 className="w-full h-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 font-bold text-lg text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-300"

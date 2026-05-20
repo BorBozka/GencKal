@@ -1,4 +1,3 @@
-import React from "react";
 import { getBMICategory } from "../utils/calculations";
 
 interface ResultsPanelProps {

@@ -2,27 +2,27 @@ import { z } from "zod";
 
 export const generatedPlanSchema = z.object({
     macros: z.object({
-        protein: z.number(),
-        fat: z.number(),
-        carb: z.number(),
+        protein: z.number().finite().nonnegative(),
+        fat: z.number().finite().nonnegative(),
+        carb: z.number().finite().nonnegative(),
     }),
     meals: z.array(
         z.object({
-            title: z.string(),
+            title: z.string().min(1),
             items: z.array(
                 z.object({
-                    name: z.string(),
-                    cal: z.number(),
-                    fullText: z.string(),
+                    name: z.string().min(1),
+                    cal: z.number().finite().positive(),
+                    fullText: z.string().min(1),
                     macros: z.object({
-                        protein: z.number(),
-                        fat: z.number(),
-                        carb: z.number(),
+                        protein: z.number().finite().nonnegative(),
+                        fat: z.number().finite().nonnegative(),
+                        carb: z.number().finite().nonnegative(),
                     }),
                 })
-            ),
+            ).min(2).max(4),
         })
-    ),
+    ).min(2).max(5),
 });
 
 export type Cinsiyet = "erkek" | "kadın";
@@ -53,7 +53,7 @@ export interface MealItem {
     name: string;
     cal: number;
     fullText: string;
-    macros?: MacroDistribution;
+    macros: MacroDistribution;
 }
 
 export interface MealCard {

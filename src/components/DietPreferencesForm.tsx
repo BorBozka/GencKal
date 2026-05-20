@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import type { ReactNode } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +18,7 @@ export type DietPreferencesData = z.infer<typeof dietPreferencesSchema>;
 const mealOptions = [2, 3, 4, 5] as const;
 
 // Emojiler yerine zarif SVG yapısına geçtik
-const dietTypeOptions: { key: string; label: string; icon: React.ReactNode }[] = [
+const dietTypeOptions: { key: DietPreferencesData["dietType"]; label: string; icon: ReactNode }[] = [
     { key: "standart", label: "Standart", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" /><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /></svg> },
     { key: "karnivor", label: "Karnivor", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" /><path d="M12 8v8" /><path d="M8 12h8" /></svg> },
     { key: "vejetaryen", label: "Vejetaryen", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 4 13V6a7 7 0 0 1 14 0v7a7 7 0 0 1-7 7Z" /></svg> },

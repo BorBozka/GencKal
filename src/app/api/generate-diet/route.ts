@@ -1,27 +1,61 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { generatedPlanSchema } from "../../../types";
-
-// --- Rate Limiter (Basit Bellek İçi) ---
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-function checkRateLimit(ip: string): boolean {
-    const now = Date.now();
-    const userLimit = rateLimitMap.get(ip);
-    if (!userLimit || now > userLimit.resetTime) {
-        rateLimitMap.set(ip, { count: 1, resetTime: now + 60000 }); // 1 dakika
-        return true;
-    }
-    if (userLimit.count >= 5) return false; // Max 5 istek / dakika
-    userLimit.count += 1;
-    return true;
-}
+import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
 
 // --- Tip Tanımları ---
 interface GenerateDietRequestBody {
     targetCalories: number;
-    dietType: string;
+    dietType: "standart" | "karnivor" | "vejetaryen" | "vegan" | "keto";
     mealsPerDay: number;
     allergies?: string;
+}
+
+const allowedDietTypes = new Set<GenerateDietRequestBody["dietType"]>([
+    "standart",
+    "karnivor",
+    "vejetaryen",
+    "vegan",
+    "keto",
+]);
+
+function normalizeText(value: string): string {
+    return value
+        .toLocaleLowerCase("tr-TR")
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ı/g, "i");
+}
+
+function parseAllergens(allergies?: string): string[] {
+    if (!allergies) return [];
+
+    return allergies
+        .split(/[,;\n]/)
+        .map((allergen) => normalizeText(allergen.trim()))
+        .filter((allergen) => allergen.length >= 2);
+}
+
+function assertNoAllergenViolations(plan: unknown, allergens: string[]): void {
+    if (allergens.length === 0) return;
+
+    const parsedPlan = generatedPlanSchema.parse(plan);
+    for (const meal of parsedPlan.meals) {
+        for (const item of meal.items) {
+            const foodText = normalizeText(`${item.name} ${item.fullText}`);
+            const matchedAllergen = allergens.find((allergen) => foodText.includes(allergen));
+            if (matchedAllergen) {
+                throw new Error(`AI yanıtı alerjen kuralını ihlal etti: ${matchedAllergen}.`);
+            }
+        }
+    }
+}
+
+function assertMealCount(plan: unknown, mealsPerDay: number): void {
+    const parsedPlan = generatedPlanSchema.parse(plan);
+    if (parsedPlan.meals.length !== mealsPerDay) {
+        throw new Error(`AI yanıtı ${mealsPerDay} öğün yerine ${parsedPlan.meals.length} öğün üretti.`);
+    }
 }
 
 // Gemini Native Schema
@@ -76,22 +110,29 @@ function validateBody(body: unknown): GenerateDietRequestBody {
     if (!body || typeof body !== "object") throw new Error("Geçersiz istek gövdesi.");
     const { targetCalories, dietType, mealsPerDay, allergies } = body as Record<string, unknown>;
 
-    if (typeof targetCalories !== "number") throw new Error("targetCalories sayı olmalıdır.");
-    if (typeof dietType !== "string") throw new Error("dietType boş olamaz.");
-    if (typeof mealsPerDay !== "number") throw new Error("mealsPerDay sayı olmalıdır.");
+    if (typeof targetCalories !== "number" || !Number.isFinite(targetCalories) || targetCalories < 800 || targetCalories > 6000) {
+        throw new Error("targetCalories 800-6000 arasında geçerli bir sayı olmalıdır.");
+    }
+    if (typeof dietType !== "string" || !allowedDietTypes.has(dietType as GenerateDietRequestBody["dietType"])) {
+        throw new Error("dietType geçerli bir diyet tipi olmalıdır.");
+    }
+    if (typeof mealsPerDay !== "number" || !Number.isInteger(mealsPerDay) || mealsPerDay < 2 || mealsPerDay > 5) {
+        throw new Error("mealsPerDay 2-5 arasında bir tam sayı olmalıdır.");
+    }
 
     return {
         targetCalories,
-        dietType: dietType.trim(),
+        dietType: dietType as GenerateDietRequestBody["dietType"],
         mealsPerDay,
-        allergies: typeof allergies === "string" ? allergies.trim() : undefined,
+        allergies: typeof allergies === "string" ? allergies.trim().slice(0, 500) : undefined,
     };
 }
 
 export async function POST(request: NextRequest) {
     try {
-        const ip = request.headers.get("x-forwarded-for") || "anonymous";
-        if (!checkRateLimit(ip)) {
+        const ip = getClientRateLimitKey(request.headers);
+        const rateLimit = await checkRateLimit(ip, 5); // 5 request limit
+        if (!rateLimit.success) {
             return NextResponse.json({ error: "Çok fazla istek gönderdiniz. Lütfen 1 dakika bekleyin." }, { status: 429 });
         }
 
@@ -104,6 +145,7 @@ export async function POST(request: NextRequest) {
         const rawBody = await request.json();
         const validatedBody = validateBody(rawBody);
         const { targetCalories, dietType, mealsPerDay, allergies } = validatedBody;
+        const allergenList = parseAllergens(allergies);
 
         const allergyNote = allergies
             ? `Kullanıcının alerjileri/intoleransları: ${allergies}. Bu besinleri kesinlikle kullanma.`
@@ -164,17 +206,50 @@ KRİTİK KURALLAR:
         try {
             const parsed = JSON.parse(cleanedJSON);
 
+            // --- Matematiksel Tutarlılık ve AI Hata Düzeltme Katmanı ---
+            if (parsed && Array.isArray(parsed.meals)) {
+                let totalProtein = 0;
+                let totalFat = 0;
+                let totalCarb = 0;
+
+                for (const meal of parsed.meals) {
+                    if (meal && Array.isArray(meal.items)) {
+                        for (const item of meal.items) {
+                            if (item && item.macros) {
+                                const calculatedCal = (item.macros.protein * 4) + (item.macros.carb * 4) + (item.macros.fat * 9);
+                                // Eğer sapma %15'ten fazlaysa veya kalori mantıksızsa tam matematiksel karşılığını eşitleyelim
+                                if (!item.cal || Math.abs(item.cal - calculatedCal) > (item.cal * 0.15) || item.cal <= 0) {
+                                    item.cal = Math.round(calculatedCal);
+                                }
+                                totalProtein += item.macros.protein || 0;
+                                totalFat += item.macros.fat || 0;
+                                totalCarb += item.macros.carb || 0;
+                            }
+                        }
+                    }
+                }
+
+                // Üst düzey makroları yiyeceklerin makrolarının toplamına eşitleyelim (Toplama hatalarını çözer)
+                parsed.macros = {
+                    protein: Math.round(totalProtein),
+                    fat: Math.round(totalFat),
+                    carb: Math.round(totalCarb)
+                };
+            }
+
             // Zod ile Runtime Type Checking
             const validatedResult = generatedPlanSchema.safeParse(parsed);
             if (!validatedResult.success) {
                 console.error("Zod Şema İhlali:", validatedResult.error);
                 throw new Error("AI yanıtı beklenen yapıya uymuyor.");
             }
+            assertMealCount(validatedResult.data, mealsPerDay);
+            assertNoAllergenViolations(validatedResult.data, allergenList);
 
             return NextResponse.json(validatedResult.data, { status: 200 });
 
         } catch (parseError) {
-            console.error("Saf AI Çıktısı (Parse Edilemeyen):", cleanedJSON.substring(0, 500));
+            console.error("Saf AI Çıktısı (Parse Edilemeyen):", cleanedJSON);
             console.error("Parse Hatası:", parseError);
             throw new Error("Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin.");
         }

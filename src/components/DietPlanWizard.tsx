@@ -1,9 +1,9 @@
 // src/components/DietPlanWizard.tsx
 "use client";
 
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Flame, Utensils, Dumbbell, ChevronRight, Save, AlertTriangle, RotateCcw } from "lucide-react";
+import { Flame, Utensils, Dumbbell, ChevronRight, AlertTriangle, RotateCcw } from "lucide-react";
 
 import DietPreferencesForm, { type DietPreferencesData } from "./DietPreferencesForm";
 import { MacroBar } from "./ui/MacroBar";
@@ -18,6 +18,20 @@ interface DietPlanWizardProps {
     onBack: () => void;
 }
 
+function calculateMacrosFromMeals(meals: MealCard[]): MacroDistribution {
+    return meals.reduce<MacroDistribution>(
+        (total, meal) => {
+            for (const item of meal.items) {
+                total.protein += item.macros.protein;
+                total.fat += item.macros.fat;
+                total.carb += item.macros.carb;
+            }
+            return total;
+        },
+        { protein: 0, fat: 0, carb: 0 }
+    );
+}
+
 export default function DietPlanWizard({ targetCalories, selectedPlanName, onBack }: DietPlanWizardProps) {
     const { toast } = useToast();
     const [step, setStep] = useState<"form" | "generating">("form");
@@ -25,7 +39,6 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
     const [generatedPlan, setGeneratedPlan] = useState<{ macros: MacroDistribution; meals: MealCard[] } | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [isSaved, setIsSaved] = useState(false);
 
     const handleGenerate = useCallback(async (data: DietPreferencesData) => {
         setFormData(data);
@@ -49,17 +62,16 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
             // API'den gelen veriye runtime'da benzersiz id ata
             const planWithIds = {
                 ...plan,
-                meals: plan.meals.map((meal: { title: string; items: { name: string; cal: number; fullText: string; macros?: { protein: number; fat: number; carb: number } }[] }, mealIdx: number) => ({
+                meals: plan.meals.map((meal: { title: string; items: { name: string; cal: number; fullText: string; macros: { protein: number; fat: number; carb: number } }[] }, mealIdx: number) => ({
                     ...meal,
                     id: `meal-${mealIdx}-${Date.now()}`,
-                    items: meal.items.map((item: { name: string; cal: number; fullText: string; macros?: { protein: number; fat: number; carb: number } }, itemIdx: number) => ({
+                    items: meal.items.map((item: { name: string; cal: number; fullText: string; macros: { protein: number; fat: number; carb: number } }, itemIdx: number) => ({
                         ...item,
                         id: `food-${mealIdx}-${itemIdx}-${Date.now()}`,
                     })),
                 })),
             };
             setGeneratedPlan(planWithIds);
-            setIsSaved(false);
         } catch (err) {
             const msg = err instanceof Error ? err.message : "Beklenmeyen bir hata oluştu.";
             setError(msg);
@@ -72,29 +84,6 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
     const handleRetry = useCallback(() => {
         if (formData) handleGenerate(formData);
     }, [formData, handleGenerate]);
-
-    const handleSavePlan = useCallback(() => {
-        if (!generatedPlan || !formData) return;
-        try {
-            const savedPlan = {
-                id: Date.now(),
-                planName: selectedPlanName,
-                targetCalories,
-                preferences: formData,
-                plan: generatedPlan,
-                savedAt: new Date().toISOString(),
-            };
-            const existing = JSON.parse(localStorage.getItem("genckal_saved_plans") || "[]");
-            existing.unshift(savedPlan);
-            // En fazla 10 plan sakla
-            if (existing.length > 10) existing.pop();
-            localStorage.setItem("genckal_saved_plans", JSON.stringify(existing));
-            setIsSaved(true);
-            toast("success", "Plan kaydedildi!", "Beslenme planınız başarıyla kaydedildi.");
-        } catch {
-            toast("error", "Kayıt başarısız", "Plan kaydedilirken bir hata oluştu.");
-        }
-    }, [generatedPlan, formData, selectedPlanName, targetCalories, toast]);
 
     // --- Besin Değişimi (Swap) Handler ---
     const handleSwapFood = useCallback(async (mealId: string, foodId: string) => {
@@ -140,17 +129,20 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
         // State'i immutable şekilde güncelle — sadece ilgili besini değiştir
         setGeneratedPlan((prev) => {
             if (!prev) return prev;
+            const meals = prev.meals.map((meal) => {
+                if (meal.id !== mealId) return meal;
+                return {
+                    ...meal,
+                    items: meal.items.map((item) =>
+                        item.id === foodId ? newFoodWithId : item
+                    ),
+                };
+            });
+
             return {
                 ...prev,
-                meals: prev.meals.map((meal) => {
-                    if (meal.id !== mealId) return meal;
-                    return {
-                        ...meal,
-                        items: meal.items.map((item) =>
-                            item.id === foodId ? newFoodWithId : item
-                        ),
-                    };
-                }),
+                macros: calculateMacrosFromMeals(meals),
+                meals,
             };
         });
 

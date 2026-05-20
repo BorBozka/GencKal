@@ -1,10 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const FacebookIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+const InstagramIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+  </svg>
 );
 
 const TwitterIcon = ({ className }: { className?: string }) => (
@@ -37,7 +41,7 @@ export default function ContactPage() {
                         <div className="w-1.5 h-6 bg-indigo-700 rounded-full"></div>
                         <div className="w-1.5 h-4 bg-indigo-700 rounded-full"></div>
                     </div>
-                    genckalculator
+                    GencKalculator
                 </Link>
                 <nav className="flex items-center gap-8 text-[13px] font-medium text-slate-500">
                     <Link href="/" className="hover:text-indigo-600 transition-colors">Ana Sayfa</Link>
@@ -55,7 +59,7 @@ export default function ContactPage() {
                     </p>
                     
                     <p className="text-slate-600 text-[15px]">
-                        Bizi <a href="#" className="text-indigo-600 hover:underline font-medium">Twitter</a> ve <a href="#" className="text-indigo-600 hover:underline font-medium">Facebook</a> üzerinden takip edin
+                        Bizi <a href="#" className="text-indigo-600 hover:underline font-medium">Twitter</a> ve <a href="#" className="text-indigo-600 hover:underline font-medium">Instagram</a> üzerinden takip edin
                     </p>
                 </div>
             </main>
@@ -63,11 +67,11 @@ export default function ContactPage() {
             {/* Footer */}
             <footer className="w-full max-w-5xl mx-auto border-t border-slate-100 py-8 px-4 md:px-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[11px] text-slate-500 mb-8">
                 <div className="flex-1 text-center md:text-left">
-                    Copyright © {new Date().getFullYear()} <span className="text-indigo-600 font-medium">GençKal Calculator</span>. Tüm Hakları Saklıdır.
+                    Copyright © {new Date().getFullYear()} <span className="text-indigo-600 font-medium">GencKalculator</span>. Tüm Hakları Saklıdır.
                 </div>
                 
                 <div className="flex items-center gap-5 flex-1 justify-center">
-                    <a href="#" className="text-slate-400 hover:text-indigo-600 transition-colors bg-slate-50 p-2 rounded-full"><FacebookIcon className="w-4 h-4 fill-current" /></a>
+                    <a href="#" className="text-slate-400 hover:text-indigo-600 transition-colors bg-slate-50 p-2 rounded-full"><InstagramIcon className="w-4 h-4" /></a>
                     <a href="#" className="text-slate-400 hover:text-indigo-600 transition-colors bg-slate-50 p-2 rounded-full"><TwitterIcon className="w-4 h-4 fill-current" /></a>
                 </div>
                 

@@ -1,18 +1,17 @@
-import React, { useMemo } from "react";
-import { Cinsiyet } from "../types";
+import { useMemo } from "react";
 
 interface ReferenceScaleProps {
     score: number;
     type: "FFMI" | "BMI";
-    gender?: Cinsiyet;
 }
 
-export default function ReferenceScale({ score, type, gender }: ReferenceScaleProps) {
+export default function ReferenceScale({ score, type }: ReferenceScaleProps) {
     const isBMI = type === "BMI";
     const minScale = isBMI ? 15 : 15;
     const maxScale = isBMI ? 40 : 31;
 
     const percent = useMemo(() => {
+        if (score <= 0) return 0;
         return Math.min(100, Math.max(0, ((score - minScale) / (maxScale - minScale)) * 100));
     }, [score, minScale, maxScale]);
 

@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Sparkles } from "lucide-react";
 
-export const SkeletonLoading: React.FC = () => {
+const statusMessages = [
+    "Yapay Zeka analiz ediyor...",
+    "Besin değerleri hesaplanıyor...",
+    "Öğünler oluşturuluyor...",
+    "Makro dengesi ayarlanıyor...",
+    "Son dokunuşlar yapılıyor...",
+];
+
+export function SkeletonLoading() {
     const [msgIndex, setMsgIndex] = useState(0);
     const [progress, setProgress] = useState(0);
-
-    const statusMessages = [
-        "Yapay Zeka analiz ediyor...",
-        "Besin değerleri hesaplanıyor...",
-        "Öğünler oluşturuluyor...",
-        "Makro dengesi ayarlanıyor...",
-        "Son dokunuşlar yapılıyor...",
-    ];
 
     useEffect(() => {
         // Durum mesajlarını 4 saniyede bir değiştir
@@ -66,4 +66,4 @@ export const SkeletonLoading: React.FC = () => {
             ))}
         </div>
     );
-};
+}

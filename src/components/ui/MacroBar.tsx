@@ -1,7 +1,7 @@
 // src/components/ui/MacroBar.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 interface MacroBarProps {
@@ -13,7 +13,7 @@ interface MacroBarProps {
   animate: boolean;
 }
 
-export const MacroBar: React.FC<MacroBarProps> = ({ label, percent, grams, color, delay, animate }) => {
+export function MacroBar({ label, percent, grams, color, delay, animate }: MacroBarProps) {
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
@@ -46,4 +46,4 @@ export const MacroBar: React.FC<MacroBarProps> = ({ label, percent, grams, color
       </span>
     </div>
   );
-};
+}

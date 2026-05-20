@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Utensils } from "lucide-react";
 import { useTypewriter } from "../../hooks/useTypewriter";
@@ -136,14 +136,13 @@ function FoodItemRow({ item, mealId, startTyping, onSwapFood }: FoodItemRowProps
                 </div>
             </div>
             {/* Alt satır: Makro Rozetleri */}
-            {item.macros && !isLoading && (
+            {!isLoading ? (
                 <MacroBadges
                     protein={item.macros.protein}
                     fat={item.macros.fat}
                     carb={item.macros.carb}
                 />
-            )}
-            {item.macros && isLoading && (
+            ) : (
                 <div className="flex items-center gap-1.5 mt-1.5">
                     <div className="h-4 w-12 bg-gradient-to-r from-emerald-100 via-emerald-50 to-emerald-100 rounded-lg animate-pulse" />
                     <div className="h-4 w-10 bg-gradient-to-r from-amber-100 via-amber-50 to-amber-100 rounded-lg animate-pulse" />
@@ -162,7 +161,7 @@ interface MealCardProps {
     onSwapFood?: (mealId: string, foodId: string) => Promise<void>;
 }
 
-export const MealCardComponent: React.FC<MealCardProps> = ({ meal, index, startTyping, onSwapFood }) => {
+export function MealCardComponent({ meal, index, startTyping, onSwapFood }: MealCardProps) {
     // Öğün toplam kalorisi
     const mealTotalCal = meal.items.reduce((sum, item) => sum + item.cal, 0);
 
@@ -200,4 +199,4 @@ export const MealCardComponent: React.FC<MealCardProps> = ({ meal, index, startT
             </div>
         </motion.div>
     );
-};
+}

@@ -1,17 +1,14 @@
 import { useState, useEffect } from "react";
 
 export function useTypewriter(text: string, speed: number = 30, startTyping: boolean = false) {
-    const [displayed, setDisplayed] = useState("");
+    const [typingState, setTypingState] = useState({ text: "", displayed: "" });
 
     useEffect(() => {
-        if (!startTyping) {
-            setDisplayed("");
-            return;
-        }
+        if (!startTyping) return;
 
         let i = 0;
         const interval = setInterval(() => {
-            setDisplayed(text.slice(0, i + 1));
+            setTypingState({ text, displayed: text.slice(0, i + 1) });
             i++;
             if (i >= text.length) clearInterval(interval);
         }, speed);
@@ -19,5 +16,6 @@ export function useTypewriter(text: string, speed: number = 30, startTyping: boo
         return () => clearInterval(interval);
     }, [text, speed, startTyping]);
 
-    return displayed;
+    if (!startTyping || typingState.text !== text) return "";
+    return typingState.displayed;
 }

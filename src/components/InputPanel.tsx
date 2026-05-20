@@ -1,11 +1,11 @@
 // Dosya Yolu: src/components/InputPanel.tsx
-import React from "react";
+import type { ChangeEvent } from "react";
 // 1. DÜZELTME: "type" anahtar kelimesi eklendi (Derleyici optimizasyonu için)
 import type { KullaniciProfil } from "../types";
 
 export interface InputPanelProps {
     data: KullaniciProfil["fizikselVeriler"];
-    handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+    handleChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     // 2. DÜZELTME: "any" kaldırıldı. Değerin, fizikselVeriler objesindeki özelliklerden birinin tipi olacağı garanti altına alındı.
     setField: <K extends keyof KullaniciProfil["fizikselVeriler"]>(
         name: K,
@@ -19,7 +19,7 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
     const sliders = [
         { name: 'boy', label: 'Boy', unit: 'cm', min: 120, max: 220, val: boy },
         { name: 'kilo', label: 'Kilo', unit: 'kg', min: 30, max: 160, val: kilo },
-        { name: 'yagOrani', label: 'Yağ Oranı', unit: '%', min: 0, max: 100, val: yagOrani || 15 }
+        { name: 'yagOrani', label: 'Yağ Oranı', unit: '%', min: 0, max: 100, val: yagOrani ?? 15 }
     ];
 
     return (

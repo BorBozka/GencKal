@@ -42,12 +42,12 @@ const EducationalSection = React.memo(function EducationalSection() {
                             </table>
                         </div>
 
-                        <h3 className="text-xl font-semibold mb-3 text-indigo-800">BMI'nin Sınırları</h3>
+                        <h3 className="text-xl font-semibold mb-3 text-indigo-800">BMI&apos;nin Sınırları</h3>
                         <p className="mb-4 leading-relaxed">
                             BMI sağlıklı vücut ağırlığını belirlemek için yaygın olsa da, kas ve yağ oranını dikkate almayan sadece bir tahmindir.
                         </p>
                         <ul className="list-disc pl-6 space-y-2 mb-8 text-gray-700">
-                            <li><strong>Sporcular:</strong> Kas yağdan daha ağır olduğu için yüksek kas kütlesine sahip kişiler BMI'ye göre "Obez" çıkabilir, ancak aslında son derece sağlıklıdırlar.</li>
+                            <li><strong>Sporcular:</strong> Kas yağdan daha ağır olduğu için yüksek kas kütlesine sahip kişiler BMI&apos;ye göre &quot;Obez&quot; çıkabilir, ancak aslında son derece sağlıklıdırlar.</li>
                             <li><strong>Yaşlı Yetişkinler:</strong> Aynı BMI değerine sahip gençlere kıyasla daha fazla vücut yağına sahip olma eğilimindedirler.</li>
                         </ul>
 
@@ -77,7 +77,7 @@ const EducationalSection = React.memo(function EducationalSection() {
                     <section>
                         <h2 className="text-3xl font-bold mb-4 text-center text-indigo-900">FFMI (Yağsız Vücut Kütlesi İndeksi) Nedir?</h2>
                         <p className="mb-6 leading-relaxed">
-                            FFMI, boyunuza oranla ne kadar kas kütlesine sahip olduğunuzu hesaplamanızı sağlayan bir indekstir. Bu indeks, vücut geliştiriciler ve sporcular tarafından gelişimlerini takip etmek için yaygın olarak kullanılır ve BMI'ye göre çok daha güvenilirdir.
+                            FFMI, boyunuza oranla ne kadar kas kütlesine sahip olduğunuzu hesaplamanızı sağlayan bir indekstir. Bu indeks, vücut geliştiriciler ve sporcular tarafından gelişimlerini takip etmek için yaygın olarak kullanılır ve BMI&apos;ye göre çok daha güvenilirdir.
                         </p>
 
                         <h3 className="text-xl font-semibold mb-3 text-indigo-800">FFMI Formülü</h3>

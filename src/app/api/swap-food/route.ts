@@ -1,20 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { z } from "zod";
-
-// --- Rate Limiter (Basit Bellek İçi) ---
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-function checkRateLimit(ip: string): boolean {
-    const now = Date.now();
-    const userLimit = rateLimitMap.get(ip);
-    if (!userLimit || now > userLimit.resetTime) {
-        rateLimitMap.set(ip, { count: 1, resetTime: now + 60000 });
-        return true;
-    }
-    if (userLimit.count >= 10) return false; // Max 10 swap / dakika
-    userLimit.count += 1;
-    return true;
-}
+import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
 
 // --- İstek Gövdesi Tipi ---
 interface SwapFoodRequestBody {
@@ -27,6 +14,35 @@ interface SwapFoodRequestBody {
     mealTitle: string;
     dietType: string;
     allergies?: string;
+}
+
+const allowedDietTypes = new Set(["standart", "karnivor", "vejetaryen", "vegan", "keto"]);
+
+function normalizeText(value: string): string {
+    return value
+        .toLocaleLowerCase("tr-TR")
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ı/g, "i");
+}
+
+function parseAllergens(allergies?: string): string[] {
+    if (!allergies) return [];
+
+    return allergies
+        .split(/[,;\n]/)
+        .map((allergen) => normalizeText(allergen.trim()))
+        .filter((allergen) => allergen.length >= 2);
+}
+
+function assertNoAllergenViolations(food: z.infer<typeof swapFoodResponseSchema>, allergens: string[]): void {
+    if (allergens.length === 0) return;
+
+    const foodText = normalizeText(`${food.name} ${food.fullText}`);
+    const matchedAllergen = allergens.find((allergen) => foodText.includes(allergen));
+    if (matchedAllergen) {
+        throw new Error(`AI yanıtı alerjen kuralını ihlal etti: ${matchedAllergen}.`);
+    }
 }
 
 // --- Gemini Yanıt Şeması (Tek Besin) ---
@@ -68,23 +84,34 @@ function validateBody(body: unknown): SwapFoodRequestBody {
     if (!currentFood || typeof currentFood !== "object") throw new Error("currentFood gerekli.");
     const food = currentFood as Record<string, unknown>;
     if (typeof food.name !== "string") throw new Error("currentFood.name gerekli.");
-    if (typeof food.cal !== "number") throw new Error("currentFood.cal sayı olmalıdır.");
+    if (typeof food.fullText !== "string") throw new Error("currentFood.fullText gerekli.");
+    if (typeof food.cal !== "number" || !Number.isFinite(food.cal) || food.cal <= 0) throw new Error("currentFood.cal pozitif sayı olmalıdır.");
+    if (!food.macros || typeof food.macros !== "object") throw new Error("currentFood.macros gerekli.");
+    const macros = food.macros as Record<string, unknown>;
+    if (
+        typeof macros.protein !== "number" || !Number.isFinite(macros.protein) ||
+        typeof macros.fat !== "number" || !Number.isFinite(macros.fat) ||
+        typeof macros.carb !== "number" || !Number.isFinite(macros.carb)
+    ) {
+        throw new Error("currentFood.macros sayısal protein, fat ve carb değerleri içermelidir.");
+    }
 
     if (typeof mealTitle !== "string") throw new Error("mealTitle gerekli.");
-    if (typeof dietType !== "string") throw new Error("dietType gerekli.");
+    if (typeof dietType !== "string" || !allowedDietTypes.has(dietType)) throw new Error("dietType geçerli bir diyet tipi olmalıdır.");
 
     return {
         currentFood: currentFood as SwapFoodRequestBody["currentFood"],
         mealTitle: mealTitle.trim(),
         dietType: dietType.trim(),
-        allergies: typeof allergies === "string" ? allergies.trim() : undefined,
+        allergies: typeof allergies === "string" ? allergies.trim().slice(0, 500) : undefined,
     };
 }
 
 export async function POST(request: NextRequest) {
     try {
-        const ip = request.headers.get("x-forwarded-for") || "anonymous";
-        if (!checkRateLimit(ip)) {
+        const ip = getClientRateLimitKey(request.headers);
+        const rateLimit = await checkRateLimit(ip, 10); // 10 swap limit / min
+        if (!rateLimit.success) {
             return NextResponse.json(
                 { error: "Çok fazla istek gönderdiniz. Lütfen 1 dakika bekleyin." },
                 { status: 429 }
@@ -99,6 +126,7 @@ export async function POST(request: NextRequest) {
 
         const rawBody = await request.json();
         const { currentFood, mealTitle, dietType, allergies } = validateBody(rawBody);
+        const allergenList = parseAllergens(allergies);
 
         const allergyNote = allergies
             ? `Kullanıcının alerjileri/intoleransları: ${allergies}. Bu besinleri kesinlikle kullanma.`
@@ -166,12 +194,21 @@ Bu besinin yerine geçecek, benzer makro/kalori değerlerine sahip FARKLI bir al
         try {
             const parsed = JSON.parse(cleanedJSON);
 
+            // --- Matematiksel Tutarlılık ve Hata Düzeltme Katmanı ---
+            if (parsed && parsed.macros) {
+                const calculatedCal = (parsed.macros.protein * 4) + (parsed.macros.carb * 4) + (parsed.macros.fat * 9);
+                if (!parsed.cal || Math.abs(parsed.cal - calculatedCal) > (parsed.cal * 0.15) || parsed.cal <= 0) {
+                    parsed.cal = Math.round(calculatedCal);
+                }
+            }
+
             // Zod ile Runtime Type Checking
             const validatedResult = swapFoodResponseSchema.safeParse(parsed);
             if (!validatedResult.success) {
                 console.error("Swap Zod Şema İhlali:", validatedResult.error);
                 throw new Error("AI yanıtı beklenen yapıya uymuyor.");
             }
+            assertNoAllergenViolations(validatedResult.data, allergenList);
 
             return NextResponse.json(validatedResult.data, { status: 200 });
         } catch (parseError) {
