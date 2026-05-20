@@ -26,18 +26,14 @@ const aktiviteOptions: { key: AktiviteSeviyesi; label: string; desc: string }[] 
 export default function TDEECalculatorPanel({ data, handleChange, setField }: TDEECalculatorPanelProps) {
     return (
         <div className="w-full flex flex-col font-sans">
-            <h3 className="text-base font-bold text-slate-900 mb-5 border-b border-slate-100 pb-3">
-                TDEE (Günlük Enerji İhtiyacı) Verileri
-            </h3>
-
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
                 {/* Üst Satır: 4'lü Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
                     {/* 1. Cinsiyet */}
-                    <div className="space-y-2">
+                    <div className="group rounded-xl border border-slate-100 bg-slate-50 p-2.5 transition-all duration-200 hover:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cinsiyet</label>
-                        <div className="flex gap-2 h-[44px]">
+                        <div className="mt-2 flex h-[40px] gap-2">
                             {cinsiyetOptions.map((option) => (
                                 <button
                                     key={option.key}
@@ -55,9 +51,9 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                     </div>
 
                     {/* 2. Boy (Manuel Input) */}
-                    <div className="space-y-2">
+                    <div className="group rounded-xl border border-slate-100 bg-slate-50 p-2.5 transition-all duration-200 hover:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Boy</label>
-                        <div className="relative h-[44px]">
+                        <div className="relative mt-2 flex h-[40px] items-center gap-3">
                             <input
                                 type="number"
                                 name="boy"
@@ -65,7 +61,7 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                                 max={230}
                                 value={data.boy || ""}
                                 onChange={handleChange}
-                                className="w-full h-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 font-bold text-lg text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-300"
+                                className="h-full w-full rounded-xl border border-slate-200 bg-white pl-4 pr-12 text-lg font-bold text-slate-900 outline-none transition-all duration-200 [appearance:textfield] placeholder:text-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                 placeholder="175"
                             />
                             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm">cm</span>
@@ -73,9 +69,9 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                     </div>
 
                     {/* 3. Kilo (Manuel Input) */}
-                    <div className="space-y-2">
+                    <div className="group rounded-xl border border-slate-100 bg-slate-50 p-2.5 transition-all duration-200 hover:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Kilo</label>
-                        <div className="relative h-[44px]">
+                        <div className="relative mt-2 flex h-[40px] items-center gap-3">
                             <input
                                 type="number"
                                 name="kilo"
@@ -83,7 +79,7 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                                 max={300}
                                 value={data.kilo || ""}
                                 onChange={handleChange}
-                                className="w-full h-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 font-bold text-lg text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-300"
+                                className="h-full w-full rounded-xl border border-slate-200 bg-white pl-4 pr-12 text-lg font-bold text-slate-900 outline-none transition-all duration-200 [appearance:textfield] placeholder:text-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                 placeholder="75"
                             />
                             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm">kg</span>
@@ -91,9 +87,9 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                     </div>
 
                     {/* 4. Yaş (Manuel Input) */}
-                    <div className="space-y-2">
+                    <div className="group rounded-xl border border-slate-100 bg-slate-50 p-2.5 transition-all duration-200 hover:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20">
                         <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Yaş</label>
-                        <div className="relative h-[44px]">
+                        <div className="relative mt-2 flex h-[40px] items-center gap-3">
                             <input
                                 type="number"
                                 name="yas"
@@ -101,7 +97,7 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                                 max={100}
                                 value={data.yas || ""}
                                 onChange={handleChange}
-                                className="w-full h-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-12 font-bold text-lg text-slate-900 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none placeholder:text-slate-300"
+                                className="h-full w-full rounded-xl border border-slate-200 bg-white pl-4 pr-12 text-lg font-bold text-slate-900 outline-none transition-all duration-200 [appearance:textfield] placeholder:text-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                 placeholder="25"
                             />
                             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm">yaş</span>
@@ -118,7 +114,7 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                                 key={option.key}
                                 type="button"
                                 onClick={() => setField("aktiviteSeviyesi", option.key)}
-                                className={`p-3 rounded-xl border transition-all duration-300 flex flex-col items-center justify-center text-center h-[70px] ${data.aktiviteSeviyesi === option.key
+                                className={`p-2.5 rounded-xl border transition-all duration-300 flex flex-col items-center justify-center text-center h-[58px] ${data.aktiviteSeviyesi === option.key
                                     ? "bg-indigo-600 border-indigo-600 text-white shadow-md"
                                     : "bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-800 hover:bg-white hover:border-slate-300"
                                     }`}

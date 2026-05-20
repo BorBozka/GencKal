@@ -102,19 +102,16 @@ export default function OnboardingForm() {
     }, []);
 
     const handleProceedToDiet = useCallback(() => {
-        setFormData(prev => {
-            const { boy, kilo, yas } = prev.fizikselVeriler;
-            if (boy < 100 || boy > 230 || kilo < 30 || kilo > 300 || yas < 15 || yas > 100) {
-                setErrorLine("Lütfen fiziksel değerlerinizi kontrol edin (Boy: 100-230, Kilo: 30-300, Yaş: 15-100).");
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                return prev;
-            }
-            setErrorLine(null);
-            setStep(2);
+        if (boy < 100 || boy > 230 || kilo < 30 || kilo > 300 || yas < 15 || yas > 100) {
+            setErrorLine("Lütfen fiziksel değerlerinizi kontrol edin (Boy: 100-230, Kilo: 30-300, Yaş: 15-100).");
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            return prev;
-        });
-    }, []);
+            return;
+        }
+
+        setErrorLine(null);
+        setStep(2);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [boy, kilo, yas]);
 
     const handleSelectPlan = useCallback((name: string, calories: number) => {
         if (!isDietInputValid || calories < 800 || calories > 6000) {
@@ -131,6 +128,27 @@ export default function OnboardingForm() {
     const bulkCalories = calculatedTDEE + 500;
     const maintainCalories = calculatedTDEE;
     const cutCalories = calculatedTDEE - 500;
+    const activePlanCalories = activePlan === "bulk" ? bulkCalories : activePlan === "cut" ? cutCalories : maintainCalories;
+    const macroRows = [
+        {
+            label: "Protein",
+            percent: 30,
+            grams: Math.round((activePlanCalories * 0.3) / 4),
+            barClass: "bg-rose-500",
+        },
+        {
+            label: "Karbonhidrat",
+            percent: 40,
+            grams: Math.round((activePlanCalories * 0.4) / 4),
+            barClass: "bg-blue-500",
+        },
+        {
+            label: "Yağ",
+            percent: 30,
+            grams: Math.round((activePlanCalories * 0.3) / 9),
+            barClass: "bg-amber-500",
+        },
+    ];
     const canSelectBulk = isDietInputValid && bulkCalories >= 800 && bulkCalories <= 6000;
     const canSelectMaintain = isDietInputValid && maintainCalories >= 800 && maintainCalories <= 6000;
     const canSelectCut = isDietInputValid && cutCalories >= 800 && cutCalories <= 6000;
@@ -284,7 +302,7 @@ export default function OnboardingForm() {
         </div>
     ) : (
         /* --- 2. ADIM: DİYET PLANI (Premium SaaS Açık Tema) --- */
-        <div className="min-h-screen w-full bg-slate-50 flex flex-col font-sans text-slate-900 overflow-x-hidden">
+        <div className="h-screen w-full bg-slate-50 flex flex-col font-sans text-slate-900 overflow-hidden">
 
             {/* --- STEP 2 HEADER --- */}
             <header className="sticky top-0 z-50 flex-none py-4 px-6 md:px-12 font-medium bg-[#3E3AAF] text-white border-b border-white/10 shadow-sm">
@@ -309,8 +327,8 @@ export default function OnboardingForm() {
                 </div>
             </header>
 
-            {/* --- ANA İÇERİK (Scroll Edilebilir) --- */}
-            <div className="flex-1 w-full max-w-[1500px] mx-auto px-4 sm:px-8 py-10 overflow-y-auto">
+            {/* --- ANA İÇERİK --- */}
+            <div className="flex-1 w-full max-w-[1500px] mx-auto px-4 sm:px-8 pt-4 pb-4 overflow-hidden">
                 {errorLine && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-center text-sm font-bold">
                         {errorLine}
@@ -322,11 +340,16 @@ export default function OnboardingForm() {
                     </div>
                 )}
 
+                <div className="mb-4">
+                    <h2 className="text-base font-extrabold text-slate-950">TDEE Verileri</h2>
+                    <p className="mt-1 text-sm font-medium text-slate-500">Profil değerlerinizi güncelleyerek kalori ve makro dağılımını anlık takip edin.</p>
+                </div>
+
                 {/* Üst Alan: TDEE Hesaplama + Skor */}
-                <div className="flex flex-col lg:flex-row gap-6 mb-8">
+                <div className="flex flex-col lg:flex-row lg:items-stretch gap-5 mb-5">
 
                     {/* SOL: TDEE Hesaplama Paneli */}
-                    <div className="flex-1 bg-gradient-to-br from-indigo-50/80 to-white rounded-3xl p-8 border-2 border-indigo-100 shadow-md hover:shadow-hover transition-all duration-300 animate-fade-in-up">
+                    <div className="flex flex-1 items-center bg-white rounded-3xl p-7 border border-slate-200 shadow-sm transition-all duration-300 animate-fade-in-up">
                         <TDEECalculatorPanel
                             data={formData.fizikselVeriler}
                             handleChange={handleFizikselChange}
@@ -335,7 +358,7 @@ export default function OnboardingForm() {
                     </div>
 
                     {/* SAĞ: TDEE Skor Gösterimi */}
-                    <div className="lg:w-[340px] flex-none bg-gradient-to-br from-indigo-50/80 to-white rounded-3xl p-8 border-2 border-indigo-100 shadow-md hover:shadow-hover transition-all duration-300 flex flex-col items-center justify-center text-center relative overflow-hidden animate-scale-in"
+                    <div className="lg:w-[380px] flex-none bg-white rounded-3xl p-7 border border-slate-200 shadow-sm transition-all duration-300 flex flex-col justify-between text-center relative overflow-hidden animate-scale-in"
                         style={{ animationDelay: "0.15s" }}>
                         {/* Arka plan glow efekti */}
                         <div className="absolute inset-0 opacity-15"
@@ -343,16 +366,40 @@ export default function OnboardingForm() {
                         />
                         <div className="relative z-10">
                             <h2 className="text-[10px] uppercase tracking-[0.25em] text-slate-400 font-bold mb-3">Günlük Kalori İhtiyacınız (TDEE)</h2>
-                            <p className="text-indigo-900 font-extrabold text-6xl md:text-7xl flex items-baseline gap-2 justify-center">
-                                {calculatedTDEE} <span className="text-2xl font-medium text-slate-500">kcal</span>
+                            <p className="text-indigo-900 font-extrabold text-5xl flex items-baseline gap-2 justify-center">
+                                {calculatedTDEE} <span className="text-xl font-medium text-slate-500">kcal</span>
                             </p>
-
+                        </div>
+                        <div className="relative z-10 mt-5 w-full rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-left">
+                            <div className="mb-3 flex items-center justify-between">
+                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Günlük Makro Dağılımı</p>
+                                <p className="text-xs font-bold text-slate-700">{activePlanCalories} kcal</p>
+                            </div>
+                            <div className="space-y-2">
+                                {macroRows.map((macro) => (
+                                    <div
+                                        key={macro.label}
+                                        className="group rounded-xl p-1.5 transition-colors duration-200 hover:bg-slate-50"
+                                    >
+                                        <div className="mb-1.5 flex items-center justify-between gap-3">
+                                            <span className="text-sm font-bold text-slate-800">{macro.label}: {macro.grams}g</span>
+                                            <span className="text-xs font-semibold text-slate-500">{macro.percent}%</span>
+                                        </div>
+                                        <div className="h-2 w-full rounded-full bg-slate-100">
+                                            <div
+                                                className={`h-full origin-left rounded-full transition-all duration-200 group-hover:scale-y-125 group-hover:brightness-110 ${macro.barClass}`}
+                                                style={{ width: `${macro.percent}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Alt Alan: 3'lü Plan Kartları */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pb-0">
 
                     {/* Kilo Al Kartı */}
                     <div
@@ -365,21 +412,21 @@ export default function OnboardingForm() {
                         onKeyDown={(e) => {
                             if ((e.key === "Enter" || e.key === " ") && canSelectBulk) setActivePlan("bulk");
                         }}
-                        className={`group bg-gradient-to-br from-indigo-50/80 to-white rounded-3xl p-8 border-2 shadow-md flex flex-col items-center text-center hover:shadow-hover hover:-translate-y-1 transition-all duration-300 animate-fade-in-up relative ${activePlan === "bulk" ? "border-indigo-500" : "border-indigo-100 hover:border-indigo-200"} ${canSelectBulk ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                        className={`group h-full min-h-[270px] bg-white rounded-3xl px-7 py-8 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "bulk" ? "border-blue-500 shadow-blue-200/70" : "border-slate-200 hover:border-blue-300"} ${canSelectBulk ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                         style={{ animationDelay: "0.2s" }}>
                         {activePlan === "bulk" && (
-                            <div className="absolute -top-3.5 bg-indigo-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md z-10">
+                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-blue-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-blue-200">
                                 MEVCUT DURUM
                             </div>
                         )}
-                        <div className="w-14 h-14 bg-cyan-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-cyan-200 transition-colors">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-600">
+                        <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-blue-200 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
                                 <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
                                 <polyline points="16 7 22 7 22 13"></polyline>
                             </svg>
                         </div>
                         <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Al (Bulk)</h3>
-                        <p className="text-indigo-600 font-extrabold text-3xl mb-2">
+                        <p className="text-indigo-600 font-extrabold text-3xl mb-8">
                             {bulkCalories} <span className="text-xs text-slate-400 font-medium">kcal</span>
                         </p>
 
@@ -389,7 +436,10 @@ export default function OnboardingForm() {
                                 handleSelectPlan("Kilo Al (Bulk)", bulkCalories);
                             }}
                             disabled={!canSelectBulk}
-                            className="w-full py-3.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 font-bold hover:bg-slate-200 transition-all duration-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-100">
+                            className={`mt-auto w-full py-2.5 rounded-2xl border font-bold transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activePlan === "bulk"
+                                ? "border-blue-500 bg-blue-500 text-white shadow-[0_0_24px_rgba(59,130,246,0.35)] hover:bg-blue-600 hover:shadow-[0_0_34px_rgba(59,130,246,0.45)] disabled:hover:bg-blue-500"
+                                : "border-blue-500 bg-white text-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-blue-500"
+                                }`}>
                             Bu Planı Seç
                         </button>
                     </div>
@@ -405,10 +455,10 @@ export default function OnboardingForm() {
                         onKeyDown={(e) => {
                             if ((e.key === "Enter" || e.key === " ") && canSelectMaintain) setActivePlan("maintain");
                         }}
-                        className={`group bg-gradient-to-br from-indigo-50/80 to-white rounded-3xl p-8 border-2 shadow-md flex flex-col items-center text-center hover:shadow-hover hover:-translate-y-1 transition-all duration-300 relative animate-fade-in-up ${activePlan === "maintain" ? "border-indigo-500" : "border-indigo-100 hover:border-indigo-200"} ${canSelectMaintain ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                        className={`group h-full min-h-[270px] bg-white rounded-3xl px-7 py-8 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out relative animate-fade-in-up ${activePlan === "maintain" ? "border-indigo-600 shadow-indigo-200/60" : "border-slate-200 hover:border-indigo-300"} ${canSelectMaintain ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                         style={{ animationDelay: "0.3s" }}>
                         {activePlan === "maintain" && (
-                            <div className="absolute -top-3.5 bg-indigo-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md z-10">
+                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-indigo-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md">
                                 MEVCUT DURUM
                             </div>
                         )}
@@ -419,7 +469,7 @@ export default function OnboardingForm() {
                             </svg>
                         </div>
                         <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Koru (Maintain)</h3>
-                        <p className="text-indigo-600 font-extrabold text-3xl mb-2">
+                        <p className="text-indigo-600 font-extrabold text-3xl mb-8">
                             {maintainCalories} <span className="text-xs text-slate-400 font-medium">kcal</span>
                         </p>
 
@@ -429,7 +479,10 @@ export default function OnboardingForm() {
                                 handleSelectPlan("Kilo Koru (Maintain)", maintainCalories);
                             }}
                             disabled={!canSelectMaintain}
-                            className="w-full py-3.5 rounded-2xl bg-indigo-600 border border-indigo-600 text-white font-bold hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all duration-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600">
+                            className={`mt-auto w-full py-2.5 rounded-2xl border font-bold transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activePlan === "maintain"
+                                ? "border-indigo-600 bg-indigo-600 text-white shadow-[0_0_24px_rgba(79,70,229,0.35)] hover:bg-indigo-700 hover:shadow-[0_0_34px_rgba(79,70,229,0.45)] disabled:hover:bg-indigo-600"
+                                : "border-indigo-500 bg-white text-indigo-700 hover:bg-indigo-600 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-indigo-700"
+                                }`}>
                             Bu Planı Seç
                         </button>
                     </div>
@@ -445,21 +498,21 @@ export default function OnboardingForm() {
                         onKeyDown={(e) => {
                             if ((e.key === "Enter" || e.key === " ") && canSelectCut) setActivePlan("cut");
                         }}
-                        className={`group bg-gradient-to-br from-indigo-50/80 to-white rounded-3xl p-8 border-2 shadow-md flex flex-col items-center text-center hover:shadow-hover hover:-translate-y-1 transition-all duration-300 animate-fade-in-up relative ${activePlan === "cut" ? "border-indigo-500" : "border-indigo-100 hover:border-indigo-200"} ${canSelectCut ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                        className={`group h-full min-h-[270px] bg-white rounded-3xl px-7 py-8 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "cut" ? "border-rose-500 shadow-rose-200/70" : "border-slate-200 hover:border-rose-300"} ${canSelectCut ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                         style={{ animationDelay: "0.4s" }}>
                         {activePlan === "cut" && (
-                            <div className="absolute -top-3.5 bg-indigo-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md z-10">
+                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-rose-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-rose-200">
                                 MEVCUT DURUM
                             </div>
                         )}
-                        <div className="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-amber-200 transition-colors">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
+                        <div className="w-14 h-14 bg-rose-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-rose-200 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-rose-600">
                                 <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
                                 <polyline points="16 17 22 17 22 11"></polyline>
                             </svg>
                         </div>
                         <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Ver (Cut)</h3>
-                        <p className="text-indigo-600 font-extrabold text-3xl mb-2">
+                        <p className="text-indigo-600 font-extrabold text-3xl mb-8">
                             {cutCalories} <span className="text-xs text-slate-400 font-medium">kcal</span>
                         </p>
 
@@ -469,7 +522,10 @@ export default function OnboardingForm() {
                                 handleSelectPlan("Kilo Ver (Cutting)", cutCalories);
                             }}
                             disabled={!canSelectCut}
-                            className="w-full py-3.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 font-bold hover:bg-slate-200 transition-all duration-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-100">
+                            className={`mt-auto w-full py-2.5 rounded-2xl border font-bold transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activePlan === "cut"
+                                ? "border-rose-500 bg-rose-500 text-white shadow-[0_0_24px_rgba(244,63,94,0.35)] hover:bg-rose-600 hover:shadow-[0_0_34px_rgba(244,63,94,0.45)] disabled:hover:bg-rose-500"
+                                : "border-rose-500 bg-white text-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-rose-500"
+                                }`}>
                             Bu Planı Seç
                         </button>
                     </div>

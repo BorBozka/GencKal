@@ -32,6 +32,12 @@ function calculateMacrosFromMeals(meals: MealCard[]): MacroDistribution {
     );
 }
 
+function formatMacroValue(value: number): string {
+    if (!Number.isFinite(value)) return "0";
+    const rounded = Math.round(value * 10) / 10;
+    return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+}
+
 export default function DietPlanWizard({ targetCalories, selectedPlanName, onBack }: DietPlanWizardProps) {
     const { toast } = useToast();
     const [step, setStep] = useState<"form" | "generating">("form");
@@ -233,7 +239,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                                     <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Makro Hedef</p>
                                     <div className="flex justify-between text-xs">
                                         <span className="text-slate-600">Protein</span>
-                                        <span className="text-emerald-600 font-bold">{proteinPct}%</span>
+                                        <span className="text-rose-600 font-bold">{proteinPct}%</span>
                                     </div>
                                     <div className="flex justify-between text-xs">
                                         <span className="text-slate-600">Yağ</span>
@@ -294,22 +300,22 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                                 </div>
 
                                 <div className="flex flex-col gap-4">
-                                    <MacroBar label="Protein" percent={proteinPct} grams={macros.protein} color="linear-gradient(90deg, #06b6d4, #67e8f9)" delay={0} animate={true} />
-                                    <MacroBar label="Yağ" percent={fatPct} grams={macros.fat} color="linear-gradient(90deg, #f59e0b, #fbbf24)" delay={200} animate={true} />
-                                    <MacroBar label="Karb" percent={carbPct} grams={macros.carb} color="linear-gradient(90deg, #3b82f6, #60a5fa)" delay={400} animate={true} />
+                                    <MacroBar label="Protein" percent={proteinPct} grams={macros.protein} color="linear-gradient(90deg, #fb7185, #f43f5e)" delay={0} animate={true} />
+                                    <MacroBar label="Yağ" percent={fatPct} grams={macros.fat} color="linear-gradient(90deg, #fbbf24, #f59e0b)" delay={200} animate={true} />
+                                    <MacroBar label="Karb" percent={carbPct} grams={macros.carb} color="linear-gradient(90deg, #60a5fa, #3b82f6)" delay={400} animate={true} />
                                 </div>
 
                                 <div className="flex gap-4 mt-6 pt-4 border-t border-slate-100">
                                     <div className="flex-1 text-center">
-                                        <p className="text-cyan-600 font-bold text-base">{macros.protein}g</p>
+                                        <p className="text-rose-600 font-bold text-base">{formatMacroValue(macros.protein)}g</p>
                                         <p className="text-slate-500 text-[10px] mt-1">Protein</p>
                                     </div>
                                     <div className="flex-1 text-center">
-                                        <p className="text-amber-600 font-bold text-base">{macros.fat}g</p>
+                                        <p className="text-amber-600 font-bold text-base">{formatMacroValue(macros.fat)}g</p>
                                         <p className="text-slate-500 text-[10px] mt-1">Yağ</p>
                                     </div>
                                     <div className="flex-1 text-center">
-                                        <p className="text-blue-600 font-bold text-base">{macros.carb}g</p>
+                                        <p className="text-blue-600 font-bold text-base">{formatMacroValue(macros.carb)}g</p>
                                         <p className="text-slate-500 text-[10px] mt-1">Karbonhidrat</p>
                                     </div>
                                 </div>

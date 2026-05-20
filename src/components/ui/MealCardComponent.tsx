@@ -4,6 +4,12 @@ import { Utensils } from "lucide-react";
 import { useTypewriter } from "../../hooks/useTypewriter";
 import { MealCard, MealItem } from "../../types";
 
+function formatMacroValue(value: number): string {
+    if (!Number.isFinite(value)) return "0";
+    const rounded = Math.round(value * 10) / 10;
+    return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+}
+
 // --- DAKTİLO YAZI SATIRI BİLEŞENİ ---
 function TypewriterLine({ text, startTyping }: { text: string; startTyping: boolean }) {
     const displayed = useTypewriter(text, 30, startTyping);
@@ -20,15 +26,15 @@ function TypewriterLine({ text, startTyping }: { text: string; startTyping: bool
 // --- MAKRO ROZET BİLEŞENİ ---
 function MacroBadges({ protein, fat, carb }: { protein: number; fat: number; carb: number }) {
     return (
-        <div className="flex items-center gap-1.5 mt-1.5">
-            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-medium leading-none">
-                P {protein}g
+        <div className="mt-1.5 flex flex-row items-center gap-2">
+            <span className="rounded-md bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-700">
+                P {formatMacroValue(protein)}g
             </span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 text-[10px] font-medium leading-none">
-                Y {fat}g
+            <span className="rounded-md bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700">
+                Y {formatMacroValue(fat)}g
             </span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-medium leading-none">
-                K {carb}g
+            <span className="rounded-md bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">
+                K {formatMacroValue(carb)}g
             </span>
         </div>
     );
@@ -56,28 +62,17 @@ function RefreshIcon({ className }: { className?: string }) {
     );
 }
 
-// --- SPINNER BİLEŞENİ ---
-function Spinner() {
+// --- YENİLEME PROGRESS BİLEŞENİ ---
+function RefreshProgress() {
     return (
-        <svg
-            className="animate-spin w-4 h-4 text-indigo-500"
-            viewBox="0 0 24 24"
-            fill="none"
-        >
-            <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="3"
+        <div className="h-1.5 w-8 overflow-hidden rounded-full bg-indigo-100">
+            <motion.div
+                className="h-full w-1/2 rounded-full bg-indigo-500"
+                initial={{ x: "-100%" }}
+                animate={{ x: ["-100%", "220%"] }}
+                transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
             />
-            <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-            />
-        </svg>
+        </div>
     );
 }
 
@@ -129,9 +124,9 @@ function FoodItemRow({ item, mealId, startTyping, onSwapFood }: FoodItemRowProps
                         onClick={handleSwap}
                         disabled={isLoading}
                         title="Bu besini yenile"
-                        className="text-slate-400 hover:text-indigo-600 transition-colors duration-200 p-1 rounded-md hover:bg-indigo-50 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="text-slate-400 hover:text-indigo-600 transition-colors duration-200 p-1 rounded-md hover:bg-indigo-50 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-100 disabled:cursor-wait"
                     >
-                        {isLoading ? <Spinner /> : <RefreshIcon className="w-4 h-4" />}
+                        {isLoading ? <RefreshProgress /> : <RefreshIcon className="w-4 h-4" />}
                     </button>
                 </div>
             </div>
@@ -143,10 +138,10 @@ function FoodItemRow({ item, mealId, startTyping, onSwapFood }: FoodItemRowProps
                     carb={item.macros.carb}
                 />
             ) : (
-                <div className="flex items-center gap-1.5 mt-1.5">
-                    <div className="h-4 w-12 bg-gradient-to-r from-emerald-100 via-emerald-50 to-emerald-100 rounded-lg animate-pulse" />
-                    <div className="h-4 w-10 bg-gradient-to-r from-amber-100 via-amber-50 to-amber-100 rounded-lg animate-pulse" />
-                    <div className="h-4 w-10 bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 rounded-lg animate-pulse" />
+                <div className="mt-1.5 flex flex-row items-center gap-2">
+                    <div className="h-5 w-14 animate-pulse rounded-md bg-gradient-to-r from-rose-100 via-rose-50 to-rose-100" />
+                    <div className="h-5 w-12 animate-pulse rounded-md bg-gradient-to-r from-amber-100 via-amber-50 to-amber-100" />
+                    <div className="h-5 w-12 animate-pulse rounded-md bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100" />
                 </div>
             )}
         </div>
