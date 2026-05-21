@@ -264,7 +264,6 @@ export default function OnboardingForm() {
                                 {kilo > 0 && yagOrani >= 0 && (
                                     <div className="z-20 w-full xl:w-auto flex justify-center">
                                         <TargetSimulator
-                                            key={kilo}
                                             currentWeight={kilo}
                                             leanMass={leanMass}
                                         />

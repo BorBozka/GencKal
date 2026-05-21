@@ -7,7 +7,15 @@ interface TargetSimulatorProps {
 }
 
 export default function TargetSimulator({ currentWeight, leanMass }: TargetSimulatorProps) {
-    const [targetWeight, setTargetWeight] = useState(currentWeight);
+    const [targetState, setTargetState] = useState({
+        value: currentWeight,
+        followsCurrentWeight: true,
+    });
+
+    const minWeight = Math.max(0, Math.ceil(leanMass));
+    const maxWeight = Math.max(minWeight, Math.ceil(currentWeight + 20));
+    const clampedStoredTarget = Math.min(maxWeight, Math.max(minWeight, targetState.value));
+    const targetWeight = targetState.followsCurrentWeight ? currentWeight : clampedStoredTarget;
 
     // Kilo alımında (Bulk) alınan kilonun %50'sinin kas (lean mass) olduğu varsayılır (gerçekçi temiz bulk).
     // Kilo veriminde ise yağsız kütlenin korunduğu varsayılır (standart definisyon).
@@ -15,9 +23,10 @@ export default function TargetSimulator({ currentWeight, leanMass }: TargetSimul
     const simulatedLeanMass = targetWeight > currentWeight ? leanMass + gainedWeight * 0.5 : leanMass;
     const newBodyFat = targetWeight > 0 ? ((targetWeight - simulatedLeanMass) / targetWeight) * 100 : 0;
 
-    const minWeight = Math.ceil(leanMass);
-    const maxWeight = currentWeight + 20;
-    const progress = Math.min(100, Math.max(0, ((targetWeight - minWeight) / (maxWeight - minWeight)) * 100));
+    const rangeSize = maxWeight - minWeight;
+    const progress = rangeSize > 0
+        ? Math.min(100, Math.max(0, ((targetWeight - minWeight) / rangeSize) * 100))
+        : 100;
 
     return (
         <div className="w-full max-w-[320px] md:w-[320px] xl:w-[350px] h-[440px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.36)] p-8 flex flex-col shrink-0 animate-fade-in-right">
@@ -41,7 +50,13 @@ export default function TargetSimulator({ currentWeight, leanMass }: TargetSimul
                         min={minWeight}
                         max={maxWeight}
                         value={targetWeight}
-                        onChange={(e) => setTargetWeight(Number(e.target.value))}
+                        onChange={(e) => {
+                            const nextTargetWeight = Number(e.target.value);
+                            setTargetState({
+                                value: nextTargetWeight,
+                                followsCurrentWeight: nextTargetWeight === currentWeight,
+                            });
+                        }}
                         style={{
                             background: `linear-gradient(to right, #22d3ee 0%, #22d3ee ${progress}%, rgba(241,245,249,0.18) ${progress}%, rgba(241,245,249,0.18) 100%)`,
                         }}
