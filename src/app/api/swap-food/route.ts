@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { z } from "zod";
 import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
+import { normalizeParsedMealItem } from "../../../utils/dietPlanParsing";
 
 // --- İstek Gövdesi Tipi ---
 interface SwapFoodRequestBody {
@@ -67,13 +68,13 @@ const swapFoodSchema: Schema = {
 
 // --- Zod Doğrulama Şeması ---
 const swapFoodResponseSchema = z.object({
-    name: z.string(),
-    cal: z.number(),
-    fullText: z.string(),
+    name: z.string().min(1),
+    cal: z.number().finite().positive(),
+    fullText: z.string().min(1),
     macros: z.object({
-        protein: z.number(),
-        fat: z.number(),
-        carb: z.number(),
+        protein: z.number().finite().nonnegative(),
+        fat: z.number().finite().nonnegative(),
+        carb: z.number().finite().nonnegative(),
     }),
 });
 
@@ -192,15 +193,7 @@ Bu besinin yerine geçecek, benzer makro/kalori değerlerine sahip FARKLI bir al
         cleanedJSON = cleanedJSON.replace(/,\s*([\]}])/g, "$1");
 
         try {
-            const parsed = JSON.parse(cleanedJSON);
-
-            // --- Matematiksel Tutarlılık ve Hata Düzeltme Katmanı ---
-            if (parsed && parsed.macros) {
-                const calculatedCal = (parsed.macros.protein * 4) + (parsed.macros.carb * 4) + (parsed.macros.fat * 9);
-                if (!parsed.cal || Math.abs(parsed.cal - calculatedCal) > (parsed.cal * 0.15) || parsed.cal <= 0) {
-                    parsed.cal = Math.round(calculatedCal);
-                }
-            }
+            const parsed = normalizeParsedMealItem(JSON.parse(cleanedJSON));
 
             // Zod ile Runtime Type Checking
             const validatedResult = swapFoodResponseSchema.safeParse(parsed);

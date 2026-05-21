@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { generatedPlanSchema } from "../../../types";
 import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
+import { normalizeParsedDietPlan } from "../../../utils/dietPlanParsing";
 
 // --- Tip Tanımları ---
 interface GenerateDietRequestBody {
@@ -204,38 +205,7 @@ KRİTİK KURALLAR:
         cleanedJSON = cleanedJSON.replace(/,\s*([\]}])/g, "$1");
 
         try {
-            const parsed = JSON.parse(cleanedJSON);
-
-            // --- Matematiksel Tutarlılık ve AI Hata Düzeltme Katmanı ---
-            if (parsed && Array.isArray(parsed.meals)) {
-                let totalProtein = 0;
-                let totalFat = 0;
-                let totalCarb = 0;
-
-                for (const meal of parsed.meals) {
-                    if (meal && Array.isArray(meal.items)) {
-                        for (const item of meal.items) {
-                            if (item && item.macros) {
-                                const calculatedCal = (item.macros.protein * 4) + (item.macros.carb * 4) + (item.macros.fat * 9);
-                                // Eğer sapma %15'ten fazlaysa veya kalori mantıksızsa tam matematiksel karşılığını eşitleyelim
-                                if (!item.cal || Math.abs(item.cal - calculatedCal) > (item.cal * 0.15) || item.cal <= 0) {
-                                    item.cal = Math.round(calculatedCal);
-                                }
-                                totalProtein += item.macros.protein || 0;
-                                totalFat += item.macros.fat || 0;
-                                totalCarb += item.macros.carb || 0;
-                            }
-                        }
-                    }
-                }
-
-                // Üst düzey makroları yiyeceklerin makrolarının toplamına eşitleyelim (Toplama hatalarını çözer)
-                parsed.macros = {
-                    protein: Math.round(totalProtein),
-                    fat: Math.round(totalFat),
-                    carb: Math.round(totalCarb)
-                };
-            }
+            const parsed = normalizeParsedDietPlan(JSON.parse(cleanedJSON));
 
             // Zod ile Runtime Type Checking
             const validatedResult = generatedPlanSchema.safeParse(parsed);
