@@ -3,6 +3,7 @@ import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshol
 import { z } from "zod";
 import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
 import { normalizeParsedMealItem } from "../../../utils/dietPlanParsing";
+import { findAllergenViolation, parseAllergens } from "../../../utils/allergenValidation";
 
 // --- İstek Gövdesi Tipi ---
 interface SwapFoodRequestBody {
@@ -19,28 +20,10 @@ interface SwapFoodRequestBody {
 
 const allowedDietTypes = new Set(["standart", "karnivor", "vejetaryen", "vegan", "keto"]);
 
-function normalizeText(value: string): string {
-    return value
-        .toLocaleLowerCase("tr-TR")
-        .normalize("NFKD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/ı/g, "i");
-}
-
-function parseAllergens(allergies?: string): string[] {
-    if (!allergies) return [];
-
-    return allergies
-        .split(/[,;\n]/)
-        .map((allergen) => normalizeText(allergen.trim()))
-        .filter((allergen) => allergen.length >= 2);
-}
-
 function assertNoAllergenViolations(food: z.infer<typeof swapFoodResponseSchema>, allergens: string[]): void {
     if (allergens.length === 0) return;
 
-    const foodText = normalizeText(`${food.name} ${food.fullText}`);
-    const matchedAllergen = allergens.find((allergen) => foodText.includes(allergen));
+    const matchedAllergen = findAllergenViolation(`${food.name} ${food.fullText}`, allergens);
     if (matchedAllergen) {
         throw new Error(`AI yanıtı alerjen kuralını ihlal etti: ${matchedAllergen}.`);
     }
@@ -192,23 +175,24 @@ Bu besinin yerine geçecek, benzer makro/kalori değerlerine sahip FARKLI bir al
         cleanedJSON = cleanedJSON.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
         cleanedJSON = cleanedJSON.replace(/,\s*([\]}])/g, "$1");
 
+        let parsed: unknown;
         try {
-            const parsed = normalizeParsedMealItem(JSON.parse(cleanedJSON));
-
-            // Zod ile Runtime Type Checking
-            const validatedResult = swapFoodResponseSchema.safeParse(parsed);
-            if (!validatedResult.success) {
-                console.error("Swap Zod Şema İhlali:", validatedResult.error);
-                throw new Error("AI yanıtı beklenen yapıya uymuyor.");
-            }
-            assertNoAllergenViolations(validatedResult.data, allergenList);
-
-            return NextResponse.json(validatedResult.data, { status: 200 });
+            parsed = normalizeParsedMealItem(JSON.parse(cleanedJSON));
         } catch (parseError) {
             console.error("Swap AI Çıktısı (Parse Edilemeyen):", cleanedJSON.substring(0, 500));
             console.error("Parse Hatası:", parseError);
             throw new Error("Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin.");
         }
+
+        // Zod ile Runtime Type Checking
+        const validatedResult = swapFoodResponseSchema.safeParse(parsed);
+        if (!validatedResult.success) {
+            console.error("Swap Zod Şema İhlali:", validatedResult.error);
+            throw new Error("AI yanıtı beklenen yapıya uymuyor.");
+        }
+        assertNoAllergenViolations(validatedResult.data, allergenList);
+
+        return NextResponse.json(validatedResult.data, { status: 200 });
     } catch (err) {
         console.error("Swap Backend Hatası:", err);
         return NextResponse.json(
