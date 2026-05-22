@@ -17,9 +17,9 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
     const { boy, kilo, yagOrani } = data;
 
     const sliders = [
-        { name: 'boy', label: 'Boy', unit: 'cm', min: 120, max: 220, val: boy },
-        { name: 'kilo', label: 'Kilo', unit: 'kg', min: 30, max: 160, val: kilo },
-        { name: 'yagOrani', label: 'Yağ Oranı', unit: '%', min: 0, max: 100, val: yagOrani ?? 15 }
+        { name: 'boy', id: 'input-panel-boy', label: 'Boy', unit: 'cm', min: 120, max: 220, val: boy },
+        { name: 'kilo', id: 'input-panel-kilo', label: 'Kilo', unit: 'kg', min: 30, max: 160, val: kilo },
+        { name: 'yagOrani', id: 'input-panel-yag-orani', label: 'Yağ Oranı', unit: '%', min: 0, max: 100, val: yagOrani ?? 15 }
     ];
 
     return (
@@ -31,17 +31,18 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
                     return (
                         <div key={slider.name} className="mb-6 flex w-full flex-col space-y-3 last:mb-0">
                             <div className="flex w-full items-center justify-between gap-4">
-                                <label className="text-[15px] font-bold tracking-wide text-slate-500">
+                                <label htmlFor={slider.id} className="text-[15px] font-bold tracking-wide text-slate-500">
                                     {slider.label}
                                 </label>
                                 <div className="flex min-w-[92px] items-center justify-center rounded-xl border border-slate-100 bg-slate-50 px-3 py-1.5">
                                     <span className="text-2xl font-bold leading-none text-slate-800">{slider.val}</span>
-                                    <span className="ml-1 text-xs font-medium text-slate-400">{slider.unit}</span>
+                                    <span className="ml-1 text-xs font-medium text-slate-600">{slider.unit}</span>
                                 </div>
                             </div>
 
                             <div className="relative flex w-full items-center py-2">
                                 <input
+                                    id={slider.id}
                                     type="range"
                                     name={slider.name}
                                     min={slider.min}
@@ -55,7 +56,7 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
                                 />
                             </div>
 
-                            <div className="flex w-full items-center justify-between text-xs font-medium tracking-wide text-slate-400">
+                            <div className="flex w-full items-center justify-between text-xs font-medium tracking-wide text-slate-600">
                                 <span>{slider.min} {slider.unit}</span>
                                 <span>{slider.max} {slider.unit}</span>
                             </div>

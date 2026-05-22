@@ -52,9 +52,10 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
 
                     {/* 2. Boy (Manuel Input) */}
                     <div className="group rounded-xl border border-slate-100 bg-slate-50 p-2.5 transition-all duration-200 focus-within:ring-2 focus-within:ring-indigo-500/20">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Boy</label>
+                        <label htmlFor="tdee-boy" className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Boy</label>
                         <div className="relative mt-2 flex h-[40px] items-center gap-3">
                             <input
+                                id="tdee-boy"
                                 type="number"
                                 name="boy"
                                 min={100}
@@ -70,9 +71,10 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
 
                     {/* 3. Kilo (Manuel Input) */}
                     <div className="group rounded-xl border border-slate-100 bg-slate-50 p-2.5 transition-all duration-200 focus-within:ring-2 focus-within:ring-indigo-500/20">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Kilo</label>
+                        <label htmlFor="tdee-kilo" className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Kilo</label>
                         <div className="relative mt-2 flex h-[40px] items-center gap-3">
                             <input
+                                id="tdee-kilo"
                                 type="number"
                                 name="kilo"
                                 min={30}
@@ -88,9 +90,10 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
 
                     {/* 4. Yaş (Manuel Input) */}
                     <div className="group rounded-xl border border-slate-100 bg-slate-50 p-2.5 transition-all duration-200 focus-within:ring-2 focus-within:ring-indigo-500/20">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Yaş</label>
+                        <label htmlFor="tdee-yas" className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Yaş</label>
                         <div className="relative mt-2 flex h-[40px] items-center gap-3">
                             <input
+                                id="tdee-yas"
                                 type="number"
                                 name="yas"
                                 min={15}

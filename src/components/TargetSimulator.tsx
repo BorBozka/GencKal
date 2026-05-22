@@ -32,11 +32,11 @@ export default function TargetSimulator({ currentWeight, leanMass }: TargetSimul
         <div className="w-full max-w-[320px] md:w-[320px] xl:w-[350px] h-[440px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.36)] p-8 flex flex-col shrink-0 animate-fade-in-right">
 
             {/* Net ve Temiz Başlık */}
-            <h3 className="text-xl font-bold text-white text-center mb-6">Hedef Simülatörü</h3>
+            <h2 className="text-xl font-bold text-white text-center mb-6">Hedef Simülatörü</h2>
             {/* Sadece Veri Odaklı Slider Alanı */}
             <div className="my-auto py-4">
                 <div className="mb-6 flex w-full items-center justify-between gap-4">
-                    <span className="text-sm font-bold tracking-wide text-indigo-200/80">Hedef Kilo</span>
+                    <label htmlFor="target-simulator-weight" className="text-sm font-bold tracking-wide text-indigo-200/80">Hedef Kilo</label>
                     <div className="flex min-w-[92px] items-center justify-center rounded-xl border border-white/10 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
                         <span className="text-2xl font-bold leading-none text-white">{targetWeight}</span>
                         <span className="ml-1 text-xs font-medium text-indigo-200/80">kg</span>
@@ -46,6 +46,7 @@ export default function TargetSimulator({ currentWeight, leanMass }: TargetSimul
                 {/* Range Slider Track & Wrapper */}
                 <div className="relative flex w-full items-center py-2">
                     <input
+                        id="target-simulator-weight"
                         type="range"
                         min={minWeight}
                         max={maxWeight}
