@@ -3,7 +3,7 @@ import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshol
 import { generatedPlanSchema } from "../../../types";
 import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
 import { normalizeParsedDietPlan } from "../../../utils/dietPlanParsing";
-import { findAllergenViolation, parseAllergens } from "../../../utils/allergenValidation";
+import { AllergenViolationError, findAllergenViolation, parseAllergens, retryRecoverableGeneration } from "../../../utils/allergenValidation";
 
 // --- Tip Tanımları ---
 interface GenerateDietRequestBody {
@@ -32,12 +32,6 @@ function cleanJsonResponse(rawText: string): string {
         .replace(/,\s*([\]}])/g, "$1");
 }
 
-function getFinishReason(result: unknown): string | undefined {
-    if (!result || typeof result !== "object") return undefined;
-    const response = (result as { response?: { candidates?: Array<{ finishReason?: string }> } }).response;
-    return response?.candidates?.[0]?.finishReason;
-}
-
 function assertNoAllergenViolations(plan: unknown, allergens: string[]): void {
     if (allergens.length === 0) return;
 
@@ -46,7 +40,7 @@ function assertNoAllergenViolations(plan: unknown, allergens: string[]): void {
         for (const item of meal.items) {
             const matchedAllergen = findAllergenViolation(`${item.name} ${item.fullText}`, allergens);
             if (matchedAllergen) {
-                throw new Error(`AI yanıtı alerjen kuralını ihlal etti: ${matchedAllergen}.`);
+                throw new AllergenViolationError(matchedAllergen);
             }
         }
     }
@@ -191,43 +185,37 @@ KRİTİK KURALLAR:
             }
         });
 
-        let parsed: unknown;
+        return await retryRecoverableGeneration({
+            maxAttempts: maxGenerationAttempts,
+            runAttempt: async (retryInstruction) => {
+                // Her deneme için timeout koruması
+                const attemptPrompt = retryInstruction ? `${userPrompt}\n\n${retryInstruction}` : userPrompt;
+                const generatePromise = model.generateContent(attemptPrompt);
+                const timeoutPromise = new Promise<never>((_, reject) =>
+                    setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. Lütfen tekrar deneyin.")), maxGenerationMs)
+                );
 
-        for (let attempt = 1; attempt <= maxGenerationAttempts; attempt += 1) {
-            // Her deneme için timeout koruması
-            const generatePromise = model.generateContent(userPrompt);
-            const timeoutPromise = new Promise<never>((_, reject) =>
-                setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. Lütfen tekrar deneyin.")), maxGenerationMs)
-            );
+                const result = await Promise.race([generatePromise, timeoutPromise]);
+                const rawText = result.response.text();
+                const cleanedJSON = cleanJsonResponse(rawText);
+                const parsed = normalizeParsedDietPlan(JSON.parse(cleanedJSON));
+                const validatedResult = generatedPlanSchema.safeParse(parsed);
+                if (!validatedResult.success) {
+                    console.error("Zod Şema İhlali:", validatedResult.error);
+                    throw new Error("AI yanıtı beklenen yapıya uymuyor.");
+                }
+                assertMealCount(validatedResult.data, mealsPerDay);
+                assertNoAllergenViolations(validatedResult.data, allergenList);
 
-            const result = await Promise.race([generatePromise, timeoutPromise]);
-            const finishReason = getFinishReason(result);
-            const rawText = result.response.text();
-            const cleanedJSON = cleanJsonResponse(rawText);
-
-            try {
-                parsed = normalizeParsedDietPlan(JSON.parse(cleanedJSON));
-                break;
-            } catch (parseError) {
-                console.error(`Saf AI Çıktısı (Parse Edilemeyen, deneme ${attempt}/${maxGenerationAttempts}, bitiş: ${finishReason ?? "bilinmiyor"}):`, cleanedJSON);
-                console.error("Parse Hatası:", parseError);
-            }
-        }
-
-        if (parsed === undefined) {
-            throw new Error("Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin.");
-        }
-
-        // Zod ile Runtime Type Checking
-        const validatedResult = generatedPlanSchema.safeParse(parsed);
-        if (!validatedResult.success) {
-            console.error("Zod Şema İhlali:", validatedResult.error);
-            throw new Error("AI yanıtı beklenen yapıya uymuyor.");
-        }
-        assertMealCount(validatedResult.data, mealsPerDay);
-        assertNoAllergenViolations(validatedResult.data, allergenList);
-
-        return NextResponse.json(validatedResult.data, { status: 200 });
+                return NextResponse.json(validatedResult.data, { status: 200 });
+            },
+            onAttemptError: (generationError, attempt) => {
+                console.error(`AI Çıktısı doğrulanamadı (deneme ${attempt}/${maxGenerationAttempts}):`, generationError);
+            },
+            getFinalError: (generationError) => generationError instanceof AllergenViolationError
+                ? new Error("Yapay zeka alerjen kuralına uygun bir plan üretemedi. Lütfen tekrar deneyin.")
+                : new Error("Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin."),
+        });
     } catch (err) {
         console.error("Backend İşlem Hatası:", err);
         return NextResponse.json(

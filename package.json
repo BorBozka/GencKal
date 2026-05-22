@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test:api-parsing": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/utils/dietPlanParsing.test.mjs"
+    "test:api-parsing": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/utils/*.test.mjs"
   },
   "repository": {
     "type": "git",

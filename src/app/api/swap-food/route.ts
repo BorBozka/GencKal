@@ -3,7 +3,7 @@ import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshol
 import { z } from "zod";
 import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
 import { normalizeParsedMealItem } from "../../../utils/dietPlanParsing";
-import { findAllergenViolation, parseAllergens } from "../../../utils/allergenValidation";
+import { AllergenViolationError, findAllergenViolation, parseAllergens, retryRecoverableGeneration } from "../../../utils/allergenValidation";
 
 // --- İstek Gövdesi Tipi ---
 interface SwapFoodRequestBody {
@@ -19,14 +19,23 @@ interface SwapFoodRequestBody {
 }
 
 const allowedDietTypes = new Set(["standart", "karnivor", "vejetaryen", "vegan", "keto"]);
+const maxSwapAttempts = 2;
 
 function assertNoAllergenViolations(food: z.infer<typeof swapFoodResponseSchema>, allergens: string[]): void {
     if (allergens.length === 0) return;
 
     const matchedAllergen = findAllergenViolation(`${food.name} ${food.fullText}`, allergens);
     if (matchedAllergen) {
-        throw new Error(`AI yanıtı alerjen kuralını ihlal etti: ${matchedAllergen}.`);
+        throw new AllergenViolationError(matchedAllergen);
     }
+}
+
+function cleanJsonResponse(rawText: string): string {
+    return rawText
+        .trim()
+        .replace(/^```(?:json)?\s*/i, "")
+        .replace(/\s*```$/i, "")
+        .replace(/,\s*([\]}])/g, "$1");
 }
 
 // --- Gemini Yanıt Şeması (Tek Besin) ---
@@ -161,38 +170,35 @@ Bu besinin yerine geçecek, benzer makro/kalori değerlerine sahip FARKLI bir al
             },
         });
 
-        // 30 saniyelik timeout (tek besin için yeterli)
-        const generatePromise = model.generateContent(userPrompt);
-        const timeoutPromise = new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. Lütfen tekrar deneyin.")), 30000)
-        );
+        return await retryRecoverableGeneration({
+            maxAttempts: maxSwapAttempts,
+            runAttempt: async (retryInstruction) => {
+                // 30 saniyelik timeout (tek besin için yeterli)
+                const attemptPrompt = retryInstruction ? `${userPrompt}\n\n${retryInstruction}` : userPrompt;
+                const generatePromise = model.generateContent(attemptPrompt);
+                const timeoutPromise = new Promise<never>((_, reject) =>
+                    setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. Lütfen tekrar deneyin.")), 30000)
+                );
 
-        const result = await Promise.race([generatePromise, timeoutPromise]);
-        const rawText = result.response.text();
+                const result = await Promise.race([generatePromise, timeoutPromise]);
+                const cleanedJSON = cleanJsonResponse(result.response.text());
+                const parsed = normalizeParsedMealItem(JSON.parse(cleanedJSON));
+                const validatedResult = swapFoodResponseSchema.safeParse(parsed);
+                if (!validatedResult.success) {
+                    console.error("Swap Zod Şema İhlali:", validatedResult.error);
+                    throw new Error("AI yanıtı beklenen yapıya uymuyor.");
+                }
+                assertNoAllergenViolations(validatedResult.data, allergenList);
 
-        // JSON Temizleme ve Parse
-        let cleanedJSON = rawText.trim();
-        cleanedJSON = cleanedJSON.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
-        cleanedJSON = cleanedJSON.replace(/,\s*([\]}])/g, "$1");
-
-        let parsed: unknown;
-        try {
-            parsed = normalizeParsedMealItem(JSON.parse(cleanedJSON));
-        } catch (parseError) {
-            console.error("Swap AI Çıktısı (Parse Edilemeyen):", cleanedJSON.substring(0, 500));
-            console.error("Parse Hatası:", parseError);
-            throw new Error("Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin.");
-        }
-
-        // Zod ile Runtime Type Checking
-        const validatedResult = swapFoodResponseSchema.safeParse(parsed);
-        if (!validatedResult.success) {
-            console.error("Swap Zod Şema İhlali:", validatedResult.error);
-            throw new Error("AI yanıtı beklenen yapıya uymuyor.");
-        }
-        assertNoAllergenViolations(validatedResult.data, allergenList);
-
-        return NextResponse.json(validatedResult.data, { status: 200 });
+                return NextResponse.json(validatedResult.data, { status: 200 });
+            },
+            onAttemptError: (generationError, attempt) => {
+                console.error(`Swap AI Çıktısı doğrulanamadı (deneme ${attempt}/${maxSwapAttempts}):`, generationError);
+            },
+            getFinalError: (generationError) => generationError instanceof AllergenViolationError
+                ? new Error("Yapay zeka alerjen kuralına uygun bir alternatif üretemedi. Lütfen tekrar deneyin.")
+                : new Error("Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin."),
+        });
     } catch (err) {
         console.error("Swap Backend Hatası:", err);
         return NextResponse.json(
