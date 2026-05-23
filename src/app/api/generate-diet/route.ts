@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import type { Schema } from "@google/generative-ai";
 import { generatedPlanSchema } from "../../../types";
 import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
 import { normalizeParsedDietPlan } from "../../../utils/dietPlanParsing";
@@ -23,6 +24,15 @@ const allowedDietTypes = new Set<GenerateDietRequestBody["dietType"]>([
 
 const maxGenerationAttempts = 2;
 const maxGenerationMs = 60000;
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. Lütfen tekrar deneyin.")), timeoutMs);
+    });
+
+    return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
+}
 
 function cleanJsonResponse(rawText: string): string {
     return rawText
@@ -190,12 +200,7 @@ KRİTİK KURALLAR:
             runAttempt: async (retryInstruction) => {
                 // Her deneme için timeout koruması
                 const attemptPrompt = retryInstruction ? `${userPrompt}\n\n${retryInstruction}` : userPrompt;
-                const generatePromise = model.generateContent(attemptPrompt);
-                const timeoutPromise = new Promise<never>((_, reject) =>
-                    setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. Lütfen tekrar deneyin.")), maxGenerationMs)
-                );
-
-                const result = await Promise.race([generatePromise, timeoutPromise]);
+                const result = await withTimeout(model.generateContent(attemptPrompt), maxGenerationMs);
                 const rawText = result.response.text();
                 const cleanedJSON = cleanJsonResponse(rawText);
                 const parsed = normalizeParsedDietPlan(JSON.parse(cleanedJSON));

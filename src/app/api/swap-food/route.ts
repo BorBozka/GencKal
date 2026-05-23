@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI, SchemaType, Schema, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import type { Schema } from "@google/generative-ai";
 import { z } from "zod";
 import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
 import { normalizeParsedMealItem } from "../../../utils/dietPlanParsing";
@@ -20,6 +21,15 @@ interface SwapFoodRequestBody {
 
 const allowedDietTypes = new Set(["standart", "karnivor", "vejetaryen", "vegan", "keto"]);
 const maxSwapAttempts = 2;
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. Lütfen tekrar deneyin.")), timeoutMs);
+    });
+
+    return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
+}
 
 function assertNoAllergenViolations(food: z.infer<typeof swapFoodResponseSchema>, allergens: string[]): void {
     if (allergens.length === 0) return;
@@ -175,12 +185,7 @@ Bu besinin yerine geçecek, benzer makro/kalori değerlerine sahip FARKLI bir al
             runAttempt: async (retryInstruction) => {
                 // 30 saniyelik timeout (tek besin için yeterli)
                 const attemptPrompt = retryInstruction ? `${userPrompt}\n\n${retryInstruction}` : userPrompt;
-                const generatePromise = model.generateContent(attemptPrompt);
-                const timeoutPromise = new Promise<never>((_, reject) =>
-                    setTimeout(() => reject(new Error("API isteği zaman aşımına uğradı. Lütfen tekrar deneyin.")), 30000)
-                );
-
-                const result = await Promise.race([generatePromise, timeoutPromise]);
+                const result = await withTimeout(model.generateContent(attemptPrompt), 30000);
                 const cleanedJSON = cleanJsonResponse(result.response.text());
                 const parsed = normalizeParsedMealItem(JSON.parse(cleanedJSON));
                 const validatedResult = swapFoodResponseSchema.safeParse(parsed);

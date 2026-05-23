@@ -23,7 +23,7 @@ export default function InputPanel({ data, handleChange }: InputPanelProps) {
     ];
 
     return (
-        <div className="w-full max-w-[600px] md:w-[600px] bg-white text-gray-800 rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.18)] p-6 md:p-8 md:pl-24 h-auto flex flex-col font-sans relative z-30 mx-auto">
+        <div className="w-full max-w-[600px] lg:w-[600px] bg-white text-gray-800 rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.18)] p-6 lg:p-8 lg:pl-24 h-auto flex flex-col font-sans relative z-30 mx-auto">
             <div className="w-full mt-2">
                 {sliders.map(slider => {
                     const progress = ((slider.val - slider.min) / (slider.max - slider.min)) * 100;

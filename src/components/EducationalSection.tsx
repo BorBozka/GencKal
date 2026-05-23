@@ -41,15 +41,15 @@ const EducationalSection = React.memo(function EducationalSection() {
                                             <th className={`${cellClass} text-right`}>BMI Aralığı (kg/m²)</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="text-sm">
-                                        <tr className="border-b border-slate-100 bg-sky-50/50"><td className={`${cellClass} font-medium text-sky-800`}>İleri Derece Zayıflık</td><td className={`${cellClass} text-right font-semibold text-sky-900`}>&lt; 16</td></tr>
-                                        <tr className="border-b border-slate-100 bg-sky-50/50"><td className={`${cellClass} font-medium text-sky-800`}>Orta Derece Zayıflık</td><td className={`${cellClass} text-right font-semibold text-sky-900`}>16 - 17</td></tr>
-                                        <tr className="border-b border-slate-100 bg-slate-50"><td className={`${cellClass} font-medium text-slate-700`}>Hafif Zayıflık</td><td className={`${cellClass} text-right font-semibold text-slate-800`}>17 - 18.5</td></tr>
-                                        <tr className="border-b border-slate-100 bg-emerald-50/70"><td className={`${cellClass} font-medium text-emerald-800`}>Normal</td><td className={`${cellClass} text-right font-semibold text-emerald-800`}>18.5 - 25</td></tr>
-                                        <tr className="border-b border-slate-100 bg-amber-50/60"><td className={`${cellClass} font-medium text-amber-800`}>Fazla Kilolu</td><td className={`${cellClass} text-right font-semibold text-amber-900`}>25 - 30</td></tr>
-                                        <tr className="border-b border-slate-100 bg-rose-50/60"><td className={`${cellClass} font-semibold text-rose-800`}>Obez (1. Derece)</td><td className={`${cellClass} text-right font-semibold text-rose-900`}>30 - 35</td></tr>
-                                        <tr className="border-b border-slate-100 bg-rose-50/60"><td className={`${cellClass} font-semibold text-rose-800`}>Obez (2. Derece)</td><td className={`${cellClass} text-right font-semibold text-rose-900`}>35 - 40</td></tr>
-                                        <tr className="bg-rose-100/80"><td className={`${cellClass} font-semibold text-rose-900`}>Aşırı Obez (3. Derece)</td><td className={`${cellClass} text-right font-semibold text-rose-900`}>&gt; 40</td></tr>
+                                    <tbody className="text-sm text-slate-600">
+                                        <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>İleri Derece Zayıflık</td><td className={`${cellClass} text-right font-semibold text-slate-800`}>&lt; 16</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Orta Derece Zayıflık</td><td className={`${cellClass} text-right font-semibold text-slate-800`}>16 - 17</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Hafif Zayıflık</td><td className={`${cellClass} text-right font-semibold text-slate-800`}>17 - 18.5</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Normal</td><td className={`${cellClass} text-right font-semibold text-slate-800`}>18.5 - 25</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Fazla Kilolu</td><td className={`${cellClass} text-right font-semibold text-slate-800`}>25 - 30</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${cellClass} font-semibold text-slate-700`}>Obez (1. Derece)</td><td className={`${cellClass} text-right font-semibold text-slate-800`}>30 - 35</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${cellClass} font-semibold text-slate-700`}>Obez (2. Derece)</td><td className={`${cellClass} text-right font-semibold text-slate-800`}>35 - 40</td></tr>
+                                        <tr><td className={`${cellClass} font-semibold text-slate-700`}>Aşırı Obez (3. Derece)</td><td className={`${cellClass} text-right font-semibold text-slate-800`}>&gt; 40</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -66,18 +66,18 @@ const EducationalSection = React.memo(function EducationalSection() {
                             </ul>
 
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div className="overflow-hidden rounded-xl border border-rose-100 bg-rose-50/60">
-                                    <h3 className="border-b border-rose-100/80 px-4 py-2 text-base font-semibold text-rose-800">Fazla Kilo Riskleri</h3>
-                                    <ul className="divide-y divide-rose-100/80 text-xs font-medium leading-tight text-rose-900/80">
+                                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                    <h3 className="border-b border-slate-300 bg-slate-100/80 px-4 py-2 text-base font-semibold text-slate-800">Fazla Kilo Riskleri</h3>
+                                    <ul className="divide-y divide-slate-300 text-xs font-medium leading-tight text-slate-700">
                                         <li className="px-4 py-2">Yüksek tansiyon ve kolesterol</li>
                                         <li className="px-4 py-2">Tip II diyabet</li>
                                         <li className="px-4 py-2">Koroner kalp hastalığı</li>
                                         <li className="px-4 py-2">Uyku apnesi</li>
                                     </ul>
                                 </div>
-                                <div className="overflow-hidden rounded-xl border border-sky-100 bg-sky-50/60">
-                                    <h3 className="border-b border-sky-100/80 px-4 py-2 text-base font-semibold text-sky-800">Düşük Kilo Riskleri</h3>
-                                    <ul className="divide-y divide-sky-100/80 text-xs font-medium leading-tight text-sky-900/80">
+                                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                    <h3 className="border-b border-slate-300 bg-slate-100/80 px-4 py-2 text-base font-semibold text-slate-800">Düşük Kilo Riskleri</h3>
+                                    <ul className="divide-y divide-slate-300 text-xs font-medium leading-tight text-slate-700">
                                         <li className="px-4 py-2">Yetersiz beslenme ve anemi</li>
                                         <li className="px-4 py-2">Osteoporoz (Kemik erimesi)</li>
                                         <li className="px-4 py-2">Zayıf bağışıklık sistemi</li>
@@ -91,7 +91,7 @@ const EducationalSection = React.memo(function EducationalSection() {
                     {/* --- SAĞ KOLON: FFMI BÖLÜMÜ --- */}
                     <section className="space-y-6">
                         <article className="rounded-2xl border border-slate-100 bg-slate-50/50 p-6">
-                            <h2 className="mb-3 text-2xl font-bold text-slate-900">FFMI (Yağsız Vücut Kütlesi İndeksi) Nedir?</h2>
+                            <h2 className="mb-3 text-2xl font-bold text-slate-900">FFMI (Yağsız Vücut Kitle İndeksi) Nedir?</h2>
                             <p className="leading-relaxed text-slate-600">
                                 FFMI, boyunuza oranla ne kadar kas kütlesine sahip olduğunuzu hesaplamanızı sağlayan bir indekstir. Bu indeks, vücut geliştiriciler ve sporcular tarafından gelişimlerini takip etmek için yaygın olarak kullanılır ve BMI&apos;ye göre çok daha güvenilirdir.
                             </p>
@@ -119,12 +119,12 @@ const EducationalSection = React.memo(function EducationalSection() {
                                         </tr>
                                     </thead>
                                     <tbody className="text-sm text-slate-600">
-                                        <tr className="border-b border-slate-100 bg-sky-50/50"><td className={`${strongCellClass} text-sky-900`}>17-18</td><td className={cellClass}>10-18%</td><td className={`${cellClass} font-medium text-sky-800`}>Zayıf</td></tr>
-                                        <tr className="border-b border-slate-100 bg-slate-50"><td className={`${strongCellClass} text-slate-800`}>18-20</td><td className={cellClass}>20-27%</td><td className={`${cellClass} font-medium text-slate-700`}>Ortalama</td></tr>
-                                        <tr className="border-b border-slate-100 bg-amber-50/60"><td className={`${strongCellClass} text-amber-900`}>19-21</td><td className={cellClass}>25-40%</td><td className={`${cellClass} font-medium text-amber-800`}>Kilolu</td></tr>
-                                        <tr className="border-b border-slate-100 bg-emerald-50/70"><td className={`${strongCellClass} text-emerald-900`}>20-21</td><td className={cellClass}>10-18%</td><td className={`${cellClass} font-medium text-emerald-800`}>Sporcu / Orta Seviye</td></tr>
-                                        <tr className="border-b border-slate-100 bg-cyan-50/70"><td className={`${strongCellClass} text-cyan-900`}>22-23</td><td className={cellClass}>6-12%</td><td className={`${cellClass} font-medium text-cyan-800`}>İleri Seviye Sporcu</td></tr>
-                                        <tr className="bg-indigo-50/80"><td className={`${strongCellClass} text-indigo-900`}>24-25</td><td className={cellClass}>8-20%</td><td className={`${cellClass} font-semibold text-indigo-800`}>Vücut Geliştirici</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>17-18</td><td className={cellClass}>10-18%</td><td className={`${cellClass} font-medium text-slate-700`}>Zayıf</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>18-20</td><td className={cellClass}>20-27%</td><td className={`${cellClass} font-medium text-slate-700`}>Ortalama</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>19-21</td><td className={cellClass}>25-40%</td><td className={`${cellClass} font-medium text-slate-700`}>Kilolu</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>20-21</td><td className={cellClass}>10-18%</td><td className={`${cellClass} font-medium text-slate-700`}>Sporcu / Orta Seviye</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>22-23</td><td className={cellClass}>6-12%</td><td className={`${cellClass} font-medium text-slate-700`}>İleri Seviye Sporcu</td></tr>
+                                        <tr><td className={`${strongCellClass} text-slate-800`}>24-25</td><td className={cellClass}>8-20%</td><td className={`${cellClass} font-semibold text-slate-700`}>Vücut Geliştirici</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -142,12 +142,12 @@ const EducationalSection = React.memo(function EducationalSection() {
                                         </tr>
                                     </thead>
                                     <tbody className="text-sm text-slate-600">
-                                        <tr className="border-b border-slate-100 bg-sky-50/50"><td className={`${strongCellClass} text-sky-900`}>14-15</td><td className={cellClass}>20-25%</td><td className={`${cellClass} font-medium text-sky-800`}>Zayıf</td></tr>
-                                        <tr className="border-b border-slate-100 bg-slate-50"><td className={`${strongCellClass} text-slate-800`}>14-17</td><td className={cellClass}>22-35%</td><td className={`${cellClass} font-medium text-slate-700`}>Ortalama</td></tr>
-                                        <tr className="border-b border-slate-100 bg-amber-50/60"><td className={`${strongCellClass} text-amber-900`}>15-18</td><td className={cellClass}>30-45%</td><td className={`${cellClass} font-medium text-amber-800`}>Kilolu</td></tr>
-                                        <tr className="border-b border-slate-100 bg-emerald-50/70"><td className={`${strongCellClass} text-emerald-900`}>16-17</td><td className={cellClass}>18-25%</td><td className={`${cellClass} font-medium text-emerald-800`}>Sporcu / Orta Seviye</td></tr>
-                                        <tr className="border-b border-slate-100 bg-cyan-50/70"><td className={`${strongCellClass} text-cyan-900`}>18-20</td><td className={cellClass}>15-22%</td><td className={`${cellClass} font-medium text-cyan-800`}>İleri Seviye Sporcu</td></tr>
-                                        <tr className="bg-indigo-50/80"><td className={`${strongCellClass} text-indigo-900`}>19-21</td><td className={cellClass}>15-30%</td><td className={`${cellClass} font-semibold text-indigo-800`}>Vücut Geliştirici</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>14-15</td><td className={cellClass}>20-25%</td><td className={`${cellClass} font-medium text-slate-700`}>Zayıf</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>14-17</td><td className={cellClass}>22-35%</td><td className={`${cellClass} font-medium text-slate-700`}>Ortalama</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>15-18</td><td className={cellClass}>30-45%</td><td className={`${cellClass} font-medium text-slate-700`}>Kilolu</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>16-17</td><td className={cellClass}>18-25%</td><td className={`${cellClass} font-medium text-slate-700`}>Sporcu / Orta Seviye</td></tr>
+                                        <tr className="border-b border-slate-300"><td className={`${strongCellClass} text-slate-800`}>18-20</td><td className={cellClass}>15-22%</td><td className={`${cellClass} font-medium text-slate-700`}>İleri Seviye Sporcu</td></tr>
+                                        <tr><td className={`${strongCellClass} text-slate-800`}>19-21</td><td className={cellClass}>15-30%</td><td className={`${cellClass} font-semibold text-slate-700`}>Vücut Geliştirici</td></tr>
                                     </tbody>
                                 </table>
                             </div>

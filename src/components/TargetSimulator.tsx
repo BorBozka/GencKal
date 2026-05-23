@@ -29,7 +29,7 @@ export default function TargetSimulator({ currentWeight, leanMass }: TargetSimul
         : 100;
 
     return (
-        <div className="w-full max-w-[320px] md:w-[320px] xl:w-[350px] h-[440px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.36)] p-8 flex flex-col shrink-0 animate-fade-in-right">
+        <div className="w-full max-w-[320px] lg:w-[320px] xl:w-[350px] h-[440px] bg-gradient-to-b from-[#4F46E5] to-[#0F172A] text-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.36)] p-8 flex flex-col shrink-0 animate-fade-in-right">
 
             {/* Net ve Temiz Başlık */}
             <h2 className="text-xl font-bold text-white text-center mb-6">Hedef Simülatörü</h2>

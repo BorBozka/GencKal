@@ -28,7 +28,7 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
         <div className="w-full flex flex-col font-sans">
             <div className="flex flex-col gap-4">
                 {/* Üst Satır: 4'lü Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-5">
 
                     {/* 1. Cinsiyet */}
                     <div className="group rounded-xl border border-slate-100 bg-slate-50 p-2.5 transition-all duration-200 focus-within:ring-2 focus-within:ring-indigo-500/20">
@@ -111,7 +111,7 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                 {/* Alt Satır: Aktivite Seviyesi */}
                 <div className="space-y-2">
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Aktivite Seviyesi</label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-5 gap-3">
                         {aktiviteOptions.map((option) => (
                             <button
                                 key={option.key}

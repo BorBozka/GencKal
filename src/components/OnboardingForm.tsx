@@ -242,8 +242,8 @@ export default function OnboardingForm() {
                             </div>
                         )}
 
-                        <div className="relative flex flex-col md:flex-row justify-center items-center md:items-center gap-6 md:gap-0 mt-2 w-full mb-4 max-w-[1400px] mx-auto">
-                            <div className="z-20 w-full md:w-auto flex justify-center md:justify-end">
+                        <div className="relative flex flex-col lg:flex-row justify-center items-center lg:items-center gap-6 lg:gap-0 mt-2 w-full mb-4 max-w-[1400px] mx-auto">
+                            <div className="z-20 w-full lg:w-auto flex justify-center lg:justify-end">
                                 <ResultsPanel
                                     calculatedBMI={calculatedBMI}
                                     leanMass={leanMass}
@@ -253,8 +253,8 @@ export default function OnboardingForm() {
                                     normalizedFfmi={calculatedFFMI}
                                 />
                             </div>
-                            <div className="z-10 w-full md:w-auto md:-ml-12 mt-0 flex flex-col xl:flex-row items-center justify-center xl:justify-start gap-6">
-                                <div className="w-full md:w-auto flex justify-center md:justify-start">
+                            <div className="z-10 w-full lg:w-auto lg:-ml-12 mt-0 flex flex-col xl:flex-row items-center justify-center xl:justify-start gap-6">
+                                <div className="w-full lg:w-auto flex justify-center lg:justify-start">
                                     <InputPanel
                                         data={formData.fizikselVeriler}
                                         handleChange={handleFizikselChange}
@@ -301,7 +301,7 @@ export default function OnboardingForm() {
         </div>
     ) : (
         /* --- 2. ADIM: DİYET PLANI (Premium SaaS Açık Tema) --- */
-        <div className="h-screen w-full bg-slate-50 flex flex-col font-sans text-slate-900 overflow-hidden">
+        <div className="min-h-screen w-full bg-slate-50 flex flex-col font-sans text-slate-900 overflow-x-hidden">
 
             {/* --- STEP 2 HEADER --- */}
             <header className="sticky top-0 z-50 flex-none py-4 px-6 md:px-12 font-medium bg-[#3E3AAF] text-white border-b border-white/10 shadow-sm">
@@ -327,7 +327,7 @@ export default function OnboardingForm() {
             </header>
 
             {/* --- ANA İÇERİK --- */}
-            <div className="flex-1 w-full max-w-[1500px] mx-auto px-4 sm:px-8 pt-4 pb-4 overflow-hidden">
+            <div className="flex-1 w-full max-w-[1500px] mx-auto px-4 sm:px-8 pt-4 pb-8">
                 {errorLine && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-center text-sm font-bold">
                         {errorLine}
@@ -345,7 +345,7 @@ export default function OnboardingForm() {
                 </div>
 
                 {/* Üst Alan: TDEE Hesaplama + Skor */}
-                <div className="flex flex-col lg:flex-row lg:items-stretch gap-5 mb-5">
+                <div className="flex flex-col xl:flex-row xl:items-stretch gap-5 mb-5">
 
                     {/* SOL: TDEE Hesaplama Paneli */}
                     <div className="flex flex-1 items-center bg-white rounded-3xl p-7 border border-slate-200 shadow-sm transition-all duration-300 animate-fade-in-up">
@@ -357,7 +357,7 @@ export default function OnboardingForm() {
                     </div>
 
                     {/* SAĞ: TDEE Skor Gösterimi */}
-                    <div className="lg:w-[380px] flex-none bg-white rounded-3xl p-7 border border-slate-200 shadow-sm transition-all duration-300 flex flex-col justify-between text-center relative overflow-hidden animate-scale-in"
+                    <div className="xl:w-[360px] 2xl:w-[380px] flex-none bg-white rounded-3xl p-6 2xl:p-7 border border-slate-200 shadow-sm transition-all duration-300 flex flex-col justify-between text-center relative overflow-hidden animate-scale-in"
                         style={{ animationDelay: "0.15s" }}>
                         {/* Arka plan glow efekti */}
                         <div className="absolute inset-0 opacity-15"
@@ -398,7 +398,7 @@ export default function OnboardingForm() {
                 </div>
 
                 {/* Alt Alan: 3'lü Plan Kartları */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pb-0">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 pb-0">
 
                     {/* Kilo Al Kartı */}
                     <div
@@ -411,7 +411,7 @@ export default function OnboardingForm() {
                         onKeyDown={(e) => {
                             if ((e.key === "Enter" || e.key === " ") && canSelectBulk) setActivePlan("bulk");
                         }}
-                        className={`group h-full min-h-[270px] bg-white rounded-3xl px-7 py-8 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "bulk" ? "border-blue-500 shadow-blue-200/70" : "border-slate-200 hover:border-blue-300"} ${canSelectBulk ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "bulk" ? "border-blue-500 shadow-blue-200/70" : "border-slate-200 hover:border-blue-300"} ${canSelectBulk ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                         style={{ animationDelay: "0.2s" }}>
                         {activePlan === "bulk" && (
                             <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-blue-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-blue-200">
@@ -454,7 +454,7 @@ export default function OnboardingForm() {
                         onKeyDown={(e) => {
                             if ((e.key === "Enter" || e.key === " ") && canSelectMaintain) setActivePlan("maintain");
                         }}
-                        className={`group h-full min-h-[270px] bg-white rounded-3xl px-7 py-8 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out relative animate-fade-in-up ${activePlan === "maintain" ? "border-indigo-600 shadow-indigo-200/60" : "border-slate-200 hover:border-indigo-300"} ${canSelectMaintain ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out relative animate-fade-in-up ${activePlan === "maintain" ? "border-indigo-600 shadow-indigo-200/60" : "border-slate-200 hover:border-indigo-300"} ${canSelectMaintain ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                         style={{ animationDelay: "0.3s" }}>
                         {activePlan === "maintain" && (
                             <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-indigo-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md">
@@ -497,7 +497,7 @@ export default function OnboardingForm() {
                         onKeyDown={(e) => {
                             if ((e.key === "Enter" || e.key === " ") && canSelectCut) setActivePlan("cut");
                         }}
-                        className={`group h-full min-h-[270px] bg-white rounded-3xl px-7 py-8 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "cut" ? "border-rose-500 shadow-rose-200/70" : "border-slate-200 hover:border-rose-300"} ${canSelectCut ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "cut" ? "border-rose-500 shadow-rose-200/70" : "border-slate-200 hover:border-rose-300"} ${canSelectCut ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                         style={{ animationDelay: "0.4s" }}>
                         {activePlan === "cut" && (
                             <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-rose-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-rose-200">

@@ -2,26 +2,26 @@
   "name": "genckal-app",
   "version": "1.0.0",
   "description": "Kullanıcıların fiziksel verilerine ve kişisel hedeflerine dayanarak günlük kalori ve makro besin ihtiyaçlarını geleneksel ve bilimsel algoritmalarla hesaplayan bir beslenme planlayıcısıdır. Temel amaç, kullanıcılara kendi diyet süreçlerini yönetebilecekleri, verilerini kaydedip takip edebilecekleri kişiselleştirilmiş bir web paneli sunmaktır.",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run test:api",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test:api-parsing": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/utils/*.test.mjs"
+    "test:api-parsing": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/utils/*.test.mjs",
+    "test:api-routes": "node --loader ./src/test/route-test-loader.mjs --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test src/app/api/generate-diet/route.test.mjs src/app/api/swap-food/route.test.mjs",
+    "test:api": "npm run test:api-parsing && npm run test:api-routes"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Weledonium/GencKal.git"
+    "url": "git+https://github.com/BorBozka/GencKal.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Weledonium/GencKal/issues"
+    "url": "https://github.com/BorBozka/GencKal/issues"
   },
-  "homepage": "https://github.com/Weledonium/GencKal#readme",
   "dependencies": {
     "@ai-sdk/google": "^3.0.64",
     "@ai-sdk/react": "^3.0.170",

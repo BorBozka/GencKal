@@ -13,6 +13,15 @@ GençKal, kullanıcıların Beden Kitle İndeksi (BMI), Yağsız Vücut Kütlesi
 * Tailwind CSS
 * TypeScript
 
+## Deployment
+This project is configured for Vercel's default Next.js deployment path.
+
+* Build command: `npm run build`
+* Install command: `npm ci`
+* Output directory: managed by Next.js and Vercel
+
+Do not re-add GitHub Pages static export settings such as `output: 'export'`, `basePath: '/GencKal'`, `assetPrefix: '/GencKal/'`, or Actions jobs that upload a `dist` Pages artifact. Vercel should build the app directly from the repository root.
+
 ## Proje Görev Zaman Çizelgesi (Gantt Şeması)
 
 ```mermaid
