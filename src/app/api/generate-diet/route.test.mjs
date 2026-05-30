@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { after, before, test } from "node:test";
+import { after, afterEach, before, mock, test } from "node:test";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -22,6 +22,10 @@ after(() => {
     }
     GoogleGenerativeAI.prototype.getGenerativeModel = originalGetGenerativeModel;
     console.error = originalConsoleError;
+});
+
+afterEach(() => {
+    mock.timers.reset();
 });
 
 function makeGenerateDietRequest(body, ip) {
@@ -49,6 +53,21 @@ function mockGeminiResponses(rawResponses, prompts = []) {
             };
         },
     });
+}
+
+function mockGeminiTimeout(prompts = []) {
+    GoogleGenerativeAI.prototype.getGenerativeModel = () => ({
+        generateContent: (prompt) => {
+            prompts.push(prompt);
+            return new Promise(() => {});
+        },
+    });
+}
+
+async function flushPromises() {
+    for (let index = 0; index < 5; index += 1) {
+        await Promise.resolve();
+    }
 }
 
 function validPlan(overrides = {}) {
@@ -129,4 +148,58 @@ test("returns the malformed AI JSON error after generate-diet retries are exhaus
 
     assert.equal(response.status, 400);
     assert.equal(body.error, "Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin.");
+});
+
+test("returns 429 when generate-diet rate limit is exceeded", async () => {
+    const prompts = [];
+    mockGeminiResponses([
+        validPlan(),
+        validPlan(),
+        validPlan(),
+        validPlan(),
+        validPlan(),
+    ], prompts);
+
+    const body = {
+        targetCalories: 2000,
+        dietType: "standart",
+        mealsPerDay: 2,
+    };
+
+    for (let index = 0; index < 5; index += 1) {
+        const response = await POST(makeGenerateDietRequest(body, "generate-rate-limit"));
+        assert.equal(response.status, 200);
+    }
+
+    const response = await POST(makeGenerateDietRequest(body, "generate-rate-limit"));
+    const responseBody = await response.json();
+
+    assert.equal(response.status, 429);
+    assert.equal(responseBody.error, "Çok fazla istek gönderdiniz. Lütfen 1 dakika bekleyin.");
+    assert.equal(prompts.length, 5);
+});
+
+test("returns an error when generate-diet requests time out", async () => {
+    mock.timers.enable({ apis: ["setTimeout"] });
+    const prompts = [];
+    mockGeminiTimeout(prompts);
+
+    const responsePromise = POST(makeGenerateDietRequest({
+        targetCalories: 2000,
+        dietType: "standart",
+        mealsPerDay: 2,
+    }, "generate-timeout"));
+
+    await flushPromises();
+    mock.timers.tick(60000);
+    await flushPromises();
+    mock.timers.tick(60000);
+    await flushPromises();
+
+    const response = await responsePromise;
+    const body = await response.json();
+
+    assert.equal(response.status, 400);
+    assert.equal(body.error, "Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin.");
+    assert.equal(prompts.length, 2);
 });

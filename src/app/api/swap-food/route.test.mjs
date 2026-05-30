@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { after, before, test } from "node:test";
+import { after, afterEach, before, mock, test } from "node:test";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -22,6 +22,10 @@ after(() => {
     }
     GoogleGenerativeAI.prototype.getGenerativeModel = originalGetGenerativeModel;
     console.error = originalConsoleError;
+});
+
+afterEach(() => {
+    mock.timers.reset();
 });
 
 function makeSwapFoodRequest(body, ip) {
@@ -49,6 +53,21 @@ function mockGeminiResponses(rawResponses, prompts = []) {
             };
         },
     });
+}
+
+function mockGeminiTimeout(prompts = []) {
+    GoogleGenerativeAI.prototype.getGenerativeModel = () => ({
+        generateContent: (prompt) => {
+            prompts.push(prompt);
+            return new Promise(() => {});
+        },
+    });
+}
+
+async function flushPromises() {
+    for (let index = 0; index < 5; index += 1) {
+        await Promise.resolve();
+    }
 }
 
 function baseRequestBody(allergies) {
@@ -99,4 +118,53 @@ test("returns the malformed AI JSON error after swap-food retries are exhausted"
 
     assert.equal(response.status, 400);
     assert.equal(body.error, "Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin.");
+});
+
+test("returns 429 when swap-food rate limit is exceeded", async () => {
+    const prompts = [];
+    mockGeminiResponses([
+        validSwap(),
+        validSwap(),
+        validSwap(),
+        validSwap(),
+        validSwap(),
+        validSwap(),
+        validSwap(),
+        validSwap(),
+        validSwap(),
+        validSwap(),
+    ], prompts);
+
+    for (let index = 0; index < 10; index += 1) {
+        const response = await POST(makeSwapFoodRequest(baseRequestBody(), "swap-rate-limit"));
+        assert.equal(response.status, 200);
+    }
+
+    const response = await POST(makeSwapFoodRequest(baseRequestBody(), "swap-rate-limit"));
+    const body = await response.json();
+
+    assert.equal(response.status, 429);
+    assert.equal(body.error, "Çok fazla istek gönderdiniz. Lütfen 1 dakika bekleyin.");
+    assert.equal(prompts.length, 10);
+});
+
+test("returns an error when swap-food requests time out", async () => {
+    mock.timers.enable({ apis: ["setTimeout"] });
+    const prompts = [];
+    mockGeminiTimeout(prompts);
+
+    const responsePromise = POST(makeSwapFoodRequest(baseRequestBody(), "swap-timeout"));
+
+    await flushPromises();
+    mock.timers.tick(30000);
+    await flushPromises();
+    mock.timers.tick(30000);
+    await flushPromises();
+
+    const response = await responsePromise;
+    const body = await response.json();
+
+    assert.equal(response.status, 400);
+    assert.equal(body.error, "Yapay zeka geçerli bir veri üretemedi. Lütfen tekrar deneyin.");
+    assert.equal(prompts.length, 2);
 });
