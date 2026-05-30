@@ -95,64 +95,70 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
     const handleSwapFood = useCallback(async (mealId: string, foodId: string) => {
         if (!generatedPlan || !formData) return;
 
-        // Hedef öğün ve besini bul
-        const targetMeal = generatedPlan.meals.find((m) => m.id === mealId);
-        if (!targetMeal) return;
-        const targetFood = targetMeal.items.find((item) => item.id === foodId);
-        if (!targetFood) return;
+        try {
+            // Hedef öğün ve besini bul
+            const targetMeal = generatedPlan.meals.find((m) => m.id === mealId);
+            if (!targetMeal) return;
+            const targetFood = targetMeal.items.find((item) => item.id === foodId);
+            if (!targetFood) return;
 
-        // API'ye istek at
-        const response = await fetch("/api/swap-food", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                currentFood: {
-                    name: targetFood.name,
-                    cal: targetFood.cal,
-                    fullText: targetFood.fullText,
-                    macros: targetFood.macros ?? { protein: 0, fat: 0, carb: 0 },
-                },
-                mealTitle: targetMeal.title,
-                dietType: formData.dietType,
-                allergies: formData.allergies || undefined,
-            }),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
-            const msg = errorData?.error || "Besin değişimi başarısız oldu.";
-            throw new Error(msg);
-        }
-
-        const newFood = await response.json();
-
-        // Yeni besine benzersiz id ata
-        const newFoodWithId: MealItem = {
-            ...newFood,
-            id: `food-swapped-${Date.now()}`,
-        };
-
-        // State'i immutable şekilde güncelle — sadece ilgili besini değiştir
-        setGeneratedPlan((prev) => {
-            if (!prev) return prev;
-            const meals = prev.meals.map((meal) => {
-                if (meal.id !== mealId) return meal;
-                return {
-                    ...meal,
-                    items: meal.items.map((item) =>
-                        item.id === foodId ? newFoodWithId : item
-                    ),
-                };
+            // API'ye istek at
+            const response = await fetch("/api/swap-food", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    currentFood: {
+                        name: targetFood.name,
+                        cal: targetFood.cal,
+                        fullText: targetFood.fullText,
+                        macros: targetFood.macros ?? { protein: 0, fat: 0, carb: 0 },
+                    },
+                    mealTitle: targetMeal.title,
+                    dietType: formData.dietType,
+                    allergies: formData.allergies || undefined,
+                }),
             });
 
-            return {
-                ...prev,
-                macros: calculateMacrosFromMeals(meals),
-                meals,
-            };
-        });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                const msg = errorData?.error || "Besin değişimi başarısız oldu.";
+                throw new Error(msg);
+            }
 
-    }, [generatedPlan, formData]);
+            const newFood = await response.json();
+
+            // Yeni besine benzersiz id ata
+            const newFoodWithId: MealItem = {
+                ...newFood,
+                id: `food-swapped-${Date.now()}`,
+            };
+
+            // State'i immutable şekilde güncelle — sadece ilgili besini değiştir
+            setGeneratedPlan((prev) => {
+                if (!prev) return prev;
+                const meals = prev.meals.map((meal) => {
+                    if (meal.id !== mealId) return meal;
+                    return {
+                        ...meal,
+                        items: meal.items.map((item) =>
+                            item.id === foodId ? newFoodWithId : item
+                        ),
+                    };
+                });
+
+                return {
+                    ...prev,
+                    macros: calculateMacrosFromMeals(meals),
+                    meals,
+                };
+            });
+        } catch (err) {
+            const msg = err instanceof Error ? err.message : "Besin değişimi başarısız oldu.";
+            toast("error", "Besin değiştirilemedi", msg);
+            throw err;
+        }
+
+    }, [generatedPlan, formData, toast]);
 
     const macros = generatedPlan?.macros ?? { protein: 0, fat: 0, carb: 0 };
     const showPlanData = !isLoading && !error && generatedPlan !== null;
