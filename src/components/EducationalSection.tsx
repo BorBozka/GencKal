@@ -31,7 +31,7 @@ const EducationalSection = React.memo(function EducationalSection() {
                             </div>
                         </article>
 
-                        <article className="rounded-2xl border border-slate-100 bg-slate-50/50 p-6">
+                        <article className="-mt-8 rounded-2xl border border-slate-100 bg-slate-50/50 p-6">
                             <h3 className="mb-3 text-xl font-bold text-slate-800">Yetişkinler İçin BMI Tablosu (DSÖ)</h3>
                             <div className={tableContainerClass}>
                                 <table className={tableClass}>
@@ -55,7 +55,7 @@ const EducationalSection = React.memo(function EducationalSection() {
                             </div>
                         </article>
 
-                        <article className="rounded-2xl border border-slate-100 bg-slate-50/50 p-6">
+                        <article className="-mt-8 rounded-2xl border border-slate-100 bg-slate-50/50 p-6">
                             <h3 className="mb-3 text-xl font-bold text-slate-800">BMI&apos;nin Sınırları</h3>
                             <p className="mb-4 leading-relaxed text-slate-600">
                                 BMI sağlıklı vücut ağırlığını belirlemek için yaygın olsa da, kas ve yağ oranını dikkate almayan sadece bir tahmindir.
@@ -115,7 +115,7 @@ const EducationalSection = React.memo(function EducationalSection() {
                             </div>
                         </article>
 
-                        <article className="rounded-2xl border border-slate-100 bg-slate-50/50 p-6">
+                        <article className="-mt-8 rounded-2xl border border-slate-100 bg-slate-50/50 p-6">
                             <h3 className="mb-3 text-xl font-bold text-slate-800">Erkekler İçin FFMI Skorları</h3>
                             <div className={tableContainerClass}>
                                 <table className={tableClass}>
@@ -138,7 +138,7 @@ const EducationalSection = React.memo(function EducationalSection() {
                             </div>
                         </article>
 
-                        <article className="rounded-2xl border border-slate-100 bg-slate-50/50 p-6">
+                        <article className="-mt-8 rounded-2xl border border-slate-100 bg-slate-50/50 p-6">
                             <h3 className="mb-3 text-xl font-bold text-slate-800">Kadınlar İçin FFMI Skorları</h3>
                             <div className={tableContainerClass}>
                                 <table className={tableClass}>
