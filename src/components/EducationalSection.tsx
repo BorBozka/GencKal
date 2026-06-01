@@ -66,23 +66,31 @@ const EducationalSection = React.memo(function EducationalSection() {
                             </ul>
 
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                                    <h3 className="border-b border-slate-300 bg-slate-100/80 px-4 py-2 text-base font-semibold text-slate-800">Fazla Kilo Riskleri</h3>
-                                    <ul className="divide-y divide-slate-300 text-xs font-medium leading-tight text-slate-700">
-                                        <li className="px-4 py-2">Yüksek tansiyon ve kolesterol</li>
-                                        <li className="px-4 py-2">Tip II diyabet</li>
-                                        <li className="px-4 py-2">Koroner kalp hastalığı</li>
-                                        <li className="px-4 py-2">Uyku apnesi</li>
-                                    </ul>
+                                <div>
+                                    <h4 className="px-4 text-lg font-bold text-slate-800">Fazla Kilo Riskleri</h4>
+                                    <div className={`${tableContainerClass} -mt-1`}>
+                                        <table className={tableClass}>
+                                            <tbody className="text-sm text-slate-600">
+                                                <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Yüksek tansiyon ve kolesterol</td></tr>
+                                                <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Tip II diyabet</td></tr>
+                                                <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Koroner kalp hastalığı</td></tr>
+                                                <tr><td className={`${cellClass} font-medium text-slate-700`}>Uyku apnesi</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                                    <h3 className="border-b border-slate-300 bg-slate-100/80 px-4 py-2 text-base font-semibold text-slate-800">Düşük Kilo Riskleri</h3>
-                                    <ul className="divide-y divide-slate-300 text-xs font-medium leading-tight text-slate-700">
-                                        <li className="px-4 py-2">Yetersiz beslenme ve anemi</li>
-                                        <li className="px-4 py-2">Osteoporoz (Kemik erimesi)</li>
-                                        <li className="px-4 py-2">Zayıf bağışıklık sistemi</li>
-                                        <li className="px-4 py-2">Büyüme sorunları</li>
-                                    </ul>
+                                <div>
+                                    <h4 className="px-4 text-lg font-bold text-slate-800">Düşük Kilo Riskleri</h4>
+                                    <div className={`${tableContainerClass} -mt-1`}>
+                                        <table className={tableClass}>
+                                            <tbody className="text-sm text-slate-600">
+                                                <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Yetersiz beslenme ve anemi</td></tr>
+                                                <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Osteoporoz (Kemik erimesi)</td></tr>
+                                                <tr className="border-b border-slate-300"><td className={`${cellClass} font-medium text-slate-700`}>Zayıf bağışıklık sistemi</td></tr>
+                                                <tr><td className={`${cellClass} font-medium text-slate-700`}>Büyüme sorunları</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </article>
