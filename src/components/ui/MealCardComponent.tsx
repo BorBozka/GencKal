@@ -26,7 +26,7 @@ function TypewriterLine({ text, startTyping }: { text: string; startTyping: bool
 // --- MAKRO ROZET BİLEŞENİ ---
 function MacroBadges({ protein, fat, carb }: { protein: number; fat: number; carb: number }) {
     return (
-        <div className="mt-1.5 flex flex-row items-center gap-2">
+        <div className="mt-2 flex flex-row flex-wrap items-center gap-2">
             <span className="rounded-md bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-700">
                 P {formatMacroValue(protein)}g
             </span>
@@ -101,7 +101,7 @@ function FoodItemRow({ item, mealId, startTyping, onSwapFood }: FoodItemRowProps
     }, [isLoading, onSwapFood, mealId, item.id]);
 
     return (
-        <div className="flex flex-col gap-1 py-4 px-2 hover:bg-slate-50 transition-colors duration-150 rounded-lg group">
+        <div className="flex flex-col gap-2 rounded-2xl px-3 py-4 transition-colors duration-150 hover:bg-slate-50 group">
             {/* Üst satır: İsim + Kalori + Swap Butonu */}
             <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
@@ -125,7 +125,7 @@ function FoodItemRow({ item, mealId, startTyping, onSwapFood }: FoodItemRowProps
                         disabled={isLoading}
                         title="Bu besini yenile"
                         aria-label="Bu besini yenile"
-                        className="text-slate-600 hover:text-indigo-600 transition-colors duration-200 p-1 rounded-md hover:bg-indigo-50 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-100 disabled:cursor-wait"
+                        className="cursor-pointer rounded-lg p-1.5 text-slate-500 opacity-0 transition-colors duration-200 hover:bg-indigo-50 hover:text-indigo-600 focus:opacity-100 disabled:cursor-wait disabled:opacity-100 group-hover:opacity-100"
                     >
                         {isLoading ? <RefreshProgress /> : <RefreshIcon className="w-4 h-4" />}
                     </button>
@@ -166,17 +166,20 @@ export function MealCardComponent({ meal, index, startTyping, onSwapFood }: Meal
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-6 hover:shadow-hover hover:border-indigo-200 transition-all duration-300"
+            className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:border-indigo-200 hover:shadow-hover"
         >
             {/* Öğün Başlığı + Toplam Kalori */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-2 flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-indigo-50 rounded-xl flex items-center justify-center border border-indigo-100">
-                        <Utensils className="w-4 h-4 text-[#3E3AAF]" />
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50">
+                        <Utensils className="h-5 w-5 text-[#3E3AAF]" />
                     </div>
-                    <h4 className="text-slate-900 font-bold text-sm">{meal.title}</h4>
+                    <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Öğün</p>
+                        <h4 className="text-base font-extrabold text-slate-950">{meal.title}</h4>
+                    </div>
                 </div>
-                <span className="text-slate-600 text-[10px] font-bold uppercase tracking-wider">
+                <span className="rounded-full bg-slate-50 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-slate-600 ring-1 ring-slate-100">
                     {mealTotalCal} kcal
                 </span>
             </div>

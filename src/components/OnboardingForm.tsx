@@ -153,6 +153,44 @@ export default function OnboardingForm() {
     const canSelectBulk = isDietInputValid && bulkCalories >= 800 && bulkCalories <= 6000;
     const canSelectMaintain = isDietInputValid && maintainCalories >= 800 && maintainCalories <= 6000;
     const canSelectCut = isDietInputValid && cutCalories >= 800 && cutCalories <= 6000;
+    const dietPlanOptions = [
+        {
+            id: "bulk" as const,
+            title: "Kilo Al",
+            subtitle: "Bulk",
+            calories: bulkCalories,
+            canSelect: canSelectBulk,
+            selectedLabel: "Seçili Hedef",
+            accentClass: "text-blue-700",
+            iconClass: "bg-blue-50 text-blue-700 border-blue-100",
+            activeClass: "border-blue-300 bg-blue-50/60 shadow-blue-100",
+            hoverClass: "hover:border-blue-200",
+        },
+        {
+            id: "maintain" as const,
+            title: "Kilo Koru",
+            subtitle: "Maintain",
+            calories: maintainCalories,
+            canSelect: canSelectMaintain,
+            selectedLabel: "Mevcut Durum",
+            accentClass: "text-emerald-700",
+            iconClass: "bg-emerald-50 text-emerald-700 border-emerald-100",
+            activeClass: "border-emerald-300 bg-emerald-50/60 shadow-emerald-100",
+            hoverClass: "hover:border-emerald-200",
+        },
+        {
+            id: "cut" as const,
+            title: "Kilo Ver",
+            subtitle: "Cut",
+            calories: cutCalories,
+            canSelect: canSelectCut,
+            selectedLabel: "Seçili Hedef",
+            accentClass: "text-rose-700",
+            iconClass: "bg-rose-50 text-rose-700 border-rose-100",
+            activeClass: "border-rose-300 bg-rose-50/60 shadow-rose-100",
+            hoverClass: "hover:border-rose-200",
+        },
+    ];
 
 
 
@@ -171,13 +209,13 @@ export default function OnboardingForm() {
                             <span className="text-[18px]">GencKalculator</span>
                         </div>
                         <div className="hidden sm:flex items-center gap-8">
-                            <AuthNavButton />
                             <button
                                 onClick={() => setStep(1)}
                                 className="flex cursor-pointer items-center gap-1 text-base font-normal leading-none text-white transition-colors hover:text-indigo-100"
                             >
                                 Ana Sayfa
                             </button>
+                            <AuthNavButton />
                             <Link href="/iletisim" className="text-base font-normal leading-none text-white transition-colors hover:text-indigo-100">İletişim</Link>
                         </div>
                     </div>
@@ -303,7 +341,7 @@ export default function OnboardingForm() {
             </div>
         </div>
     ) : (
-        /* --- 2. ADIM: DİYET PLANI (Premium SaaS Açık Tema) --- */
+        /* --- 2. ADIM: DİYET PLANI (Açık ve veri odaklı akış) --- */
         <div className="min-h-screen w-full bg-slate-50 flex flex-col font-sans text-slate-900 overflow-x-hidden">
 
             {/* --- STEP 2 HEADER --- */}
@@ -318,20 +356,20 @@ export default function OnboardingForm() {
                         <span className="text-[18px]">GencKalculator</span>
                     </div>
                     <div className="hidden sm:flex items-center gap-8">
-                        <AuthNavButton />
                         <button
                             onClick={() => setStep(1)}
                             className="flex cursor-pointer items-center gap-1 text-base font-normal leading-none text-white transition-colors hover:text-indigo-100"
                         >
                             Ana Sayfa
                         </button>
+                        <AuthNavButton />
                         <Link href="/iletisim" className="text-base font-normal leading-none text-white transition-colors hover:text-indigo-100">İletişim</Link>
                     </div>
                 </div>
             </header>
 
             {/* --- ANA İÇERİK --- */}
-            <div className="flex-1 w-full max-w-[1500px] mx-auto px-4 sm:px-8 pt-4 pb-8">
+            <div className="flex-1 w-full max-w-[1320px] mx-auto px-4 sm:px-8 pt-6 pb-8">
                 {errorLine && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-center text-sm font-bold">
                         {errorLine}
@@ -343,16 +381,30 @@ export default function OnboardingForm() {
                     </div>
                 )}
 
-                <div className="mb-4">
-                    <h2 className="text-base font-extrabold text-slate-950">TDEE Verileri</h2>
-                    <p className="mt-1 text-sm font-medium text-slate-500">Profil değerlerinizi güncelleyerek kalori ve makro dağılımını anlık takip edin.</p>
+                <div className="mb-5">
+                    <div>
+                        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-indigo-600">Diyet planı</p>
+                        <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-950">Kalori hedefinizi belirleyin</h2>
+                        <p className="mt-1 text-sm font-medium leading-6 text-slate-500">
+                            Profil değerlerinizi güncelleyerek TDEE değerini, makro dağılımını ve plan hedefini aynı ekranda takip edin.
+                        </p>
+                    </div>
                 </div>
 
                 {/* Üst Alan: TDEE Hesaplama + Skor */}
-                <div className="flex flex-col xl:flex-row xl:items-stretch gap-5 mb-5">
+                <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_430px] 2xl:grid-cols-[minmax(0,1fr)_460px]">
 
                     {/* SOL: TDEE Hesaplama Paneli */}
-                    <div className="flex flex-1 items-center bg-white rounded-3xl p-7 border border-slate-200 shadow-sm transition-all duration-300 animate-fade-in-up">
+                    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm animate-fade-in-up sm:p-5">
+                        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 className="text-sm font-extrabold text-slate-950">Profil Verileri</h3>
+                                <p className="mt-1 text-xs font-medium text-slate-500">Boy, kilo, yaş ve aktivite bilgileri</p>
+                            </div>
+                            <div className="rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">
+                                Anlık hesaplama
+                            </div>
+                        </div>
                         <TDEECalculatorPanel
                             data={formData.fizikselVeriler}
                             handleChange={handleFizikselChange}
@@ -361,19 +413,15 @@ export default function OnboardingForm() {
                     </div>
 
                     {/* SAĞ: TDEE Skor Gösterimi */}
-                    <div className="xl:w-[360px] 2xl:w-[380px] flex-none bg-white rounded-3xl p-6 2xl:p-7 border border-slate-200 shadow-sm transition-all duration-300 flex flex-col justify-between text-center relative overflow-hidden animate-scale-in"
+                    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-300 flex flex-col text-center relative overflow-hidden animate-scale-in sm:p-5"
                         style={{ animationDelay: "0.15s" }}>
-                        {/* Arka plan glow efekti */}
-                        <div className="absolute inset-0 opacity-15"
-                            style={{ background: "radial-gradient(circle at 50% 30%, rgba(79,70,229,0.25) 0%, transparent 65%)" }}
-                        />
-                        <div className="relative z-10">
-                            <h2 className="text-[10px] uppercase tracking-[0.25em] text-slate-600 font-bold mb-3">Günlük Kalori İhtiyacınız (TDEE)</h2>
-                            <p className="text-indigo-900 font-extrabold text-5xl flex items-baseline gap-2 justify-center">
-                                {calculatedTDEE} <span className="text-xl font-medium text-slate-500">kcal</span>
+                        <div>
+                            <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500 font-bold">Günlük kalori ihtiyacı</p>
+                            <p className="mt-2 flex items-baseline justify-center gap-2 text-4xl font-black tracking-tight text-indigo-950">
+                                {calculatedTDEE} <span className="text-lg font-semibold text-slate-500">kcal</span>
                             </p>
                         </div>
-                        <div className="relative z-10 mt-5 w-full rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-left">
+                        <div className="mt-4 w-full rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-left">
                             <div className="mb-3 flex items-center justify-between">
                                 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600">Günlük Makro Dağılımı</p>
                                 <p className="text-xs font-bold text-slate-700">{activePlanCalories} kcal</p>
@@ -402,137 +450,75 @@ export default function OnboardingForm() {
                 </div>
 
                 {/* Alt Alan: 3'lü Plan Kartları */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 pb-0">
+                <div className="mt-5 grid grid-cols-1 gap-4 pb-0 lg:grid-cols-3">
+                    {dietPlanOptions.map((plan, index) => {
+                        const isActive = activePlan === plan.id;
+                        const planName = `${plan.title} (${plan.subtitle})`;
+                        return (
+                            <div
+                                key={plan.id}
+                                role="button"
+                                tabIndex={plan.canSelect ? 0 : -1}
+                                aria-disabled={!plan.canSelect}
+                                onClick={() => {
+                                    if (plan.canSelect) setActivePlan(plan.id);
+                                }}
+                                onKeyDown={(e) => {
+                                    if ((e.key === "Enter" || e.key === " ") && plan.canSelect) setActivePlan(plan.id);
+                                }}
+                                className={`group flex min-h-[320px] flex-col rounded-3xl border bg-white p-7 shadow-sm transition-all duration-300 animate-fade-in-up ${isActive ? plan.activeClass : `border-slate-200 ${plan.hoverClass} hover:shadow-md`} ${plan.canSelect ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                                style={{ animationDelay: `${0.12 + index * 0.08}s` }}
+                            >
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className={`flex h-14 w-14 items-center justify-center rounded-2xl border ${plan.iconClass}`}>
+                                        {plan.id === "bulk" ? (
+                                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                                                <polyline points="16 7 22 7 22 13"></polyline>
+                                            </svg>
+                                        ) : plan.id === "cut" ? (
+                                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
+                                                <polyline points="16 17 22 17 22 11"></polyline>
+                                            </svg>
+                                        ) : (
+                                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                                <circle cx="12" cy="12" r="8"></circle>
+                                                <path d="M12 8v4l3 2"></path>
+                                            </svg>
+                                        )}
+                                    </div>
+                                    {isActive && (
+                                        <span className="rounded-full bg-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-700 shadow-sm ring-1 ring-slate-200">
+                                            {plan.selectedLabel}
+                                        </span>
+                                    )}
+                                </div>
 
-                    {/* Kilo Al Kartı */}
-                    <div
-                        role="button"
-                        tabIndex={canSelectBulk ? 0 : -1}
-                        aria-disabled={!canSelectBulk}
-                        onClick={() => {
-                            if (canSelectBulk) setActivePlan("bulk");
-                        }}
-                        onKeyDown={(e) => {
-                            if ((e.key === "Enter" || e.key === " ") && canSelectBulk) setActivePlan("bulk");
-                        }}
-                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "bulk" ? "border-blue-700 shadow-blue-200/70" : "border-slate-200 hover:border-blue-700"} ${canSelectBulk ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
-                        style={{ animationDelay: "0.2s" }}>
-                        {activePlan === "bulk" && (
-                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-blue-700 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-blue-200">
-                                MEVCUT DURUM
+                                <div className="flex flex-1 flex-col items-center justify-center pt-2 pb-8 text-center">
+                                    <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">{plan.subtitle}</p>
+                                    <h3 className="mt-2 text-2xl font-extrabold text-slate-950">{plan.title}</h3>
+                                    <p className={`mt-5 text-5xl font-black tracking-tight ${plan.accentClass}`}>
+                                        {plan.calories} <span className="text-base font-semibold text-slate-500">kcal</span>
+                                    </p>
+                                </div>
+
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSelectPlan(planName, plan.calories);
+                                    }}
+                                    disabled={!plan.canSelect}
+                                    className={`h-12 w-full cursor-pointer rounded-2xl border text-sm font-extrabold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${isActive
+                                        ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_20px_rgba(62,58,175,0.18)] hover:bg-indigo-700"
+                                        : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+                                        }`}
+                                >
+                                    Bu Planı Seç
+                                </button>
                             </div>
-                        )}
-                        <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-blue-200 transition-colors">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
-                                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
-                                <polyline points="16 7 22 7 22 13"></polyline>
-                            </svg>
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Al (Bulk)</h3>
-                        <p className="text-indigo-600 font-extrabold text-3xl mb-8">
-                            {bulkCalories} <span className="text-xs text-slate-600 font-medium">kcal</span>
-                        </p>
-
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleSelectPlan("Kilo Al (Bulk)", bulkCalories);
-                            }}
-                            disabled={!canSelectBulk}
-                            className={`mt-auto w-full py-2.5 rounded-2xl border font-bold transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activePlan === "bulk"
-                                ? "border-blue-700 bg-blue-700 text-white shadow-[0_0_24px_rgba(29,78,216,0.35)] hover:bg-blue-800 hover:shadow-[0_0_34px_rgba(29,78,216,0.45)] disabled:hover:bg-blue-700"
-                                : "border-blue-700 bg-white text-blue-700 hover:bg-blue-700 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-blue-700"
-                                }`}>
-                            Bu Planı Seç
-                        </button>
-                    </div>
-
-                    {/* Kilo Koru Kartı (Mevcut Durum) */}
-                    <div
-                        role="button"
-                        tabIndex={canSelectMaintain ? 0 : -1}
-                        aria-disabled={!canSelectMaintain}
-                        onClick={() => {
-                            if (canSelectMaintain) setActivePlan("maintain");
-                        }}
-                        onKeyDown={(e) => {
-                            if ((e.key === "Enter" || e.key === " ") && canSelectMaintain) setActivePlan("maintain");
-                        }}
-                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out relative animate-fade-in-up ${activePlan === "maintain" ? "border-indigo-600 shadow-indigo-200/60" : "border-slate-200 hover:border-indigo-300"} ${canSelectMaintain ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
-                        style={{ animationDelay: "0.3s" }}>
-                        {activePlan === "maintain" && (
-                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-indigo-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md">
-                                MEVCUT DURUM
-                            </div>
-                        )}
-                        <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mb-5">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                            </svg>
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Koru (Maintain)</h3>
-                        <p className="text-indigo-600 font-extrabold text-3xl mb-8">
-                            {maintainCalories} <span className="text-xs text-slate-600 font-medium">kcal</span>
-                        </p>
-
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleSelectPlan("Kilo Koru (Maintain)", maintainCalories);
-                            }}
-                            disabled={!canSelectMaintain}
-                            className={`mt-auto w-full py-2.5 rounded-2xl border font-bold transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activePlan === "maintain"
-                                ? "border-indigo-600 bg-indigo-600 text-white shadow-[0_0_24px_rgba(79,70,229,0.35)] hover:bg-indigo-700 hover:shadow-[0_0_34px_rgba(79,70,229,0.45)] disabled:hover:bg-indigo-600"
-                                : "border-indigo-500 bg-white text-indigo-700 hover:bg-indigo-600 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-indigo-700"
-                                }`}>
-                            Bu Planı Seç
-                        </button>
-                    </div>
-
-                    {/* Kilo Ver Kartı */}
-                    <div
-                        role="button"
-                        tabIndex={canSelectCut ? 0 : -1}
-                        aria-disabled={!canSelectCut}
-                        onClick={() => {
-                            if (canSelectCut) setActivePlan("cut");
-                        }}
-                        onKeyDown={(e) => {
-                            if ((e.key === "Enter" || e.key === " ") && canSelectCut) setActivePlan("cut");
-                        }}
-                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "cut" ? "border-rose-700 shadow-rose-200/70" : "border-slate-200 hover:border-rose-700"} ${canSelectCut ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
-                        style={{ animationDelay: "0.4s" }}>
-                        {activePlan === "cut" && (
-                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-rose-700 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-rose-200">
-                                MEVCUT DURUM
-                            </div>
-                        )}
-                        <div className="w-14 h-14 bg-rose-100 rounded-full flex items-center justify-center mb-5 group-hover:bg-rose-200 transition-colors">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-rose-600">
-                                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"></polyline>
-                                <polyline points="16 17 22 17 22 11"></polyline>
-                            </svg>
-                        </div>
-                        <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Ver (Cut)</h3>
-                        <p className="text-indigo-600 font-extrabold text-3xl mb-8">
-                            {cutCalories} <span className="text-xs text-slate-600 font-medium">kcal</span>
-                        </p>
-
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleSelectPlan("Kilo Ver (Cutting)", cutCalories);
-                            }}
-                            disabled={!canSelectCut}
-                            className={`mt-auto w-full py-2.5 rounded-2xl border font-bold transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activePlan === "cut"
-                                ? "border-rose-700 bg-rose-700 text-white shadow-[0_0_24px_rgba(190,18,60,0.35)] hover:bg-rose-800 hover:shadow-[0_0_34px_rgba(190,18,60,0.45)] disabled:hover:bg-rose-700"
-                                : "border-rose-700 bg-white text-rose-700 hover:bg-rose-700 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-rose-700"
-                                }`}>
-                            Bu Planı Seç
-                        </button>
-                    </div>
-
+                        );
+                    })}
                 </div>
             </div>
 

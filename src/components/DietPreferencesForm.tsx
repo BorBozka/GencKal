@@ -125,20 +125,20 @@ export default function DietPreferencesForm({
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto animate-fade-in-up font-sans">
+        <div className="w-full max-w-3xl mx-auto animate-fade-in-up font-sans">
             <button
                 type="button"
                 onClick={onBack}
-                className="mb-4 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+                className="mb-4 inline-flex cursor-pointer items-center rounded-xl px-1 py-1 text-sm font-bold text-slate-500 transition-colors hover:text-slate-800"
             >
                 ← Diyet Planlarına Geri Dön
             </button>
             <form
                 onSubmit={handleSubmit(handleFormSubmit)}
-                className="w-full bg-white border border-slate-200 shadow-sm rounded-3xl p-8 sm:p-10 hover:shadow-xl transition-all duration-300 flex flex-col gap-8"
+                className="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 sm:p-8 flex flex-col gap-7"
             >
             {/* --- HERO HEADER --- */}
-            <div className="text-center">
+            <div className="rounded-3xl border border-slate-100 bg-slate-50/80 p-5 text-center">
                 <div className="flex justify-center">
                     <p className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold ${planHero.badgeClass}`}>
                         <span className="text-base leading-none">{planHero.icon}</span>
@@ -149,10 +149,9 @@ export default function DietPreferencesForm({
                     {targetCalories}
                     <span className="text-lg font-medium text-slate-600">kcal / gün</span>
                 </h2>
-                <p className="text-slate-500 text-sm mt-2">
+                <p className="text-slate-500 text-sm font-medium mt-2">
                     Beslenme tercihlerinizi belirleyin
                 </p>
-                <div className="border-b border-slate-100 mt-6 mb-2" />
             </div>
 
             {/* --- ÖĞÜN SAYISI --- */}
@@ -164,18 +163,18 @@ export default function DietPreferencesForm({
                     name="mealsPerDay"
                     control={control}
                     render={({ field }) => (
-                        <div className="grid grid-cols-4 gap-3 bg-slate-50/80 p-1.5 rounded-2xl border border-slate-200/60">
+                        <div className="grid grid-cols-4 gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-1.5">
                             {mealOptions.map((num) => (
                                 <button
                                     key={num}
                                     type="button"
                                     onClick={() => field.onChange(num)}
-                                    className={`h-12 rounded-xl font-bold text-base transition-all duration-200 ${field.value === num
-                                        ? "bg-[#3E3AAF] text-white shadow-[0_4px_16px_rgba(62,58,175,0.3)] border border-[#4f46a8] scale-[1.02]"
-                                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                                    className={`h-12 cursor-pointer rounded-xl font-extrabold text-base transition-all duration-200 ${field.value === num
+                                        ? "bg-white text-[#3E3AAF] shadow-sm ring-1 ring-indigo-100"
+                                        : "text-slate-500 hover:bg-white/70 hover:text-slate-900"
                                         }`}
                                 >
-                                    {num}
+                                    {num} <span className="text-xs font-bold">öğün</span>
                                 </button>
                             ))}
                         </div>
@@ -201,12 +200,12 @@ export default function DietPreferencesForm({
                                     key={option.key}
                                     type="button"
                                     onClick={() => field.onChange(option.key)}
-                                    className={`flex flex-col items-center justify-center space-y-3 rounded-2xl p-5 text-center font-semibold text-xs transition-all duration-300 ease-in-out ${field.value === option.key
-                                        ? "bg-[#3E3AAF] text-white shadow-[0_4px_16px_rgba(62,58,175,0.25)] border border-[#4f46a8] scale-[1.02]"
-                                        : "bg-white text-slate-500 border border-slate-200/80 hover:bg-slate-50 hover:text-slate-700 hover:border-indigo-400 hover:-translate-y-1 hover:shadow-sm"
+                                    className={`flex min-h-[112px] cursor-pointer flex-col items-center justify-center space-y-3 rounded-2xl border p-4 text-center text-xs font-bold transition-all duration-300 ease-in-out ${field.value === option.key
+                                        ? "border-indigo-200 bg-indigo-50 text-[#3E3AAF] shadow-sm"
+                                        : "border-slate-200 bg-white text-slate-500 hover:border-indigo-200 hover:bg-slate-50 hover:text-slate-700"
                                         }`}
                                 >
-                                    <span className={field.value === option.key ? "text-white" : "text-slate-600"}>
+                                    <span className={field.value === option.key ? "text-[#3E3AAF]" : "text-slate-500"}>
                                         {option.icon}
                                     </span>
                                     <span>{option.label}</span>
@@ -226,7 +225,7 @@ export default function DietPreferencesForm({
                     <span>Alerjiler / İntoleranslar</span>
                     <span className="text-slate-600 normal-case font-medium text-[10px]">(İsteğe bağlı)</span>
                 </label>
-                <div className="rounded-2xl border border-slate-200/70 bg-slate-50/80 p-3 transition-all duration-300 focus-within:border-[#3E3AAF]/50 focus-within:bg-white focus-within:ring-2 focus-within:ring-[#3E3AAF]/10">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 transition-all duration-300 focus-within:border-[#3E3AAF]/50 focus-within:bg-white focus-within:ring-2 focus-within:ring-[#3E3AAF]/10">
                     {allergyTags.length > 0 && (
                         <div className="mb-3 flex flex-wrap gap-2">
                             {allergyTags.map((tag) => (
@@ -238,7 +237,7 @@ export default function DietPreferencesForm({
                                     <button
                                         type="button"
                                         onClick={() => removeAllergyTag(tag)}
-                                        className="rounded-full text-indigo-400 transition-colors hover:text-indigo-800"
+                                        className="cursor-pointer rounded-full text-indigo-400 transition-colors hover:text-indigo-800"
                                         aria-label={`${tag} alerjisini kaldır`}
                                     >
                                         ✕
@@ -264,7 +263,7 @@ export default function DietPreferencesForm({
             <div className="flex justify-center pt-3">
                 <button
                     type="submit"
-                    className="flex w-full max-w-md items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-[length:200%_auto] py-3.5 text-sm font-bold text-white shadow-[0_4px_20px_rgba(124,58,237,0.25)] transition-all duration-300 hover:scale-[1.02] hover:bg-[position:100%_center] hover:shadow-xl hover:shadow-purple-500/20"
+                    className="flex h-12 w-full max-w-md cursor-pointer items-center justify-center gap-2.5 rounded-2xl bg-[#3E3AAF] text-sm font-extrabold text-white shadow-[0_8px_20px_rgba(62,58,175,0.18)] transition-all duration-300 hover:bg-indigo-700"
                 >
                     {/* Ses dalgası ikonu — marka tutarlılığı */}
                     <div className="flex items-center gap-0.5">

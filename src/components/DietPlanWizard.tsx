@@ -225,7 +225,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
     const carbPct = totalCalFromMacros > 0 ? Math.round((macros.carb * 4) / totalCalFromMacros * 100) : 0;
 
     return (
-        <div className="w-full flex-1 flex flex-col lg:flex-row gap-8 min-h-0">
+        <div className="w-full flex-1 flex flex-col lg:flex-row gap-6 min-h-0">
             {/* SOL PANEL (FORM VEYA ÖZET) */}
             <AnimatePresence mode="wait">
                 {step === "form" ? (
@@ -239,7 +239,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                         initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}>
 
                         {/* Mobil: yatay ince bilgi çubuğu */}
-                        <div className="lg:hidden bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-5 flex items-center justify-between gap-4">
+                        <div className="lg:hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center border border-indigo-100">
                                     <Flame className="w-5 h-5 text-indigo-500" />
@@ -259,8 +259,8 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                         </div>
 
                         {/* Masaüstü: dikey özet kartı */}
-                        <div className="hidden lg:flex flex-col bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-8 hover:shadow-hover transition-all duration-300 sticky top-24">
-                            <div className="text-center border-b border-indigo-100/60 pb-5 mb-6">
+                        <div className="hidden lg:flex flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 sticky top-24">
+                            <div className="text-center border-b border-slate-100 pb-5 mb-6">
                                 <p className="text-indigo-800 text-[10px] uppercase tracking-[0.25em] font-bold mb-2">{selectedPlanName}</p>
                                 <p className="text-slate-900 font-extrabold text-4xl">
                                     {targetCalories} <span className="text-base font-medium text-slate-500">kcal</span>
@@ -269,14 +269,14 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
 
                             {formData && (
                                 <div className="flex flex-col gap-4">
-                                    <div className="flex items-center gap-3 text-sm">
+                                    <div className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3 text-sm">
                                         <div className="w-8 h-8 bg-indigo-100/50 rounded-lg flex items-center justify-center">
                                             <Utensils className="w-4 h-4 text-indigo-500" />
                                         </div>
                                         <span className="text-slate-600 flex-1">Öğün Sayısı</span>
                                         <span className="text-slate-900 font-bold">{formData.mealsPerDay}</span>
                                     </div>
-                                    <div className="flex items-center gap-3 text-sm">
+                                    <div className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3 text-sm">
                                         <div className="w-8 h-8 bg-indigo-100/50 rounded-lg flex items-center justify-center">
                                             <Dumbbell className="w-4 h-4 text-indigo-500" />
                                         </div>
@@ -284,7 +284,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                                         <span className="text-slate-900 font-bold capitalize">{formData.dietType}</span>
                                     </div>
                                     {formData.allergies && (
-                                        <div className="flex items-center gap-3 text-sm mt-1">
+                                        <div className="flex items-center gap-3 rounded-2xl bg-red-50/70 p-3 text-sm">
                                             <div className="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center shrink-0">
                                                 <ChevronRight className="w-4 h-4 text-red-400" />
                                             </div>
@@ -296,7 +296,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                             )}
 
                             {showPlanData && (
-                                <div className="mt-6 pt-5 border-t border-indigo-100/60 flex flex-col gap-3">
+                                <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col gap-3">
                                     <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-1">Makro Hedef</p>
                                     <div className="flex justify-between text-xs">
                                         <span className="text-slate-600">Protein</span>
@@ -314,7 +314,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                             )}
 
                             <button onClick={() => { setStep("form"); setGeneratedPlan(null); setError(null); }}
-                                className="mt-6 py-3 rounded-2xl text-indigo-600 text-xs font-bold hover:bg-indigo-50 hover:text-indigo-800 transition-all duration-300 border border-transparent hover:border-indigo-100">
+                                className="mt-6 cursor-pointer py-3 rounded-2xl text-indigo-600 text-xs font-bold hover:bg-indigo-50 hover:text-indigo-800 transition-all duration-300 border border-transparent hover:border-indigo-100">
                                 ← Düzenle
                             </button>
                         </div>
@@ -325,7 +325,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
             {/* SAĞ PANEL (ÜRETİM ALANI) */}
             <AnimatePresence mode="popLayout">
                 {step === "generating" && (
-                    <motion.div key="generation-area" className="flex-1 flex flex-col gap-6 min-h-0 overflow-y-auto pb-8"
+                    <motion.div key="generation-area" className="flex-1 flex flex-col gap-5 min-h-0 overflow-y-auto pb-8"
                         initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}>
 
                         {isLoading && <SkeletonLoading />}
@@ -352,43 +352,49 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
 
                         {showPlanData && (
                             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-                                className="bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-8 hover:shadow-hover transition-all duration-300">
-                                <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-                                    <h4 className="text-[10px] text-slate-600 uppercase tracking-[0.2em] font-bold">Kalori & Makro Dağılımı</h4>
+                                className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 sm:p-6">
+                                <div className="mb-5 flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 pb-5">
+                                    <div>
+                                        <p className="text-[10px] text-indigo-600 uppercase tracking-[0.24em] font-extrabold">{selectedPlanName}</p>
+                                    </div>
                                     <button
                                         type="button"
                                         onClick={handleSavePlan}
                                         disabled={isSaving}
-                                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#3E3AAF] px-4 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-70"
+                                        className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#3E3AAF] px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-70"
                                     >
                                         <Save className="h-4 w-4" />
                                         {isSaving ? "Kaydediliyor..." : "Bu Diyet Planını Kaydet"}
                                     </button>
                                 </div>
 
-                                <div className="flex items-baseline gap-2 mb-6">
-                                    <span className="text-slate-900 font-black text-4xl">{targetCalories}</span>
-                                    <span className="text-slate-500 text-sm font-medium">kcal / gün</span>
-                                </div>
-
-                                <div className="flex flex-col gap-4">
-                                    <MacroBar label="Protein" percent={proteinPct} grams={macros.protein} color="linear-gradient(90deg, #fb7185, #f43f5e)" delay={0} animate={true} />
-                                    <MacroBar label="Yağ" percent={fatPct} grams={macros.fat} color="linear-gradient(90deg, #fbbf24, #f59e0b)" delay={200} animate={true} />
-                                    <MacroBar label="Karb" percent={carbPct} grams={macros.carb} color="linear-gradient(90deg, #60a5fa, #3b82f6)" delay={400} animate={true} />
-                                </div>
-
-                                <div className="flex gap-4 mt-6 pt-4 border-t border-slate-100">
-                                    <div className="flex-1 text-center">
-                                        <p className="text-rose-600 font-bold text-base">{formatMacroValue(macros.protein)}g</p>
-                                        <p className="text-slate-500 text-[10px] mt-1">Protein</p>
+                                <div>
+                                    <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                                        <div className="flex flex-col justify-center text-left">
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Günlük hedef</p>
+                                            <p className="mt-2 flex items-baseline gap-2 text-4xl font-black tracking-tight text-slate-950">
+                                                {targetCalories}
+                                                <span className="text-sm font-semibold text-slate-500">kcal / gün</span>
+                                            </p>
+                                        </div>
+                                        <div className="rounded-2xl bg-rose-50 p-3 text-center">
+                                            <p className="text-rose-600 font-extrabold text-lg">{formatMacroValue(macros.protein)}g</p>
+                                            <p className="text-slate-500 text-[10px] mt-1 font-bold uppercase tracking-wider">Protein</p>
+                                        </div>
+                                        <div className="rounded-2xl bg-amber-50 p-3 text-center">
+                                            <p className="text-amber-600 font-extrabold text-lg">{formatMacroValue(macros.fat)}g</p>
+                                            <p className="text-slate-500 text-[10px] mt-1 font-bold uppercase tracking-wider">Yağ</p>
+                                        </div>
+                                        <div className="rounded-2xl bg-blue-50 p-3 text-center">
+                                            <p className="text-blue-600 font-extrabold text-lg">{formatMacroValue(macros.carb)}g</p>
+                                            <p className="text-slate-500 text-[10px] mt-1 font-bold uppercase tracking-wider">Karb</p>
+                                        </div>
                                     </div>
-                                    <div className="flex-1 text-center">
-                                        <p className="text-amber-600 font-bold text-base">{formatMacroValue(macros.fat)}g</p>
-                                        <p className="text-slate-500 text-[10px] mt-1">Yağ</p>
-                                    </div>
-                                    <div className="flex-1 text-center">
-                                        <p className="text-blue-600 font-bold text-base">{formatMacroValue(macros.carb)}g</p>
-                                        <p className="text-slate-500 text-[10px] mt-1">Karbonhidrat</p>
+
+                                    <div className="flex flex-col gap-4">
+                                        <MacroBar label="Protein" percent={proteinPct} grams={macros.protein} color="linear-gradient(90deg, #fb7185, #f43f5e)" delay={0} animate={true} />
+                                        <MacroBar label="Yağ" percent={fatPct} grams={macros.fat} color="linear-gradient(90deg, #fbbf24, #f59e0b)" delay={200} animate={true} />
+                                        <MacroBar label="Karb" percent={carbPct} grams={macros.carb} color="linear-gradient(90deg, #60a5fa, #3b82f6)" delay={400} animate={true} />
                                     </div>
                                 </div>
                             </motion.div>
