@@ -64,7 +64,12 @@ function ToastItem({ toast: t, onDismiss }: { toast: ToastMessage; onDismiss: (i
                     <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">{t.description}</p>
                 )}
             </div>
-            <button onClick={() => onDismiss(t.id)} className="text-slate-300 hover:text-slate-500 transition-colors shrink-0">
+            <button
+                type="button"
+                onClick={() => onDismiss(t.id)}
+                aria-label="Bildirimi kapat"
+                className="text-slate-600 hover:text-slate-800 transition-colors shrink-0"
+            >
                 <X className="w-4 h-4" />
             </button>
         </motion.div>

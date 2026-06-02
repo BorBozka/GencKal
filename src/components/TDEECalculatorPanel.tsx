@@ -62,10 +62,10 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                                 max={230}
                                 value={data.boy || ""}
                                 onChange={handleChange}
-                                className="h-full w-full cursor-text rounded-xl border border-slate-200 bg-white pl-4 pr-12 text-lg font-bold text-slate-900 caret-indigo-600 outline-none transition-all duration-200 [appearance:textfield] placeholder:text-slate-300 selection:bg-indigo-100 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                className="h-full w-full cursor-text rounded-xl border border-slate-200 bg-white pl-4 pr-12 text-lg font-bold text-slate-950 caret-slate-950 outline-none transition-all duration-200 [appearance:textfield] placeholder:text-slate-500 selection:bg-indigo-100 focus:border-indigo-700 focus:ring-2 focus:ring-indigo-700/20 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                 placeholder="175"
                             />
-                            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm">cm</span>
+                            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 font-medium text-sm">cm</span>
                         </div>
                     </div>
 
@@ -81,10 +81,10 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                                 max={300}
                                 value={data.kilo || ""}
                                 onChange={handleChange}
-                                className="h-full w-full cursor-text rounded-xl border border-slate-200 bg-white pl-4 pr-12 text-lg font-bold text-slate-900 caret-indigo-600 outline-none transition-all duration-200 [appearance:textfield] placeholder:text-slate-300 selection:bg-indigo-100 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                className="h-full w-full cursor-text rounded-xl border border-slate-200 bg-white pl-4 pr-12 text-lg font-bold text-slate-950 caret-slate-950 outline-none transition-all duration-200 [appearance:textfield] placeholder:text-slate-500 selection:bg-indigo-100 focus:border-indigo-700 focus:ring-2 focus:ring-indigo-700/20 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                 placeholder="75"
                             />
-                            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm">kg</span>
+                            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 font-medium text-sm">kg</span>
                         </div>
                     </div>
 
@@ -100,10 +100,10 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                                 max={100}
                                 value={data.yas || ""}
                                 onChange={handleChange}
-                                className="h-full w-full cursor-text rounded-xl border border-slate-200 bg-white pl-4 pr-12 text-lg font-bold text-slate-900 caret-indigo-600 outline-none transition-all duration-200 [appearance:textfield] placeholder:text-slate-300 selection:bg-indigo-100 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                className="h-full w-full cursor-text rounded-xl border border-slate-200 bg-white pl-4 pr-12 text-lg font-bold text-slate-950 caret-slate-950 outline-none transition-all duration-200 [appearance:textfield] placeholder:text-slate-500 selection:bg-indigo-100 focus:border-indigo-700 focus:ring-2 focus:ring-indigo-700/20 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                 placeholder="25"
                             />
-                            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm">yaş</span>
+                            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 font-medium text-sm">yaş</span>
                         </div>
                     </div>
                 </div>
@@ -123,7 +123,7 @@ export default function TDEECalculatorPanel({ data, handleChange, setField }: TD
                                     }`}
                             >
                                 <span className="font-semibold text-sm mb-0.5">{option.label}</span>
-                                <span className={`text-[10px] ${data.aktiviteSeviyesi === option.key ? "text-indigo-200" : "text-slate-400"
+                                <span className={`text-[10px] ${data.aktiviteSeviyesi === option.key ? "text-white" : "text-slate-600"
                                     }`}>
                                     {option.desc}
                                 </span>

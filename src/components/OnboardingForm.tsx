@@ -277,7 +277,7 @@ export default function OnboardingForm() {
                     </div>
 
                     {/* Referans Skalası */}
-                    <div className="w-full relative z-20 -mt-4 pb-14 px-4">
+                    <div className="w-full relative z-20 -mt-4 pb-12 px-4">
                         <ReferenceScale
                             score={yagOrani >= 0 ? calculatedFFMI : calculatedBMI}
                             type={yagOrani >= 0 ? "FFMI" : "BMI"}
@@ -368,14 +368,14 @@ export default function OnboardingForm() {
                             style={{ background: "radial-gradient(circle at 50% 30%, rgba(79,70,229,0.25) 0%, transparent 65%)" }}
                         />
                         <div className="relative z-10">
-                            <h2 className="text-[10px] uppercase tracking-[0.25em] text-slate-400 font-bold mb-3">Günlük Kalori İhtiyacınız (TDEE)</h2>
+                            <h2 className="text-[10px] uppercase tracking-[0.25em] text-slate-600 font-bold mb-3">Günlük Kalori İhtiyacınız (TDEE)</h2>
                             <p className="text-indigo-900 font-extrabold text-5xl flex items-baseline gap-2 justify-center">
                                 {calculatedTDEE} <span className="text-xl font-medium text-slate-500">kcal</span>
                             </p>
                         </div>
                         <div className="relative z-10 mt-5 w-full rounded-2xl border border-slate-100 bg-slate-50/70 p-4 text-left">
                             <div className="mb-3 flex items-center justify-between">
-                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Günlük Makro Dağılımı</p>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600">Günlük Makro Dağılımı</p>
                                 <p className="text-xs font-bold text-slate-700">{activePlanCalories} kcal</p>
                             </div>
                             <div className="space-y-2">
@@ -415,10 +415,10 @@ export default function OnboardingForm() {
                         onKeyDown={(e) => {
                             if ((e.key === "Enter" || e.key === " ") && canSelectBulk) setActivePlan("bulk");
                         }}
-                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "bulk" ? "border-blue-500 shadow-blue-200/70" : "border-slate-200 hover:border-blue-300"} ${canSelectBulk ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "bulk" ? "border-blue-700 shadow-blue-200/70" : "border-slate-200 hover:border-blue-700"} ${canSelectBulk ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                         style={{ animationDelay: "0.2s" }}>
                         {activePlan === "bulk" && (
-                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-blue-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-blue-200">
+                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-blue-700 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-blue-200">
                                 MEVCUT DURUM
                             </div>
                         )}
@@ -430,7 +430,7 @@ export default function OnboardingForm() {
                         </div>
                         <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Al (Bulk)</h3>
                         <p className="text-indigo-600 font-extrabold text-3xl mb-8">
-                            {bulkCalories} <span className="text-xs text-slate-400 font-medium">kcal</span>
+                            {bulkCalories} <span className="text-xs text-slate-600 font-medium">kcal</span>
                         </p>
 
                         <button
@@ -440,8 +440,8 @@ export default function OnboardingForm() {
                             }}
                             disabled={!canSelectBulk}
                             className={`mt-auto w-full py-2.5 rounded-2xl border font-bold transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activePlan === "bulk"
-                                ? "border-blue-500 bg-blue-500 text-white shadow-[0_0_24px_rgba(59,130,246,0.35)] hover:bg-blue-600 hover:shadow-[0_0_34px_rgba(59,130,246,0.45)] disabled:hover:bg-blue-500"
-                                : "border-blue-500 bg-white text-blue-500 hover:bg-blue-500 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-blue-500"
+                                ? "border-blue-700 bg-blue-700 text-white shadow-[0_0_24px_rgba(29,78,216,0.35)] hover:bg-blue-800 hover:shadow-[0_0_34px_rgba(29,78,216,0.45)] disabled:hover:bg-blue-700"
+                                : "border-blue-700 bg-white text-blue-700 hover:bg-blue-700 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-blue-700"
                                 }`}>
                             Bu Planı Seç
                         </button>
@@ -473,7 +473,7 @@ export default function OnboardingForm() {
                         </div>
                         <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Koru (Maintain)</h3>
                         <p className="text-indigo-600 font-extrabold text-3xl mb-8">
-                            {maintainCalories} <span className="text-xs text-slate-400 font-medium">kcal</span>
+                            {maintainCalories} <span className="text-xs text-slate-600 font-medium">kcal</span>
                         </p>
 
                         <button
@@ -501,10 +501,10 @@ export default function OnboardingForm() {
                         onKeyDown={(e) => {
                             if ((e.key === "Enter" || e.key === " ") && canSelectCut) setActivePlan("cut");
                         }}
-                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "cut" ? "border-rose-500 shadow-rose-200/70" : "border-slate-200 hover:border-rose-300"} ${canSelectCut ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                        className={`group h-full min-h-[250px] bg-white rounded-3xl px-6 py-7 border-2 shadow-sm flex flex-col items-center text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300 ease-in-out animate-fade-in-up relative ${activePlan === "cut" ? "border-rose-700 shadow-rose-200/70" : "border-slate-200 hover:border-rose-700"} ${canSelectCut ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                         style={{ animationDelay: "0.4s" }}>
                         {activePlan === "cut" && (
-                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-rose-500 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-rose-200">
+                            <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 bg-rose-700 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md shadow-rose-200">
                                 MEVCUT DURUM
                             </div>
                         )}
@@ -516,7 +516,7 @@ export default function OnboardingForm() {
                         </div>
                         <h3 className="text-lg font-bold text-slate-900 mb-1">Kilo Ver (Cut)</h3>
                         <p className="text-indigo-600 font-extrabold text-3xl mb-8">
-                            {cutCalories} <span className="text-xs text-slate-400 font-medium">kcal</span>
+                            {cutCalories} <span className="text-xs text-slate-600 font-medium">kcal</span>
                         </p>
 
                         <button
@@ -526,8 +526,8 @@ export default function OnboardingForm() {
                             }}
                             disabled={!canSelectCut}
                             className={`mt-auto w-full py-2.5 rounded-2xl border font-bold transition-all duration-200 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${activePlan === "cut"
-                                ? "border-rose-500 bg-rose-500 text-white shadow-[0_0_24px_rgba(244,63,94,0.35)] hover:bg-rose-600 hover:shadow-[0_0_34px_rgba(244,63,94,0.45)] disabled:hover:bg-rose-500"
-                                : "border-rose-500 bg-white text-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-rose-500"
+                                ? "border-rose-700 bg-rose-700 text-white shadow-[0_0_24px_rgba(190,18,60,0.35)] hover:bg-rose-800 hover:shadow-[0_0_34px_rgba(190,18,60,0.45)] disabled:hover:bg-rose-700"
+                                : "border-rose-700 bg-white text-rose-700 hover:bg-rose-700 hover:text-white hover:shadow-lg disabled:hover:bg-white disabled:hover:text-rose-700"
                                 }`}>
                             Bu Planı Seç
                         </button>
@@ -540,7 +540,7 @@ export default function OnboardingForm() {
             <div className="sm:hidden flex-none text-center pb-6">
                 <button
                     onClick={() => setStep(1)}
-                    className="text-slate-400 hover:text-slate-700 font-bold transition-colors flex items-center justify-center gap-2 mx-auto"
+                    className="text-slate-600 hover:text-slate-800 font-bold transition-colors flex items-center justify-center gap-2 mx-auto"
                 >
                     <span>&larr;</span> Ana Sayfa
                 </button>

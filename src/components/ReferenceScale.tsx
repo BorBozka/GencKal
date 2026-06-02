@@ -41,9 +41,9 @@ export default function ReferenceScale({ score, type }: ReferenceScaleProps) {
         : Array.from({ length: 15 }, (_, i) => 16 + i);
 
     return (
-        <div className="w-full relative z-10 font-sans mt-16 md:mt-24 mx-auto px-4 sm:px-8 lg:px-12 max-w-[1400px]">
+        <div className="w-full relative z-10 font-sans mt-13 md:mt-20 mx-auto px-4 sm:px-8 lg:px-12 max-w-[1400px]">
             {/* Skalanın kendisi (Her şey bu div'e göre konumlanacak) */}
-            <div className="relative w-full mt-10 mb-4">
+            <div className="relative w-full mt-9 mb-4">
 
                 {/* 1. İŞARETÇİ ÜÇGEN (Orijinal sitedeki gibi zarif, içi boş üçgen) */}
                 <div

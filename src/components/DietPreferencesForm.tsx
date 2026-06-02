@@ -147,7 +147,7 @@ export default function DietPreferencesForm({
                 </div>
                 <h2 className="mt-4 flex items-baseline justify-center gap-2 text-5xl font-extrabold tracking-tight text-slate-900">
                     {targetCalories}
-                    <span className="text-lg font-medium text-slate-400">kcal / gün</span>
+                    <span className="text-lg font-medium text-slate-600">kcal / gün</span>
                 </h2>
                 <p className="text-slate-500 text-sm mt-2">
                     Beslenme tercihlerinizi belirleyin
@@ -206,7 +206,7 @@ export default function DietPreferencesForm({
                                         : "bg-white text-slate-500 border border-slate-200/80 hover:bg-slate-50 hover:text-slate-700 hover:border-indigo-400 hover:-translate-y-1 hover:shadow-sm"
                                         }`}
                                 >
-                                    <span className={field.value === option.key ? "text-white" : "text-slate-400"}>
+                                    <span className={field.value === option.key ? "text-white" : "text-slate-600"}>
                                         {option.icon}
                                     </span>
                                     <span>{option.label}</span>
@@ -224,7 +224,7 @@ export default function DietPreferencesForm({
             <div className="flex flex-col gap-3">
                 <label className="text-xs font-bold text-slate-900 uppercase tracking-widest flex justify-between items-center">
                     <span>Alerjiler / İntoleranslar</span>
-                    <span className="text-slate-300 normal-case font-medium text-[10px]">(İsteğe bağlı)</span>
+                    <span className="text-slate-600 normal-case font-medium text-[10px]">(İsteğe bağlı)</span>
                 </label>
                 <div className="rounded-2xl border border-slate-200/70 bg-slate-50/80 p-3 transition-all duration-300 focus-within:border-[#3E3AAF]/50 focus-within:bg-white focus-within:ring-2 focus-within:ring-[#3E3AAF]/10">
                     {allergyTags.length > 0 && (

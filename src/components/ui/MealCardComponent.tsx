@@ -116,7 +116,7 @@ function FoodItemRow({ item, mealId, startTyping, onSwapFood }: FoodItemRowProps
                         <div className="h-3.5 w-10 bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 rounded-md animate-pulse" />
                     ) : (
                         <span className="text-slate-600 text-xs font-semibold tabular-nums">
-                            {item.cal} <span className="text-[9px] text-slate-300 font-normal">kcal</span>
+                            {item.cal} <span className="text-[9px] text-slate-600 font-normal">kcal</span>
                         </span>
                     )}
                     <button
@@ -124,7 +124,8 @@ function FoodItemRow({ item, mealId, startTyping, onSwapFood }: FoodItemRowProps
                         onClick={handleSwap}
                         disabled={isLoading}
                         title="Bu besini yenile"
-                        className="text-slate-400 hover:text-indigo-600 transition-colors duration-200 p-1 rounded-md hover:bg-indigo-50 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-100 disabled:cursor-wait"
+                        aria-label="Bu besini yenile"
+                        className="text-slate-600 hover:text-indigo-600 transition-colors duration-200 p-1 rounded-md hover:bg-indigo-50 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-100 disabled:cursor-wait"
                     >
                         {isLoading ? <RefreshProgress /> : <RefreshIcon className="w-4 h-4" />}
                     </button>
@@ -175,7 +176,7 @@ export function MealCardComponent({ meal, index, startTyping, onSwapFood }: Meal
                     </div>
                     <h4 className="text-slate-900 font-bold text-sm">{meal.title}</h4>
                 </div>
-                <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                <span className="text-slate-600 text-[10px] font-bold uppercase tracking-wider">
                     {mealTotalCal} kcal
                 </span>
             </div>

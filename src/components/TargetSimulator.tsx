@@ -36,10 +36,10 @@ export default function TargetSimulator({ currentWeight, leanMass }: TargetSimul
             {/* Sadece Veri Odaklı Slider Alanı */}
             <div className="my-auto py-4">
                 <div className="mb-6 flex w-full items-center justify-between gap-4">
-                    <label htmlFor="target-simulator-weight" className="text-sm font-bold tracking-wide text-indigo-200/80">Hedef Kilo</label>
+                    <label htmlFor="target-simulator-weight" className="text-sm font-bold tracking-wide text-white">Hedef Kilo</label>
                     <div className="flex min-w-[92px] items-center justify-center rounded-xl border border-white/10 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
                         <span className="text-2xl font-bold leading-none text-white">{targetWeight}</span>
-                        <span className="ml-1 text-xs font-medium text-indigo-200/80">kg</span>
+                        <span className="ml-1 text-xs font-medium text-white">kg</span>
                     </div>
                 </div>
 
@@ -65,7 +65,7 @@ export default function TargetSimulator({ currentWeight, leanMass }: TargetSimul
                     />
                 </div>
 
-                <div className="mt-3 flex justify-between px-1 text-xs font-medium tracking-wide text-indigo-300/80">
+                <div className="mt-3 flex justify-between px-1 text-xs font-medium tracking-wide text-white">
                     <span>Min: {minWeight} kg</span>
                     <span>Max: {maxWeight} kg</span>
                 </div>
@@ -74,7 +74,7 @@ export default function TargetSimulator({ currentWeight, leanMass }: TargetSimul
             {/* Sade ve Keskin Sonuç Paneli */}
             <div className="bg-indigo-900/40 rounded-2xl p-5 border border-indigo-500/30 flex flex-col justify-center items-center text-center mt-auto gap-2">
                 <div className="flex flex-col">
-                    <span className="text-indigo-200 text-xs font-medium mb-1">Yeni Yağ Oranı</span>
+                    <span className="text-white text-xs font-medium mb-1">Yeni Yağ Oranı</span>
                     <span className="text-5xl font-black text-white">
                         % {newBodyFat > 0 ? newBodyFat.toFixed(1) : "0.0"}
                     </span>

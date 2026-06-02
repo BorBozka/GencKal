@@ -63,14 +63,14 @@ export default function LoginPage() {
                         <button
                             type="button"
                             onClick={() => setMode("signin")}
-                            className={`rounded-xl px-4 py-2 text-sm font-bold transition-colors ${mode === "signin" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                            className={`cursor-pointer rounded-xl px-4 py-2 text-sm font-bold transition-colors ${mode === "signin" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-700 hover:text-slate-900"}`}
                         >
                             Giriş Yap
                         </button>
                         <button
                             type="button"
                             onClick={() => setMode("signup")}
-                            className={`rounded-xl px-4 py-2 text-sm font-bold transition-colors ${mode === "signup" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                            className={`cursor-pointer rounded-xl px-4 py-2 text-sm font-bold transition-colors ${mode === "signup" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-700 hover:text-slate-900"}`}
                         >
                             Kayıt Ol
                         </button>
@@ -79,39 +79,39 @@ export default function LoginPage() {
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                         {mode === "signup" && (
                             <label className="flex flex-col gap-2">
-                                <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Ad</span>
+                                <span className="text-xs font-bold uppercase tracking-widest text-slate-600">Ad</span>
                                 <input
                                     value={name}
                                     onChange={(event) => setName(event.target.value)}
                                     required
                                     minLength={2}
-                                    className="h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-800 outline-none transition-colors focus:border-indigo-400 focus:bg-white"
+                                    className="h-12 cursor-text rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-950 caret-slate-950 outline-none transition-colors placeholder:text-slate-500 focus:border-indigo-700 focus:bg-white focus:ring-2 focus:ring-indigo-700/20"
                                     placeholder="Adınız"
                                 />
                             </label>
                         )}
 
                         <label className="flex flex-col gap-2">
-                            <span className="text-xs font-bold uppercase tracking-widest text-slate-400">E-posta</span>
+                            <span className="text-xs font-bold uppercase tracking-widest text-slate-600">E-posta</span>
                             <input
                                 value={email}
                                 onChange={(event) => setEmail(event.target.value)}
                                 required
                                 type="email"
-                                className="h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-800 outline-none transition-colors focus:border-indigo-400 focus:bg-white"
+                                className="h-12 cursor-text rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-950 caret-slate-950 outline-none transition-colors placeholder:text-slate-500 focus:border-indigo-700 focus:bg-white focus:ring-2 focus:ring-indigo-700/20"
                                 placeholder="ornek@mail.com"
                             />
                         </label>
 
                         <label className="flex flex-col gap-2">
-                            <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Şifre</span>
+                            <span className="text-xs font-bold uppercase tracking-widest text-slate-600">Şifre</span>
                             <input
                                 value={password}
                                 onChange={(event) => setPassword(event.target.value)}
                                 required
                                 minLength={mode === "signup" ? 6 : 1}
                                 type="password"
-                                className="h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-800 outline-none transition-colors focus:border-indigo-400 focus:bg-white"
+                                className="h-12 cursor-text rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-950 caret-slate-950 outline-none transition-colors placeholder:text-slate-500 focus:border-indigo-700 focus:bg-white focus:ring-2 focus:ring-indigo-700/20"
                                 placeholder={mode === "signup" ? "En az 6 karakter" : "Şifreniz"}
                             />
                         </label>
@@ -119,7 +119,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="mt-2 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#3E3AAF] px-4 text-sm font-bold text-white shadow-[0_10px_24px_rgba(62,58,175,0.24)] transition-colors hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-70"
+                            className="mt-2 inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-2xl bg-[#3E3AAF] px-4 text-sm font-bold text-white shadow-[0_10px_24px_rgba(62,58,175,0.24)] transition-colors hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-70"
                         >
                             {mode === "signup" ? <UserPlus className="h-4 w-4" /> : <LogIn className="h-4 w-4" />}
                             {isSubmitting ? "İşleniyor..." : mode === "signup" ? "Kayıt Ol" : "Giriş Yap"}

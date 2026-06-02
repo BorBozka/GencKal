@@ -68,3 +68,16 @@ input[type=range]::-webkit-slider-runnable-track {
     background: transparent;
     border-radius: 9999px;
 }
+
+input,
+textarea {
+    caret-color: #020617;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #020617;
+    caret-color: #020617;
+    box-shadow: 0 0 0 1000px #e8f0fe inset;
+}

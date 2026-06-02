@@ -22,7 +22,7 @@ export default function AuthNavButton({ isScrolled = false }: AuthNavButtonProps
 
     if (!user) {
         return (
-            <Link href="/giris" className={`text-base font-normal leading-none transition-colors ${textClass}`}>
+            <Link href="/giris" className={`cursor-pointer text-base font-normal leading-none transition-colors ${textClass}`}>
                 Giriş Yap
             </Link>
         );
@@ -44,7 +44,7 @@ export default function AuthNavButton({ isScrolled = false }: AuthNavButtonProps
                     <Link
                         href="/diyet-planlarim"
                         onClick={() => setIsOpen(false)}
-                        className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-indigo-50 hover:text-indigo-700"
+                        className="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-indigo-50 hover:text-indigo-700"
                     >
                         <Utensils className="h-4 w-4" />
                         Diyet Planlarım

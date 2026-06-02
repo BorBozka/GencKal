@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import AuthNavButton from '../../components/AuthNavButton';
 
 const InstagramIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
@@ -12,7 +13,7 @@ const InstagramIcon = ({ className }: { className?: string }) => (
 );
 
 const TwitterIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+  <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
 );
 
 export default function ContactPage() {
@@ -44,6 +45,7 @@ export default function ContactPage() {
                     GencKalculator
                 </Link>
                 <nav className="flex items-center gap-8 text-base font-normal leading-none text-slate-700">
+                    <AuthNavButton isScrolled />
                     <Link href="/" className="transition-colors hover:text-indigo-600">Ana Sayfa</Link>
                     <Link href="/iletisim" className="text-slate-900">İletişim</Link>
                 </nav>
@@ -71,8 +73,14 @@ export default function ContactPage() {
                 </div>
                 
                 <div className="flex items-center gap-5 flex-1 justify-center">
-                    <a href="#" className="text-slate-400 hover:text-indigo-600 transition-colors bg-slate-50 p-2 rounded-full"><InstagramIcon className="w-4 h-4" /></a>
-                    <a href="#" className="text-slate-400 hover:text-indigo-600 transition-colors bg-slate-50 p-2 rounded-full"><TwitterIcon className="w-4 h-4 fill-current" /></a>
+                    <a href="#" className="text-slate-600 hover:text-indigo-600 transition-colors bg-slate-50 p-2 rounded-full">
+                        <span className="sr-only">Instagram</span>
+                        <InstagramIcon className="w-4 h-4" />
+                    </a>
+                    <a href="#" className="text-slate-600 hover:text-indigo-600 transition-colors bg-slate-50 p-2 rounded-full">
+                        <span className="sr-only">Twitter</span>
+                        <TwitterIcon className="w-4 h-4 fill-current" />
+                    </a>
                 </div>
                 
                 <div className="flex items-center gap-6 flex-1 justify-center md:justify-end">

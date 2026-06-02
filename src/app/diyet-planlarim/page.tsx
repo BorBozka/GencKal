@@ -141,7 +141,7 @@ export default function SavedDietPlansPage() {
                                             </span>
                                             <span className="rounded-lg bg-slate-100 px-2 py-1">{plan.mealsPerDay} öğün</span>
                                         </div>
-                                        <p className="mt-3 inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400">
+                                        <p className="mt-3 inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600">
                                             <CalendarDays className="h-3.5 w-3.5" />
                                             {formatDate(plan.createdAt)}
                                         </p>
@@ -178,7 +178,7 @@ export default function SavedDietPlansPage() {
 
                                 <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
                                     <div className="rounded-2xl bg-slate-50 p-4">
-                                        <p className="text-xs font-bold text-slate-400">Kalori</p>
+                                        <p className="text-xs font-bold text-slate-600">Kalori</p>
                                         <p className="mt-1 text-lg font-extrabold text-slate-900">{selectedPlan.targetCalories}</p>
                                     </div>
                                     <div className="rounded-2xl bg-rose-50 p-4">
@@ -206,7 +206,7 @@ export default function SavedDietPlansPage() {
                                                             <p className="text-sm font-semibold leading-6 text-slate-700">{item.fullText}</p>
                                                             <span className="shrink-0 text-xs font-bold text-slate-500">{item.cal} kcal</span>
                                                         </div>
-                                                        <p className="mt-1 text-xs font-semibold text-slate-400">
+                                                        <p className="mt-1 text-xs font-semibold text-slate-600">
                                                             P {item.macros.protein}g · Y {item.macros.fat}g · K {item.macros.carb}g
                                                         </p>
                                                     </div>

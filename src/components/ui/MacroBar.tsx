@@ -38,7 +38,7 @@ export function MacroBar({ label, percent, grams, color, delay, animate }: Macro
           <span className="font-bold tabular-nums text-slate-900">
             {animate ? (grams !== undefined ? `${formatMacroValue(grams)}g` : `${percent}%`) : "—"}
           </span>
-          <span className="font-semibold tabular-nums text-slate-400">
+          <span className="font-semibold tabular-nums text-slate-600">
             {animate ? `${percent}%` : "—"}
           </span>
         </div>

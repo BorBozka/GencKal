@@ -297,7 +297,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
 
                             {showPlanData && (
                                 <div className="mt-6 pt-5 border-t border-indigo-100/60 flex flex-col gap-3">
-                                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">Makro Hedef</p>
+                                    <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-1">Makro Hedef</p>
                                     <div className="flex justify-between text-xs">
                                         <span className="text-slate-600">Protein</span>
                                         <span className="text-rose-600 font-bold">{proteinPct}%</span>
@@ -354,7 +354,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
                                 className="bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-8 hover:shadow-hover transition-all duration-300">
                                 <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-                                    <h4 className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">Kalori & Makro Dağılımı</h4>
+                                    <h4 className="text-[10px] text-slate-600 uppercase tracking-[0.2em] font-bold">Kalori & Makro Dağılımı</h4>
                                     <button
                                         type="button"
                                         onClick={handleSavePlan}
@@ -412,7 +412,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
             <div className="sm:hidden flex-none text-center pt-4 pb-2 w-full">
                 <button
                     onClick={onBack}
-                    className="text-slate-400 hover:text-slate-700 font-bold transition-colors flex items-center justify-center gap-2 mx-auto"
+                    className="text-slate-600 hover:text-slate-800 font-bold transition-colors flex items-center justify-center gap-2 mx-auto"
                 >
                     <span>&larr;</span> Geri Dön
                 </button>

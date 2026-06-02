@@ -52,7 +52,7 @@ export default function ResultsPanel({ calculatedBMI, leanMass, bodyFat, kilo, f
                     <span className="text-5xl font-bold tracking-tight text-white mb-0.5">
                         {calculatedBMI > 0 ? calculatedBMI.toFixed(1) : "0.0"}
                     </span>
-                    <span className="text-[10px] text-indigo-300 font-bold tracking-wider uppercase">
+                    <span className="text-[10px] text-white font-bold tracking-wider uppercase">
                         BMI SKORU
                     </span>
                 </div>
@@ -61,25 +61,25 @@ export default function ResultsPanel({ calculatedBMI, leanMass, bodyFat, kilo, f
             {/* Alt Metrikler */}
             <div className="flex flex-col gap-4 px-1 pb-1 mt-auto">
                 <div className="flex justify-between items-center text-[13.5px]">
-                    <span className="text-indigo-200/70 font-normal tracking-wide">Beden Kitle İndeksi</span>
+                    <span className="text-white font-normal tracking-wide">Beden Kitle İndeksi</span>
                     <span className="text-white font-medium">{calculatedBMI > 0 ? calculatedBMI.toFixed(2) : '--'}</span>
                 </div>
                 <div className="flex justify-between items-center text-[13.5px]">
-                    <span className="text-indigo-200/70 font-normal tracking-wide">BMI Durumu</span>
+                    <span className="text-white font-normal tracking-wide">BMI Durumu</span>
                     <span className="text-white font-medium">{calculatedBMI > 0 ? bmiLabel : '--'}</span>
                 </div>
                 <div className="flex justify-between items-center text-[13.5px]">
-                    <span className="text-indigo-200/70 font-normal tracking-wide">Yağsız Vücut Kütlesi</span>
+                    <span className="text-white font-normal tracking-wide">Yağsız Vücut Kütlesi</span>
                     <span className="text-white font-medium">{leanMass > 0 ? leanMass.toFixed(2) : '--'} kg</span>
                 </div>
                 <div className="flex justify-between items-center text-[13.5px]">
-                    <span className="text-indigo-200/70 font-normal tracking-wide">Vücut Yağ Kütlesi</span>
+                    <span className="text-white font-normal tracking-wide">Vücut Yağ Kütlesi</span>
                     <span className="text-white font-medium">{bodyFat > 0 ? fatMass.toFixed(2) : '--'} kg</span>
                 </div>
 
                 {ffmi !== undefined && (
                     <div className="flex justify-between items-center text-[13.5px]">
-                        <span className="text-indigo-200/70 font-normal tracking-wide">FFMI Skoru</span>
+                        <span className="text-white font-normal tracking-wide">FFMI Skoru</span>
                         <span className="text-white font-medium">{ffmi.toFixed(2)}</span>
                     </div>
                 )}
