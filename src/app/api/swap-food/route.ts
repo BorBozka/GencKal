@@ -5,6 +5,7 @@ import { z } from "zod";
 import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
 import { normalizeParsedMealItem } from "../../../utils/dietPlanParsing";
 import { AllergenViolationError, findAllergenViolation, parseAllergens, retryRecoverableGeneration } from "../../../utils/allergenValidation";
+import { corsOptionsResponse, withCors } from "../../../utils/cors";
 
 // --- İstek Gövdesi Tipi ---
 interface SwapFoodRequestBody {
@@ -21,6 +22,10 @@ interface SwapFoodRequestBody {
 
 const allowedDietTypes = new Set(["standart", "karnivor", "vejetaryen", "vegan", "keto"]);
 const maxSwapAttempts = 2;
+
+export function OPTIONS() {
+    return corsOptionsResponse();
+}
 
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -115,10 +120,10 @@ export async function POST(request: NextRequest) {
         const ip = getClientRateLimitKey(request.headers);
         const rateLimit = await checkRateLimit(ip, 10); // 10 swap limit / min
         if (!rateLimit.success) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 { error: "Çok fazla istek gönderdiniz. Lütfen 1 dakika bekleyin." },
                 { status: 429 }
-            );
+            ));
         }
 
         const apiKey = process.env.GEMINI_API_KEY;
@@ -195,7 +200,7 @@ Bu besinin yerine geçecek, benzer makro/kalori değerlerine sahip FARKLI bir al
                 }
                 assertNoAllergenViolations(validatedResult.data, allergenList);
 
-                return NextResponse.json(validatedResult.data, { status: 200 });
+                return withCors(NextResponse.json(validatedResult.data, { status: 200 }));
             },
             onAttemptError: (generationError, attempt) => {
                 console.error(`Swap AI Çıktısı doğrulanamadı (deneme ${attempt}/${maxSwapAttempts}):`, generationError);
@@ -206,9 +211,9 @@ Bu besinin yerine geçecek, benzer makro/kalori değerlerine sahip FARKLI bir al
         });
     } catch (err) {
         console.error("Swap Backend Hatası:", err);
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             { error: err instanceof Error ? err.message : "Bilinmeyen bir hata oluştu." },
             { status: 400 }
-        );
+        ));
     }
 }

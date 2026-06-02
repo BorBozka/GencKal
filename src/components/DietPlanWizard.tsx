@@ -2,14 +2,16 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Flame, Utensils, Dumbbell, ChevronRight, AlertTriangle, RotateCcw } from "lucide-react";
+import { Flame, Utensils, Dumbbell, ChevronRight, AlertTriangle, RotateCcw, Save } from "lucide-react";
 
 import DietPreferencesForm, { type DietPreferencesData } from "./DietPreferencesForm";
 import { MacroBar } from "./ui/MacroBar";
 import { SkeletonLoading } from "./ui/SkeletonLoading";
 import { MealCardComponent } from "./ui/MealCardComponent";
 import { useToast } from "./ui/Toast";
+import { useAuth } from "../context/AuthContext";
 import type { MealCard, MealItem, MacroDistribution } from "../types";
 
 interface DietPlanWizardProps {
@@ -38,12 +40,24 @@ function formatMacroValue(value: number): string {
     return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
 }
 
+function formatAllergyLabel(value: string): string {
+    return value
+        .split(",")
+        .map((allergy) => allergy.trim())
+        .filter(Boolean)
+        .map((allergy) => allergy.charAt(0).toLocaleUpperCase("tr-TR") + allergy.slice(1))
+        .join(", ");
+}
+
 export default function DietPlanWizard({ targetCalories, selectedPlanName, onBack }: DietPlanWizardProps) {
+    const router = useRouter();
     const { toast } = useToast();
+    const { user, token, authHeaders } = useAuth();
     const [step, setStep] = useState<"form" | "generating">("form");
     const [formData, setFormData] = useState<DietPreferencesData | null>(null);
     const [generatedPlan, setGeneratedPlan] = useState<{ macros: MacroDistribution; meals: MealCard[] } | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const handleGenerate = useCallback(async (data: DietPreferencesData) => {
@@ -90,6 +104,47 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
     const handleRetry = useCallback(() => {
         if (formData) handleGenerate(formData);
     }, [formData, handleGenerate]);
+
+    const handleSavePlan = useCallback(async () => {
+        if (!generatedPlan || !formData) return;
+
+        if (!user || !token) {
+            toast("info", "Giriş yapmanız gerekmektedir", "Diyet planını kaydetmek için önce giriş yapın.");
+            router.push("/giris");
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            const response = await fetch("/api/diet-plans", {
+                method: "POST",
+                headers: {
+                    ...authHeaders(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title: `${selectedPlanName} - ${targetCalories} kcal`,
+                    targetCalories,
+                    dietType: formData.dietType,
+                    mealsPerDay: formData.mealsPerDay,
+                    allergies: formData.allergies || "",
+                    macros: generatedPlan.macros,
+                    meals: generatedPlan.meals,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.error || `Sunucu hatası (${response.status})`);
+            }
+
+            toast("success", "Diyet planı kaydedildi", "Planı Diyet Planlarım sayfasında görebilirsiniz.");
+        } catch (err) {
+            toast("error", "Plan kaydedilemedi", err instanceof Error ? err.message : "Beklenmeyen bir hata oluştu.");
+        } finally {
+            setIsSaving(false);
+        }
+    }, [authHeaders, formData, generatedPlan, router, selectedPlanName, targetCalories, toast, token, user]);
 
     // --- Besin Değişimi (Swap) Handler ---
     const handleSwapFood = useCallback(async (mealId: string, foodId: string) => {
@@ -229,12 +284,12 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                                         <span className="text-slate-900 font-bold capitalize">{formData.dietType}</span>
                                     </div>
                                     {formData.allergies && (
-                                        <div className="flex items-start gap-3 text-sm mt-1">
+                                        <div className="flex items-center gap-3 text-sm mt-1">
                                             <div className="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center shrink-0">
                                                 <ChevronRight className="w-4 h-4 text-red-400" />
                                             </div>
-                                            <span className="text-slate-600 flex-1">Alerjiler</span>
-                                            <span className="text-red-500 font-medium text-xs text-right max-w-[120px]">{formData.allergies}</span>
+                                            <span className="text-slate-600 flex-1 leading-none">Alerjiler</span>
+                                            <span className="text-red-500 font-medium text-xs text-right leading-none max-w-[120px]">{formatAllergyLabel(formData.allergies)}</span>
                                         </div>
                                     )}
                                 </div>
@@ -298,7 +353,18 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                         {showPlanData && (
                             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
                                 className="bg-gradient-to-br from-indigo-50/80 to-white border-2 border-indigo-100 shadow-md rounded-3xl p-8 hover:shadow-hover transition-all duration-300">
-                                <h4 className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold mb-5">Kalori & Makro Dağılımı</h4>
+                                <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                                    <h4 className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">Kalori & Makro Dağılımı</h4>
+                                    <button
+                                        type="button"
+                                        onClick={handleSavePlan}
+                                        disabled={isSaving}
+                                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#3E3AAF] px-4 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-70"
+                                    >
+                                        <Save className="h-4 w-4" />
+                                        {isSaving ? "Kaydediliyor..." : "Bu Diyet Planını Kaydet"}
+                                    </button>
+                                </div>
 
                                 <div className="flex items-baseline gap-2 mb-6">
                                     <span className="text-slate-900 font-black text-4xl">{targetCalories}</span>

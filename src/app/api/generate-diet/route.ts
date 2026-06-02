@@ -5,6 +5,7 @@ import { generatedPlanSchema } from "../../../types";
 import { checkRateLimit, getClientRateLimitKey } from "../../../utils/rateLimiter";
 import { normalizeParsedDietPlan } from "../../../utils/dietPlanParsing";
 import { AllergenViolationError, findAllergenViolation, parseAllergens, retryRecoverableGeneration } from "../../../utils/allergenValidation";
+import { corsOptionsResponse, withCors } from "../../../utils/cors";
 
 // --- Tip Tanımları ---
 interface GenerateDietRequestBody {
@@ -24,6 +25,10 @@ const allowedDietTypes = new Set<GenerateDietRequestBody["dietType"]>([
 
 const maxGenerationAttempts = 2;
 const maxGenerationMs = 60000;
+
+export function OPTIONS() {
+    return corsOptionsResponse();
+}
 
 function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -138,7 +143,7 @@ export async function POST(request: NextRequest) {
         const ip = getClientRateLimitKey(request.headers);
         const rateLimit = await checkRateLimit(ip, 5); // 5 request limit
         if (!rateLimit.success) {
-            return NextResponse.json({ error: "Çok fazla istek gönderdiniz. Lütfen 1 dakika bekleyin." }, { status: 429 });
+            return withCors(NextResponse.json({ error: "Çok fazla istek gönderdiniz. Lütfen 1 dakika bekleyin." }, { status: 429 }));
         }
 
         const apiKey = process.env.GEMINI_API_KEY;
@@ -212,7 +217,7 @@ KRİTİK KURALLAR:
                 assertMealCount(validatedResult.data, mealsPerDay);
                 assertNoAllergenViolations(validatedResult.data, allergenList);
 
-                return NextResponse.json(validatedResult.data, { status: 200 });
+                return withCors(NextResponse.json(validatedResult.data, { status: 200 }));
             },
             onAttemptError: (generationError, attempt) => {
                 console.error(`AI Çıktısı doğrulanamadı (deneme ${attempt}/${maxGenerationAttempts}):`, generationError);
@@ -223,9 +228,9 @@ KRİTİK KURALLAR:
         });
     } catch (err) {
         console.error("Backend İşlem Hatası:", err);
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             { error: err instanceof Error ? err.message : "Bilinmeyen bir hata oluştu." },
             { status: 400 }
-        );
+        ));
     }
 }

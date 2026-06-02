@@ -68,6 +68,39 @@ export interface MacroDistribution {
     carb: number;
 }
 
+export interface AuthUser {
+    id: string;
+    name: string;
+    email: string;
+}
+
+export interface SavedDietPlanSummary {
+    id: string;
+    title: string;
+    targetCalories: number;
+    dietType: DiyetTipi;
+    mealsPerDay: number;
+    allergies: string;
+    macros: MacroDistribution;
+    createdAt: string;
+}
+
+export interface SavedDietPlanItem {
+    name: string;
+    cal: number;
+    fullText: string;
+    macros: MacroDistribution;
+}
+
+export interface SavedDietPlanMeal {
+    title: string;
+    items: SavedDietPlanItem[];
+}
+
+export interface SavedDietPlan extends SavedDietPlanSummary {
+    meals: SavedDietPlanMeal[];
+}
+
 export interface DiyetVerileri {
     diyetTipi: DiyetTipi;
     ogunSayisi: number;

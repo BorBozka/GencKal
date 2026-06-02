@@ -23,6 +23,7 @@ import ReferenceScale from "./ReferenceScale";
 import EducationalSection from "./EducationalSection";
 import TDEECalculatorPanel from "./TDEECalculatorPanel";
 import DietPlanWizard from "./DietPlanWizard";
+import AuthNavButton from "./AuthNavButton";
 
 export default function OnboardingForm() {
     const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -170,6 +171,7 @@ export default function OnboardingForm() {
                             <span className="text-[18px]">GencKalculator</span>
                         </div>
                         <div className="hidden sm:flex items-center gap-8">
+                            <AuthNavButton />
                             <button
                                 onClick={() => setStep(1)}
                                 className="flex cursor-pointer items-center gap-1 text-base font-normal leading-none text-white transition-colors hover:text-indigo-100"
@@ -208,6 +210,7 @@ export default function OnboardingForm() {
                             <span className="text-[18px]">GencKalculator</span>
                         </div>
                         <div className="hidden sm:flex items-center gap-8">
+                            <AuthNavButton isScrolled={isScrolled} />
                             <button
                                 onClick={handleProceedToDiet}
                                 className={`cursor-pointer text-base font-normal leading-none transition-colors ${isScrolled ? 'text-slate-700 hover:text-indigo-600' : 'text-white hover:text-indigo-100'}`}
@@ -315,6 +318,7 @@ export default function OnboardingForm() {
                         <span className="text-[18px]">GencKalculator</span>
                     </div>
                     <div className="hidden sm:flex items-center gap-8">
+                        <AuthNavButton />
                         <button
                             onClick={() => setStep(1)}
                             className="flex cursor-pointer items-center gap-1 text-base font-normal leading-none text-white transition-colors hover:text-indigo-100"
