@@ -35,20 +35,26 @@ export default function ContactPage() {
     return (
         <div className="min-h-screen bg-white text-slate-800 font-sans flex flex-col">
             {/* Header */}
-            <header className={`sticky top-0 z-50 w-full flex justify-between items-center px-8 md:px-16 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-4' : 'bg-transparent py-6'}`}>
-                <Link href="/" className="flex items-center gap-3 font-bold text-xl tracking-tight text-indigo-700">
-                    <div className="flex items-center gap-1">
-                        <div className="w-1.5 h-4 bg-indigo-700 rounded-full"></div>
-                        <div className="w-1.5 h-6 bg-indigo-700 rounded-full"></div>
-                        <div className="w-1.5 h-4 bg-indigo-700 rounded-full"></div>
+            <header className={`sticky top-0 z-50 w-full py-4 px-6 md:px-12 font-medium transition-all duration-300 ${isScrolled ? 'bg-white text-slate-800 shadow-md border-b border-slate-200' : 'bg-transparent text-slate-800'}`}>
+                <div className="max-w-[1400px] mx-auto w-full flex justify-between items-center">
+                    <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight text-indigo-700">
+                        <div className="flex items-center gap-0.5">
+                            <div className="w-1 h-3 rounded-full bg-indigo-700"></div>
+                            <div className="w-1 h-5 rounded-full bg-indigo-700"></div>
+                            <div className="w-1 h-3 rounded-full bg-indigo-700"></div>
+                        </div>
+                        <span className="text-[18px]">GencKalculator</span>
+                    </Link>
+                    <div className="hidden sm:flex items-center gap-8">
+                        <Link href="/" className="text-base font-normal leading-none text-slate-700 transition-colors hover:text-indigo-600">
+                            Ana Sayfa
+                        </Link>
+                        <AuthNavButton isScrolled />
+                        <Link href="/#diyet" className="text-base font-normal leading-none text-slate-700 transition-colors hover:text-indigo-600">
+                            Diyet
+                        </Link>
                     </div>
-                    GencKalculator
-                </Link>
-                <nav className="flex items-center gap-8 text-base font-normal leading-none text-slate-700">
-                    <AuthNavButton isScrolled />
-                    <Link href="/#diyet" className="transition-colors hover:text-indigo-600">Diyet</Link>
-                    <Link href="/iletisim" className="text-slate-900">İletişim</Link>
-                </nav>
+                </div>
             </header>
 
             {/* Main Content */}
