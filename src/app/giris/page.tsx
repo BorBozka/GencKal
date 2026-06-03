@@ -50,7 +50,7 @@ export default function LoginPage() {
 
                 <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
                     <div className="mb-6">
-                        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-indigo-600">GencKalculator</p>
+                        <p className="text-[11px] font-bold tracking-[0.22em] text-indigo-600">GencKalculator</p>
                         <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-950">
                             {mode === "signin" ? "Giriş Yap" : "Kayıt Ol"}
                         </h1>
@@ -63,14 +63,16 @@ export default function LoginPage() {
                         <button
                             type="button"
                             onClick={() => setMode("signin")}
-                            className={`h-11 cursor-pointer rounded-xl px-4 text-sm font-extrabold transition-colors ${mode === "signin" ? "bg-white text-indigo-700 shadow-sm ring-1 ring-indigo-100" : "text-slate-600 hover:bg-white/70 hover:text-slate-900"}`}
+                            aria-pressed={mode === "signin"}
+                            className={`h-11 cursor-pointer rounded-xl border px-4 text-sm font-extrabold transition-colors ${mode === "signin" ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_18px_rgba(62,58,175,0.22)] ring-2 ring-[#3E3AAF]/20" : "border-transparent text-slate-600 hover:bg-white/70 hover:text-slate-900"}`}
                         >
                             Giriş Yap
                         </button>
                         <button
                             type="button"
                             onClick={() => setMode("signup")}
-                            className={`h-11 cursor-pointer rounded-xl px-4 text-sm font-extrabold transition-colors ${mode === "signup" ? "bg-white text-indigo-700 shadow-sm ring-1 ring-indigo-100" : "text-slate-600 hover:bg-white/70 hover:text-slate-900"}`}
+                            aria-pressed={mode === "signup"}
+                            className={`h-11 cursor-pointer rounded-xl border px-4 text-sm font-extrabold transition-colors ${mode === "signup" ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_18px_rgba(62,58,175,0.22)] ring-2 ring-[#3E3AAF]/20" : "border-transparent text-slate-600 hover:bg-white/70 hover:text-slate-900"}`}
                         >
                             Kayıt Ol
                         </button>
