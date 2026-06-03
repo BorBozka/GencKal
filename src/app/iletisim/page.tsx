@@ -45,9 +45,9 @@ export default function ContactPage() {
                     GencKalculator
                 </Link>
                 <nav className="flex items-center gap-8 text-base font-normal leading-none text-slate-700">
-                    <Link href="/" className="transition-colors hover:text-indigo-600">Ana Sayfa</Link>
                     <AuthNavButton isScrolled />
-                    <Link href="/#diyet" className="text-slate-900">Diyet</Link>
+                    <Link href="/#diyet" className="transition-colors hover:text-indigo-600">Diyet</Link>
+                    <Link href="/iletisim" className="text-slate-900">İletişim</Link>
                 </nav>
             </header>
 
