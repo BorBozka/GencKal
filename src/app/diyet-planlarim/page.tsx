@@ -135,34 +135,39 @@ export default function SavedDietPlansPage() {
                             <p className="p-4 text-sm leading-6 text-slate-500">Henüz kaydedilmiş diyet planınız yok.</p>
                         ) : (
                             <div className="flex flex-col gap-3">
-                                {plans.map((plan) => (
-                                    <button
-                                        key={plan.id}
-                                        type="button"
-                                        onClick={() => loadPlanDetail(plan.id)}
-                                        className={`cursor-pointer rounded-2xl border p-4 text-left transition-colors ${selectedPlan?.id === plan.id ? "border-indigo-300 bg-indigo-50" : "border-slate-100 bg-white hover:border-indigo-200 hover:bg-slate-50"}`}
-                                    >
-                                        <p className="text-sm font-extrabold text-slate-900">{plan.title}</p>
-                                        <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold text-slate-500">
-                                            <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-1">
-                                                <Flame className="h-3.5 w-3.5" />
-                                                {plan.targetCalories} kcal
-                                            </span>
-                                            <span className="rounded-lg bg-slate-100 px-2 py-1">{plan.mealsPerDay} öğün</span>
-                                        </div>
-                                        <p className="mt-3 inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600">
-                                            <CalendarDays className="h-3.5 w-3.5" />
-                                            {formatDate(plan.createdAt)}
-                                        </p>
-                                    </button>
-                                ))}
+                                {plans.map((plan) => {
+                                    const isSelectedPlan = selectedPlan?.id === plan.id;
+
+                                    return (
+                                        <button
+                                            key={plan.id}
+                                            type="button"
+                                            onClick={() => loadPlanDetail(plan.id)}
+                                            aria-pressed={isSelectedPlan}
+                                            className={`cursor-pointer rounded-2xl border p-4 text-left transition-colors ${isSelectedPlan ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_18px_rgba(62,58,175,0.22)] ring-2 ring-[#3E3AAF]/20" : "border-slate-100 bg-white hover:border-indigo-200 hover:bg-slate-50"}`}
+                                        >
+                                            <p className={`text-sm font-extrabold ${isSelectedPlan ? "text-white" : "text-slate-900"}`}>{plan.title}</p>
+                                            <div className={`mt-3 flex flex-wrap gap-2 text-xs font-bold ${isSelectedPlan ? "text-white/90" : "text-slate-500"}`}>
+                                                <span className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 ${isSelectedPlan ? "bg-white/15" : "bg-slate-100"}`}>
+                                                    <Flame className="h-3.5 w-3.5" />
+                                                    {plan.targetCalories} kcal
+                                                </span>
+                                                <span className={`rounded-lg px-2 py-1 ${isSelectedPlan ? "bg-white/15" : "bg-slate-100"}`}>{plan.mealsPerDay} öğün</span>
+                                            </div>
+                                            <p className={`mt-3 inline-flex items-center gap-1 text-[11px] font-semibold ${isSelectedPlan ? "text-white/80" : "text-slate-600"}`}>
+                                                <CalendarDays className="h-3.5 w-3.5" />
+                                                {formatDate(plan.createdAt)}
+                                            </p>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         )}
                     </section>
 
-                    <section className="min-h-[520px] rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                    <section className={`self-start rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 ${selectedPlan ? "min-h-[520px]" : "min-h-[calc(100vh-300px)]"}`}>
                         {!selectedPlan ? (
-                            <div className="flex h-full min-h-[280px] flex-col items-center justify-center text-center">
+                            <div className="flex min-h-[calc(100vh-348px)] flex-col items-center justify-center text-center">
                                 <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-indigo-50 ring-1 ring-indigo-100">
                                     <Utensils className="h-8 w-8 text-indigo-300" />
                                 </div>
