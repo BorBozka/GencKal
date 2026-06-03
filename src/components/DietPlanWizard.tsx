@@ -230,9 +230,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
             {/* SOL PANEL (FORM VEYA ÖZET) */}
             <AnimatePresence mode="wait">
                 {step === "form" ? (
-                    <motion.div key="form-full" layout className="w-full flex items-start justify-center"
-                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, x: -30, scale: 0.95 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}>
+                    <motion.div key="form-full" layout className="w-full flex items-start justify-center">
                         <DietPreferencesForm targetCalories={targetCalories} selectedPlanName={selectedPlanName} onBack={onBack} onSubmit={handleGenerate} />
                     </motion.div>
                 ) : (

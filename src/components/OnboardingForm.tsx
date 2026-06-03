@@ -45,6 +45,18 @@ export default function OnboardingForm() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    useEffect(() => {
+        const openDietStepFromHash = () => {
+            if (window.location.hash === "#diyet") {
+                setStep(2);
+            }
+        };
+
+        openDietStepFromHash();
+        window.addEventListener("hashchange", openDietStepFromHash);
+        return () => window.removeEventListener("hashchange", openDietStepFromHash);
+    }, []);
+
     const [formData, setFormData] = useState<KullaniciProfil>({
         fizikselVeriler: {
             boy: 175,
@@ -384,7 +396,7 @@ export default function OnboardingForm() {
                 <div className="mb-5">
                     <div>
                         <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-indigo-600">Diyet planı</p>
-                        <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-950">Kalori hedefinizi belirleyin</h2>
+                        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-950">Kalori hedefinizi belirleyin</h1>
                         <p className="mt-1 text-sm font-medium leading-6 text-slate-500">
                             Profil değerlerinizi güncelleyerek TDEE değerini, makro dağılımını ve plan hedefini aynı ekranda takip edin.
                         </p>
@@ -395,10 +407,10 @@ export default function OnboardingForm() {
                 <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_430px] 2xl:grid-cols-[minmax(0,1fr)_460px]">
 
                     {/* SOL: TDEE Hesaplama Paneli */}
-                    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm animate-fade-in-up sm:p-5">
+                    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
                         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
                             <div>
-                                <h3 className="text-sm font-extrabold text-slate-950">Profil Verileri</h3>
+                                <h2 className="text-sm font-extrabold text-slate-950">Profil Verileri</h2>
                                 <p className="mt-1 text-xs font-medium text-slate-500">Boy, kilo, yaş ve aktivite bilgileri</p>
                             </div>
                             <div className="rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">
@@ -413,7 +425,7 @@ export default function OnboardingForm() {
                     </div>
 
                     {/* SAĞ: TDEE Skor Gösterimi */}
-                    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-300 flex flex-col text-center relative overflow-hidden animate-scale-in sm:p-5"
+                    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-300 flex flex-col text-center relative overflow-hidden sm:p-5"
                         style={{ animationDelay: "0.15s" }}>
                         <div>
                             <p className="text-[10px] uppercase tracking-[0.25em] text-slate-500 font-bold">Günlük kalori ihtiyacı</p>
@@ -456,18 +468,17 @@ export default function OnboardingForm() {
                         const planName = `${plan.title} (${plan.subtitle})`;
                         const planSubtitleLabel = plan.subtitle.toLocaleUpperCase("en-US");
                         return (
-                            <div
+                            <button
                                 key={plan.id}
-                                role="button"
-                                tabIndex={plan.canSelect ? 0 : -1}
+                                type="button"
                                 aria-disabled={!plan.canSelect}
                                 onClick={() => {
-                                    if (plan.canSelect) setActivePlan(plan.id);
+                                    if (!plan.canSelect) return;
+                                    setActivePlan(plan.id);
+                                    handleSelectPlan(planName, plan.calories);
                                 }}
-                                onKeyDown={(e) => {
-                                    if ((e.key === "Enter" || e.key === " ") && plan.canSelect) setActivePlan(plan.id);
-                                }}
-                                className={`group flex min-h-[320px] flex-col rounded-3xl border bg-white p-7 shadow-sm transition-all duration-300 animate-fade-in-up ${isActive ? plan.activeClass : `border-slate-200 ${plan.hoverClass} hover:shadow-md`} ${plan.canSelect ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
+                                disabled={!plan.canSelect}
+                                className={`group flex min-h-[320px] flex-col rounded-3xl border bg-white p-7 text-left shadow-sm transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${isActive ? plan.activeClass : `border-slate-200 ${plan.hoverClass} hover:shadow-md`} ${plan.canSelect ? "cursor-pointer" : "cursor-not-allowed"}`}
                                 style={{ animationDelay: `${0.12 + index * 0.08}s` }}
                             >
                                 <div className="flex items-start justify-between gap-4">
@@ -497,27 +508,22 @@ export default function OnboardingForm() {
                                 </div>
 
                                 <div className="flex flex-1 flex-col items-center justify-center pt-2 pb-8 text-center">
-                                    <p className="-mt-14 text-[11px] font-bold tracking-[0.24em] text-slate-600">{planSubtitleLabel}</p>
+                                    <p className="-mt-14 text-[11px] font-bold tracking-[0.24em] text-slate-700">{planSubtitleLabel}</p>
                                     <h3 className="mt-2 text-2xl font-extrabold text-slate-950">{plan.title}</h3>
                                     <p className={`mt-9 text-5xl font-black tracking-tight ${plan.accentClass}`}>
                                         {plan.calories} <span className="text-base font-semibold text-slate-500">kcal</span>
                                     </p>
                                 </div>
 
-                                <button
-                                    onClick={() => {
-                                        setActivePlan(plan.id);
-                                        handleSelectPlan(planName, plan.calories);
-                                    }}
-                                    disabled={!plan.canSelect}
-                                    className={`h-12 w-full cursor-pointer rounded-2xl border text-sm font-extrabold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${isActive
-                                        ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_20px_rgba(62,58,175,0.18)] hover:bg-indigo-700"
+                                <span
+                                    className={`flex h-12 w-full items-center justify-center rounded-2xl border text-sm font-extrabold transition-all duration-200 ${isActive
+                                        ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_20px_rgba(62,58,175,0.18)]"
                                         : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
                                         }`}
                                 >
                                     Bu Planı Seç
-                                </button>
-                            </div>
+                                </span>
+                            </button>
                         );
                     })}
                 </div>

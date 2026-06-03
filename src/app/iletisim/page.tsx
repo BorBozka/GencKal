@@ -47,7 +47,7 @@ export default function ContactPage() {
                 <nav className="flex items-center gap-8 text-base font-normal leading-none text-slate-700">
                     <Link href="/" className="transition-colors hover:text-indigo-600">Ana Sayfa</Link>
                     <AuthNavButton isScrolled />
-                    <Link href="/iletisim" className="text-slate-900">İletişim</Link>
+                    <Link href="/#diyet" className="text-slate-900">Diyet</Link>
                 </nav>
             </header>
 

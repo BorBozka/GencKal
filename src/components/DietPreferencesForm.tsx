@@ -125,7 +125,7 @@ export default function DietPreferencesForm({
     };
 
     return (
-        <div className="w-full max-w-3xl mx-auto animate-fade-in-up font-sans">
+        <div className="w-full max-w-3xl mx-auto font-sans">
             <h1 className="sr-only">Diyet tercihleri</h1>
             <button
                 type="button"
@@ -148,9 +148,9 @@ export default function DietPreferencesForm({
                 </div>
                 <h2 className="mt-4 flex items-baseline justify-center gap-2 text-5xl font-extrabold tracking-tight text-slate-900">
                     {targetCalories}
-                    <span className="text-lg font-medium text-slate-600">kcal / gün</span>
+                    <span className="text-lg font-medium text-slate-800">kcal / gün</span>
                 </h2>
-                <p className="text-slate-700 text-sm font-medium mt-2">
+                <p className="text-slate-800 text-sm font-medium mt-2">
                     Beslenme tercihlerinizi belirleyin
                 </p>
             </div>
@@ -173,7 +173,7 @@ export default function DietPreferencesForm({
                                     aria-pressed={field.value === num}
                                     className={`h-12 cursor-pointer rounded-xl border font-extrabold text-base transition-all duration-200 ${field.value === num
                                         ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_18px_rgba(62,58,175,0.22)] ring-2 ring-[#3E3AAF]/20"
-                                        : "border-transparent text-slate-700 hover:bg-white/70 hover:text-slate-900"
+                                        : "border-transparent text-slate-900 hover:bg-white/70"
                                         }`}
                                 >
                                     {num} <span className="text-xs font-bold">öğün</span>
@@ -205,10 +205,10 @@ export default function DietPreferencesForm({
                                     aria-pressed={field.value === option.key}
                                     className={`flex min-h-[112px] cursor-pointer flex-col items-center justify-center space-y-3 rounded-2xl border p-4 text-center text-xs font-bold transition-all duration-300 ease-in-out ${field.value === option.key
                                         ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_18px_rgba(62,58,175,0.22)] ring-2 ring-[#3E3AAF]/20"
-                                        : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-slate-50 hover:text-slate-900"
+                                        : "border-slate-200 bg-white text-slate-900 hover:border-indigo-200 hover:bg-slate-50"
                                         }`}
                                 >
-                                    <span className={field.value === option.key ? "text-white" : "text-slate-700"}>
+                                    <span className={field.value === option.key ? "text-white" : "text-slate-900"}>
                                         {option.icon}
                                     </span>
                                     <span>{option.label}</span>
@@ -226,7 +226,7 @@ export default function DietPreferencesForm({
             <div className="flex flex-col gap-3">
                 <label className="text-xs font-bold text-slate-900 uppercase tracking-widest flex justify-between items-center">
                     <span>Alerjiler / İntoleranslar</span>
-                    <span className="text-slate-600 normal-case font-medium text-[10px]">(İsteğe bağlı)</span>
+                    <span className="text-slate-800 normal-case font-medium text-[10px]">(İsteğe bağlı)</span>
                 </label>
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 transition-all duration-300 focus-within:border-[#3E3AAF]/50 focus-within:bg-white focus-within:ring-2 focus-within:ring-[#3E3AAF]/10">
                     {allergyTags.length > 0 && (
@@ -257,7 +257,7 @@ export default function DietPreferencesForm({
                         onBlur={() => addAllergyTag(allergyInput)}
                         autoComplete="off"
                         placeholder="Örn: Yumurta, Yer fıstığı, Gluten..."
-                        className="h-9 w-full bg-transparent px-2 text-sm font-medium text-slate-800 outline-none placeholder:text-slate-300"
+                        className="h-9 w-full bg-transparent px-2 text-sm font-medium text-slate-950 outline-none placeholder:text-slate-700"
                     />
                 </div>
             </div>
