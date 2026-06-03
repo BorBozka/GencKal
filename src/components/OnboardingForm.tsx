@@ -497,7 +497,7 @@ export default function OnboardingForm() {
                                 </div>
 
                                 <div className="flex flex-1 flex-col items-center justify-center pt-2 pb-8 text-center">
-                                    <p className="-mt-14 text-[11px] font-bold tracking-[0.24em] text-slate-400">{planSubtitleLabel}</p>
+                                    <p className="-mt-14 text-[11px] font-bold tracking-[0.24em] text-slate-600">{planSubtitleLabel}</p>
                                     <h3 className="mt-2 text-2xl font-extrabold text-slate-950">{plan.title}</h3>
                                     <p className={`mt-9 text-5xl font-black tracking-tight ${plan.accentClass}`}>
                                         {plan.calories} <span className="text-base font-semibold text-slate-500">kcal</span>

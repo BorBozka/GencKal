@@ -33,20 +33,20 @@ function getPlanHero(selectedPlanName: string) {
     if (normalized.includes("bulk") || normalized.includes("kilo al")) {
         return {
             icon: "↑",
-            badgeClass: "bg-blue-50 text-blue-600",
+            badgeClass: "bg-blue-50 text-blue-900",
         };
     }
 
     if (normalized.includes("cut") || normalized.includes("kilo ver")) {
         return {
             icon: "↓",
-            badgeClass: "bg-rose-50 text-rose-600",
+            badgeClass: "bg-rose-50 text-rose-900",
         };
     }
 
     return {
         icon: "→",
-        badgeClass: "bg-emerald-50 text-emerald-600",
+        badgeClass: "bg-emerald-50 text-emerald-900",
     };
 }
 
@@ -126,6 +126,7 @@ export default function DietPreferencesForm({
 
     return (
         <div className="w-full max-w-3xl mx-auto animate-fade-in-up font-sans">
+            <h1 className="sr-only">Diyet tercihleri</h1>
             <button
                 type="button"
                 onClick={onBack}
@@ -149,7 +150,7 @@ export default function DietPreferencesForm({
                     {targetCalories}
                     <span className="text-lg font-medium text-slate-600">kcal / gün</span>
                 </h2>
-                <p className="text-slate-500 text-sm font-medium mt-2">
+                <p className="text-slate-700 text-sm font-medium mt-2">
                     Beslenme tercihlerinizi belirleyin
                 </p>
             </div>
@@ -172,7 +173,7 @@ export default function DietPreferencesForm({
                                     aria-pressed={field.value === num}
                                     className={`h-12 cursor-pointer rounded-xl border font-extrabold text-base transition-all duration-200 ${field.value === num
                                         ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_18px_rgba(62,58,175,0.22)] ring-2 ring-[#3E3AAF]/20"
-                                        : "border-transparent text-slate-500 hover:bg-white/70 hover:text-slate-900"
+                                        : "border-transparent text-slate-700 hover:bg-white/70 hover:text-slate-900"
                                         }`}
                                 >
                                     {num} <span className="text-xs font-bold">öğün</span>
@@ -204,10 +205,10 @@ export default function DietPreferencesForm({
                                     aria-pressed={field.value === option.key}
                                     className={`flex min-h-[112px] cursor-pointer flex-col items-center justify-center space-y-3 rounded-2xl border p-4 text-center text-xs font-bold transition-all duration-300 ease-in-out ${field.value === option.key
                                         ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_18px_rgba(62,58,175,0.22)] ring-2 ring-[#3E3AAF]/20"
-                                        : "border-slate-200 bg-white text-slate-500 hover:border-indigo-200 hover:bg-slate-50 hover:text-slate-700"
+                                        : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-slate-50 hover:text-slate-900"
                                         }`}
                                 >
-                                    <span className={field.value === option.key ? "text-white" : "text-slate-500"}>
+                                    <span className={field.value === option.key ? "text-white" : "text-slate-700"}>
                                         {option.icon}
                                     </span>
                                     <span>{option.label}</span>
