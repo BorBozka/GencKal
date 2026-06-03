@@ -126,17 +126,23 @@ export default function OnboardingForm() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [boy, kilo, yas]);
 
-    const handleSelectPlan = useCallback((name: string, calories: number) => {
+    const handleSelectPlan = useCallback((id: "bulk" | "maintain" | "cut", name: string, calories: number) => {
         if (!isDietInputValid || calories < 800 || calories > 6000) {
             setErrorLine("Lütfen geçerli fiziksel değerlerle 800-6000 kcal aralığında bir plan seçin.");
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
         setErrorLine(null);
+        setActivePlan(id);
         setSelectedPlan({ name, calories });
+    }, [isDietInputValid]);
+
+    const handleStartPlan = useCallback((id: "bulk" | "maintain" | "cut", name: string, calories: number) => {
+        handleSelectPlan(id, name, calories);
+        if (!isDietInputValid || calories < 800 || calories > 6000) return;
         setStep(3);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [isDietInputValid]);
+    }, [handleSelectPlan, isDietInputValid]);
 
     const bulkCalories = calculatedTDEE + 500;
     const maintainCalories = calculatedTDEE;
@@ -468,17 +474,22 @@ export default function OnboardingForm() {
                         const planName = `${plan.title} (${plan.subtitle})`;
                         const planSubtitleLabel = plan.subtitle.toLocaleUpperCase("en-US");
                         return (
-                            <button
+                            <article
                                 key={plan.id}
-                                type="button"
+                                role="button"
+                                tabIndex={plan.canSelect ? 0 : -1}
                                 aria-disabled={!plan.canSelect}
+                                aria-pressed={isActive}
                                 onClick={() => {
                                     if (!plan.canSelect) return;
-                                    setActivePlan(plan.id);
-                                    handleSelectPlan(planName, plan.calories);
+                                    handleSelectPlan(plan.id, planName, plan.calories);
                                 }}
-                                disabled={!plan.canSelect}
-                                className={`group flex min-h-[320px] flex-col rounded-3xl border bg-white p-7 text-left shadow-sm transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 ${isActive ? plan.activeClass : `border-slate-200 ${plan.hoverClass} hover:shadow-md`} ${plan.canSelect ? "cursor-pointer" : "cursor-not-allowed"}`}
+                                onKeyDown={(event) => {
+                                    if (!plan.canSelect || (event.key !== "Enter" && event.key !== " ")) return;
+                                    event.preventDefault();
+                                    handleSelectPlan(plan.id, planName, plan.calories);
+                                }}
+                                className={`group flex min-h-[320px] flex-col rounded-3xl border bg-white p-7 text-left shadow-sm transition-all duration-300 ${isActive ? plan.activeClass : `border-slate-200 ${plan.hoverClass} hover:shadow-md`} ${plan.canSelect ? "cursor-pointer" : "cursor-not-allowed opacity-60"}`}
                                 style={{ animationDelay: `${0.12 + index * 0.08}s` }}
                             >
                                 <div className="flex items-start justify-between gap-4">
@@ -515,15 +526,21 @@ export default function OnboardingForm() {
                                     </p>
                                 </div>
 
-                                <span
-                                    className={`flex h-12 w-full items-center justify-center rounded-2xl border text-sm font-extrabold transition-all duration-200 ${isActive
+                                <button
+                                    type="button"
+                                    disabled={!plan.canSelect}
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        handleStartPlan(plan.id, planName, plan.calories);
+                                    }}
+                                    className={`flex h-12 w-full items-center justify-center rounded-2xl border text-sm font-extrabold transition-all duration-200 disabled:cursor-not-allowed ${isActive
                                         ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_20px_rgba(62,58,175,0.18)]"
                                         : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
                                         }`}
                                 >
                                     Bu Planı Seç
-                                </span>
-                            </button>
+                                </button>
+                            </article>
                         );
                     })}
                 </div>
