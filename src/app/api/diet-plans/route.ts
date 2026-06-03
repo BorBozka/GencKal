@@ -4,7 +4,7 @@ import { z } from "zod";
 import { getCurrentUser } from "../../../utils/auth";
 import { corsOptionsResponse, withCors } from "../../../utils/cors";
 import { getDb, type DietPlanRow } from "../../../utils/database";
-import { serializeDietPlanSummary } from "../../../utils/savedDietPlans";
+import { trySerializeDietPlanSummary } from "../../../utils/savedDietPlans";
 import { generatedPlanSchema } from "../../../types";
 
 export const runtime = "nodejs";
@@ -41,7 +41,11 @@ export async function GET(request: NextRequest) {
         `)
         .all(user.id) as unknown as DietPlanRow[];
 
-    return withCors(NextResponse.json({ plans: rows.map(serializeDietPlanSummary) }, { status: 200 }));
+    const plans = rows
+        .map(trySerializeDietPlanSummary)
+        .filter((plan) => plan !== null);
+
+    return withCors(NextResponse.json({ plans }, { status: 200 }));
 }
 
 export async function POST(request: NextRequest) {

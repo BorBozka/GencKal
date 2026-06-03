@@ -34,7 +34,11 @@ export async function GET(request: NextRequest, context: RouteContext) {
         return withCors(NextResponse.json({ error: "Diyet planı bulunamadı." }, { status: 404 }));
     }
 
-    return withCors(NextResponse.json({ plan: serializeDietPlanRow(row) }, { status: 200 }));
+    try {
+        return withCors(NextResponse.json({ plan: serializeDietPlanRow(row) }, { status: 200 }));
+    } catch {
+        return withCors(NextResponse.json({ error: "Kayıtlı diyet planı verisi okunamadı." }, { status: 500 }));
+    }
 }
 
 export async function DELETE(request: NextRequest, context: RouteContext) {

@@ -19,7 +19,14 @@ interface AuthTokenPayload {
 const tokenTtlSeconds = 7 * 24 * 60 * 60;
 
 function getJwtSecret(): string {
-    return process.env.GENCKAL_JWT_SECRET || "genckal-local-ders-projesi-secret";
+    const secret = process.env.GENCKAL_JWT_SECRET;
+    if (secret) return secret;
+
+    if (process.env.NODE_ENV !== "production") {
+        return "genckal-local-development-secret";
+    }
+
+    throw new Error("GENCKAL_JWT_SECRET tanımlı değil.");
 }
 
 function base64UrlEncode(value: string | Buffer): string {

@@ -12,7 +12,7 @@ import { SkeletonLoading } from "./ui/SkeletonLoading";
 import { MealCardComponent } from "./ui/MealCardComponent";
 import { useToast } from "./ui/Toast";
 import { useAuth } from "../context/AuthContext";
-import type { MealCard, MealItem, MacroDistribution } from "../types";
+import { generatedMealItemSchema, generatedPlanSchema, type MealCard, type MealItem, type MacroDistribution } from "../types";
 
 interface DietPlanWizardProps {
     targetCalories: number;
@@ -77,17 +77,18 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                 const errorData = await response.json().catch(() => null);
                 throw new Error(errorData?.error || `Sunucu hatası (${response.status})`);
             }
-            const plan = await response.json();
+            const plan = generatedPlanSchema.parse(await response.json());
+            const createdAt = Date.now();
 
             // API'den gelen veriye runtime'da benzersiz id ata
             const planWithIds = {
                 ...plan,
-                meals: plan.meals.map((meal: { title: string; items: { name: string; cal: number; fullText: string; macros: { protein: number; fat: number; carb: number } }[] }, mealIdx: number) => ({
+                meals: plan.meals.map((meal, mealIdx) => ({
                     ...meal,
-                    id: `meal-${mealIdx}-${Date.now()}`,
-                    items: meal.items.map((item: { name: string; cal: number; fullText: string; macros: { protein: number; fat: number; carb: number } }, itemIdx: number) => ({
+                    id: `meal-${mealIdx}-${createdAt}`,
+                    items: meal.items.map((item, itemIdx) => ({
                         ...item,
-                        id: `food-${mealIdx}-${itemIdx}-${Date.now()}`,
+                        id: `food-${mealIdx}-${itemIdx}-${createdAt}`,
                     })),
                 })),
             };
@@ -180,7 +181,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                 throw new Error(msg);
             }
 
-            const newFood = await response.json();
+            const newFood = generatedMealItemSchema.parse(await response.json());
 
             // Yeni besine benzersiz id ata
             const newFoodWithId: MealItem = {

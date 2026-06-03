@@ -1,5 +1,7 @@
 // src/utils/rateLimiter.ts
 
+import { isIP } from "node:net";
+
 // Basit bellek içi map (local development / fallback için)
 const localRateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
@@ -14,13 +16,45 @@ type UpstashCommandResult = {
     error?: string;
 };
 
-export function getClientRateLimitKey(headers: Headers): string {
-    const forwardedFor = headers.get("x-forwarded-for");
-    const firstForwardedIp = forwardedFor?.split(",")[0]?.trim();
-    const realIp = headers.get("x-real-ip")?.trim();
-    const candidate = firstForwardedIp || realIp || "anonymous";
+function normalizeIpCandidate(value: string | null): string | null {
+    if (!value) return null;
 
-    return candidate.replace(/[^a-zA-Z0-9:._-]/g, "").slice(0, 80) || "anonymous";
+    const candidate = value.split(",")[0]?.trim();
+    if (!candidate) return null;
+
+    const withoutIpv6Brackets = candidate.replace(/^\[|\]$/g, "");
+    const withoutIpv4Port = withoutIpv6Brackets.replace(/:\d+$/, "");
+    const normalized = isIP(withoutIpv6Brackets) ? withoutIpv6Brackets : withoutIpv4Port;
+
+    return isIP(normalized) ? normalized : null;
+}
+
+function sanitizeLocalRateLimitKey(value: string | null): string | null {
+    const candidate = value?.split(",")[0]?.trim();
+    if (!candidate) return null;
+
+    return candidate.replace(/[^a-zA-Z0-9:._-]/g, "").slice(0, 80) || null;
+}
+
+export function getClientRateLimitKey(headers: Headers): string {
+    const trustedIp =
+        normalizeIpCandidate(headers.get("cf-connecting-ip")) ||
+        normalizeIpCandidate(headers.get("x-vercel-forwarded-for")) ||
+        normalizeIpCandidate(headers.get("x-real-ip"));
+
+    if (trustedIp) return trustedIp;
+
+    const forwardedFor = headers.get("x-forwarded-for");
+    if (process.env.GENCKAL_TRUST_FORWARDED_FOR === "true") {
+        const forwardedIp = normalizeIpCandidate(forwardedFor);
+        if (forwardedIp) return forwardedIp;
+    }
+
+    const forwardedIp = process.env.NODE_ENV !== "production"
+        ? normalizeIpCandidate(forwardedFor) || sanitizeLocalRateLimitKey(forwardedFor)
+        : null;
+
+    return forwardedIp || "anonymous";
 }
 
 function getUpstashConfig(): { url: string; token: string } | null {

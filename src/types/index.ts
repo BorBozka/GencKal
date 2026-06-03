@@ -1,26 +1,24 @@
 import { z } from "zod";
 
+export const macroDistributionSchema = z.object({
+    protein: z.number().finite().nonnegative(),
+    fat: z.number().finite().nonnegative(),
+    carb: z.number().finite().nonnegative(),
+});
+
+export const generatedMealItemSchema = z.object({
+    name: z.string().min(1),
+    cal: z.number().finite().positive(),
+    fullText: z.string().min(1),
+    macros: macroDistributionSchema,
+});
+
 export const generatedPlanSchema = z.object({
-    macros: z.object({
-        protein: z.number().finite().nonnegative(),
-        fat: z.number().finite().nonnegative(),
-        carb: z.number().finite().nonnegative(),
-    }),
+    macros: macroDistributionSchema,
     meals: z.array(
         z.object({
             title: z.string().min(1),
-            items: z.array(
-                z.object({
-                    name: z.string().min(1),
-                    cal: z.number().finite().positive(),
-                    fullText: z.string().min(1),
-                    macros: z.object({
-                        protein: z.number().finite().nonnegative(),
-                        fat: z.number().finite().nonnegative(),
-                        carb: z.number().finite().nonnegative(),
-                    }),
-                })
-            ).min(2).max(4),
+            items: z.array(generatedMealItemSchema).min(2).max(4),
         })
     ).min(2).max(5),
 });

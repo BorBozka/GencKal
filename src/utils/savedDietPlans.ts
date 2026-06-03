@@ -1,18 +1,35 @@
 import type { DietPlanRow } from "./database";
+import { generatedPlanSchema, type DiyetTipi, type SavedDietPlan, type SavedDietPlanSummary } from "../types";
 
-export interface SavedDietPlanSummary {
-    id: string;
-    title: string;
-    targetCalories: number;
-    dietType: string;
-    mealsPerDay: number;
-    allergies: string;
-    macros: unknown;
-    createdAt: string;
+const allowedDietTypes = new Set<DiyetTipi>(["standart", "karnivor", "vejetaryen", "vegan", "keto"]);
+
+function parseJsonField(value: string, fieldName: string): unknown {
+    try {
+        return JSON.parse(value);
+    } catch {
+        throw new Error(`Kayıtlı diyet planı ${fieldName} alanı geçersiz.`);
+    }
 }
 
-export interface SavedDietPlan extends SavedDietPlanSummary {
-    meals: unknown;
+function parseDietType(value: string): DiyetTipi {
+    if (allowedDietTypes.has(value as DiyetTipi)) return value as DiyetTipi;
+    throw new Error("Kayıtlı diyet planı diyet tipi geçersiz.");
+}
+
+function parseMacros(row: DietPlanRow): SavedDietPlanSummary["macros"] {
+    const parsed = generatedPlanSchema.pick({ macros: true }).parse({
+        macros: parseJsonField(row.macros_json, "makro"),
+    });
+
+    return parsed.macros;
+}
+
+function parseMeals(row: DietPlanRow): SavedDietPlan["meals"] {
+    const parsed = generatedPlanSchema.pick({ meals: true }).parse({
+        meals: parseJsonField(row.meals_json, "öğün"),
+    });
+
+    return parsed.meals;
 }
 
 export function serializeDietPlanRow(row: DietPlanRow): SavedDietPlan {
@@ -20,25 +37,32 @@ export function serializeDietPlanRow(row: DietPlanRow): SavedDietPlan {
         id: row.id,
         title: row.title,
         targetCalories: row.target_calories,
-        dietType: row.diet_type,
+        dietType: parseDietType(row.diet_type),
         mealsPerDay: row.meals_per_day,
         allergies: row.allergies,
-        macros: JSON.parse(row.macros_json),
-        meals: JSON.parse(row.meals_json),
+        macros: parseMacros(row),
+        meals: parseMeals(row),
         createdAt: row.created_at,
     };
 }
 
 export function serializeDietPlanSummary(row: DietPlanRow): SavedDietPlanSummary {
-    const plan = serializeDietPlanRow(row);
     return {
-        id: plan.id,
-        title: plan.title,
-        targetCalories: plan.targetCalories,
-        dietType: plan.dietType,
-        mealsPerDay: plan.mealsPerDay,
-        allergies: plan.allergies,
-        macros: plan.macros,
-        createdAt: plan.createdAt,
+        id: row.id,
+        title: row.title,
+        targetCalories: row.target_calories,
+        dietType: parseDietType(row.diet_type),
+        mealsPerDay: row.meals_per_day,
+        allergies: row.allergies,
+        macros: parseMacros(row),
+        createdAt: row.created_at,
     };
+}
+
+export function trySerializeDietPlanSummary(row: DietPlanRow): SavedDietPlanSummary | null {
+    try {
+        return serializeDietPlanSummary(row);
+    } catch {
+        return null;
+    }
 }

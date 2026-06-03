@@ -43,34 +43,34 @@ export default function LoginPage() {
     return (
         <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
             <div className="mx-auto flex w-full max-w-md flex-col gap-6">
-                <Link href="/" className="inline-flex w-fit items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-indigo-700">
+                <Link href="/" className="inline-flex w-fit cursor-pointer items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-indigo-700">
                     <ArrowLeft className="h-4 w-4" />
                     Ana Sayfa
                 </Link>
 
-                <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
                     <div className="mb-6">
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-600">GencKalculator</p>
-                        <h1 className="mt-2 text-2xl font-extrabold text-slate-950">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-indigo-600">GencKalculator</p>
+                        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-950">
                             {mode === "signin" ? "Giriş Yap" : "Kayıt Ol"}
                         </h1>
-                        <p className="mt-2 text-sm leading-6 text-slate-500">
+                        <p className="mt-3 text-sm font-medium leading-6 text-slate-500">
                             Diyet planlarınızı web ve mobilde aynı hesapla saklayın.
                         </p>
                     </div>
 
-                    <div className="mb-6 grid grid-cols-2 rounded-2xl bg-slate-100 p-1">
+                    <div className="mb-6 grid grid-cols-2 rounded-2xl border border-slate-200 bg-slate-50 p-1.5">
                         <button
                             type="button"
                             onClick={() => setMode("signin")}
-                            className={`cursor-pointer rounded-xl px-4 py-2 text-sm font-bold transition-colors ${mode === "signin" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-700 hover:text-slate-900"}`}
+                            className={`h-11 cursor-pointer rounded-xl px-4 text-sm font-extrabold transition-colors ${mode === "signin" ? "bg-white text-indigo-700 shadow-sm ring-1 ring-indigo-100" : "text-slate-600 hover:bg-white/70 hover:text-slate-900"}`}
                         >
                             Giriş Yap
                         </button>
                         <button
                             type="button"
                             onClick={() => setMode("signup")}
-                            className={`cursor-pointer rounded-xl px-4 py-2 text-sm font-bold transition-colors ${mode === "signup" ? "bg-white text-indigo-700 shadow-sm" : "text-slate-700 hover:text-slate-900"}`}
+                            className={`h-11 cursor-pointer rounded-xl px-4 text-sm font-extrabold transition-colors ${mode === "signup" ? "bg-white text-indigo-700 shadow-sm ring-1 ring-indigo-100" : "text-slate-600 hover:bg-white/70 hover:text-slate-900"}`}
                         >
                             Kayıt Ol
                         </button>
@@ -119,7 +119,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="mt-2 inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-2xl bg-[#3E3AAF] px-4 text-sm font-bold text-white shadow-[0_10px_24px_rgba(62,58,175,0.24)] transition-colors hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-70"
+                            className="mt-2 inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-2xl bg-[#3E3AAF] px-4 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(62,58,175,0.22)] transition-colors hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-70"
                         >
                             {mode === "signup" ? <UserPlus className="h-4 w-4" /> : <LogIn className="h-4 w-4" />}
                             {isSubmitting ? "İşleniyor..." : mode === "signup" ? "Kayıt Ol" : "Giriş Yap"}

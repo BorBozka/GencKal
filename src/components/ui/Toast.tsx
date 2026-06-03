@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { useState, useEffect, useCallback, useMemo, createContext, useContext } from "react";
 import type { ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, AlertTriangle, Info, X } from "lucide-react";
@@ -30,15 +30,24 @@ export function useToast(): ToastContextValue {
 
 // --- İKON SEÇİCİ ---
 const iconMap = {
-    success: <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />,
-    error: <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />,
-    info: <Info className="w-5 h-5 text-blue-500 shrink-0" />,
+    success: <CheckCircle2 className="h-5 w-5" />,
+    error: <AlertTriangle className="h-5 w-5" />,
+    info: <Info className="h-5 w-5" />,
 };
 
-const borderMap = {
-    success: "border-emerald-200",
-    error: "border-red-200",
-    info: "border-blue-200",
+const toneMap = {
+    success: {
+        accent: "bg-indigo-600",
+        icon: "bg-indigo-50 text-indigo-700 ring-indigo-100",
+    },
+    error: {
+        accent: "bg-rose-500",
+        icon: "bg-rose-50 text-rose-600 ring-rose-100",
+    },
+    info: {
+        accent: "bg-indigo-600",
+        icon: "bg-indigo-50 text-indigo-700 ring-indigo-100",
+    },
 };
 
 // --- TEK TOAST BİLEŞENİ ---
@@ -51,26 +60,29 @@ function ToastItem({ toast: t, onDismiss }: { toast: ToastMessage; onDismiss: (i
     return (
         <motion.div
             layout
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            initial={{ opacity: 0, y: 16, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 60, scale: 0.9 }}
+            exit={{ opacity: 0, y: 12, scale: 0.96 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className={`bg-white rounded-2xl p-4 border ${borderMap[t.type]} shadow-hover flex items-start gap-3 max-w-sm w-full pointer-events-auto`}
+            className="pointer-events-auto relative flex w-full max-w-sm items-start gap-3 overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 pr-3 shadow-[0_18px_45px_rgba(15,23,42,0.14)] ring-1 ring-slate-950/5"
         >
-            {iconMap[t.type]}
-            <div className="flex-1 min-w-0">
-                <p className="text-slate-900 font-bold text-sm">{t.title}</p>
+            <div className={`absolute inset-y-0 left-0 w-1.5 ${toneMap[t.type].accent}`} />
+            <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-2xl ring-1 ${toneMap[t.type].icon}`}>
+                {iconMap[t.type]}
+            </div>
+            <div className="min-w-0 flex-1 pt-0.5">
+                <p className="text-sm font-extrabold text-slate-950">{t.title}</p>
                 {t.description && (
-                    <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">{t.description}</p>
+                    <p className="mt-1 text-xs font-medium leading-relaxed text-slate-500">{t.description}</p>
                 )}
             </div>
             <button
                 type="button"
                 onClick={() => onDismiss(t.id)}
                 aria-label="Bildirimi kapat"
-                className="text-slate-600 hover:text-slate-800 transition-colors shrink-0"
+                className="grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-xl text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
             >
-                <X className="w-4 h-4" />
+                <X className="h-4 w-4" />
             </button>
         </motion.div>
     );
@@ -90,12 +102,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         const id = ++idCounter;
         setToasts(prev => [...prev, { id, type, title, description }]);
     }, []);
+    const value = useMemo<ToastContextValue>(() => ({ toast: addToast }), [addToast]);
 
     return (
-        <ToastContext.Provider value={{ toast: addToast }}>
+        <ToastContext.Provider value={value}>
             {children}
             {/* Toast Konteyner — Sağ alt */}
-            <div className="fixed bottom-6 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
+            <div className="pointer-events-none fixed inset-x-4 bottom-6 z-[100] flex flex-col items-end gap-3 sm:right-6 sm:left-auto">
                 <AnimatePresence mode="popLayout">
                     {toasts.map(t => (
                         <ToastItem key={t.id} toast={t} onDismiss={dismiss} />

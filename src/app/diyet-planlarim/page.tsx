@@ -106,20 +106,29 @@ export default function SavedDietPlansPage() {
 
     return (
         <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
-            <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+                <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                     <div>
-                        <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-indigo-700">
+                        <Link href="/" className="inline-flex cursor-pointer items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-indigo-700">
                             <ArrowLeft className="h-4 w-4" />
                             Ana Sayfa
                         </Link>
-                        <h1 className="mt-4 text-3xl font-extrabold text-slate-950">Diyet Planlarım</h1>
-                        <p className="mt-1 text-sm text-slate-500">{user?.name} için kaydedilen planlar</p>
+                        <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.22em] text-indigo-600">Kayıtlı planlar</p>
+                        <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-950">Diyet Planlarım</h1>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
+                <div className="grid grid-cols-1 gap-5 lg:grid-cols-[380px_1fr]">
                     <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                        <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Liste</p>
+                                <h2 className="mt-1 text-lg font-extrabold text-slate-950">Planlar</h2>
+                            </div>
+                            <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-extrabold text-indigo-700 ring-1 ring-indigo-100">
+                                {plans.length}
+                            </span>
+                        </div>
                         {isFetching ? (
                             <p className="p-4 text-sm font-semibold text-slate-500">Planlar yükleniyor...</p>
                         ) : plans.length === 0 ? (
@@ -131,7 +140,7 @@ export default function SavedDietPlansPage() {
                                         key={plan.id}
                                         type="button"
                                         onClick={() => loadPlanDetail(plan.id)}
-                                        className={`rounded-2xl border p-4 text-left transition-colors ${selectedPlan?.id === plan.id ? "border-indigo-300 bg-indigo-50" : "border-slate-100 bg-white hover:border-indigo-200 hover:bg-slate-50"}`}
+                                        className={`cursor-pointer rounded-2xl border p-4 text-left transition-colors ${selectedPlan?.id === plan.id ? "border-indigo-300 bg-indigo-50" : "border-slate-100 bg-white hover:border-indigo-200 hover:bg-slate-50"}`}
                                     >
                                         <p className="text-sm font-extrabold text-slate-900">{plan.title}</p>
                                         <div className="mt-3 flex flex-wrap gap-2 text-xs font-bold text-slate-500">
@@ -151,17 +160,19 @@ export default function SavedDietPlansPage() {
                         )}
                     </section>
 
-                    <section className="min-h-[360px] rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <section className="min-h-[520px] rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                         {!selectedPlan ? (
                             <div className="flex h-full min-h-[280px] flex-col items-center justify-center text-center">
-                                <Utensils className="h-10 w-10 text-indigo-200" />
+                                <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-indigo-50 ring-1 ring-indigo-100">
+                                    <Utensils className="h-8 w-8 text-indigo-300" />
+                                </div>
                                 <p className="mt-4 text-sm font-bold text-slate-500">Detay görmek için bir plan seçin.</p>
                             </div>
                         ) : (
                             <div>
                                 <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 pb-5">
                                     <div>
-                                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-600">{selectedPlan.dietType}</p>
+                                        <p className="text-[10px] font-extrabold uppercase tracking-[0.24em] text-indigo-600">{selectedPlan.dietType}</p>
                                         <h2 className="mt-2 text-2xl font-extrabold text-slate-950">{selectedPlan.title}</h2>
                                         <p className="mt-2 text-sm text-slate-500">{formatDate(selectedPlan.createdAt)}</p>
                                     </div>
@@ -169,46 +180,64 @@ export default function SavedDietPlansPage() {
                                         type="button"
                                         onClick={deleteSelectedPlan}
                                         disabled={isDeleting}
-                                        className="inline-flex h-10 items-center gap-2 rounded-xl border border-red-100 bg-red-50 px-4 text-sm font-bold text-red-600 transition-colors hover:bg-red-100 disabled:cursor-wait disabled:opacity-70"
+                                        className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-red-100 bg-red-50 px-4 text-sm font-bold text-red-600 transition-colors hover:bg-red-100 disabled:cursor-wait disabled:opacity-70"
                                     >
                                         <Trash2 className="h-4 w-4" />
                                         Sil
                                     </button>
                                 </div>
 
-                                <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                                    <div className="rounded-2xl bg-slate-50 p-4">
-                                        <p className="text-xs font-bold text-slate-600">Kalori</p>
-                                        <p className="mt-1 text-lg font-extrabold text-slate-900">{selectedPlan.targetCalories}</p>
+                                <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+                                    <div className="flex flex-col justify-center">
+                                        <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Günlük hedef</p>
+                                        <p className="mt-2 flex items-baseline gap-2 text-4xl font-black tracking-tight text-slate-950">
+                                            {selectedPlan.targetCalories}
+                                            <span className="text-sm font-semibold text-slate-500">kcal</span>
+                                        </p>
                                     </div>
-                                    <div className="rounded-2xl bg-rose-50 p-4">
-                                        <p className="text-xs font-bold text-rose-400">Protein</p>
-                                        <p className="mt-1 text-lg font-extrabold text-rose-700">{selectedPlan.macros.protein}g</p>
+                                    <div className="rounded-2xl bg-rose-50 p-3 text-center">
+                                        <p className="text-lg font-extrabold text-rose-600">{selectedPlan.macros.protein}g</p>
+                                        <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Protein</p>
                                     </div>
-                                    <div className="rounded-2xl bg-amber-50 p-4">
-                                        <p className="text-xs font-bold text-amber-500">Yağ</p>
-                                        <p className="mt-1 text-lg font-extrabold text-amber-700">{selectedPlan.macros.fat}g</p>
+                                    <div className="rounded-2xl bg-amber-50 p-3 text-center">
+                                        <p className="text-lg font-extrabold text-amber-600">{selectedPlan.macros.fat}g</p>
+                                        <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Yağ</p>
                                     </div>
-                                    <div className="rounded-2xl bg-blue-50 p-4">
-                                        <p className="text-xs font-bold text-blue-400">Karb</p>
-                                        <p className="mt-1 text-lg font-extrabold text-blue-700">{selectedPlan.macros.carb}g</p>
+                                    <div className="rounded-2xl bg-blue-50 p-3 text-center">
+                                        <p className="text-lg font-extrabold text-blue-600">{selectedPlan.macros.carb}g</p>
+                                        <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">Karb</p>
                                     </div>
                                 </div>
 
                                 <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
                                     {selectedPlan.meals.map((meal, mealIndex) => (
-                                        <div key={`${meal.title}-${mealIndex}`} className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-5">
-                                            <h3 className="text-sm font-extrabold text-slate-900">{meal.title}</h3>
-                                            <div className="mt-3 divide-y divide-slate-200/70">
+                                        <div key={`${meal.title}-${mealIndex}`} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                                            <div className="mb-2 flex items-center justify-between border-b border-slate-100 pb-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50">
+                                                        <Utensils className="h-5 w-5 text-[#3E3AAF]" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Öğün</p>
+                                                        <h3 className="text-base font-extrabold text-slate-950">{meal.title}</h3>
+                                                    </div>
+                                                </div>
+                                                <span className="rounded-full bg-slate-50 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-slate-600 ring-1 ring-slate-100">
+                                                    {meal.items.reduce((sum, item) => sum + item.cal, 0)} kcal
+                                                </span>
+                                            </div>
+                                            <div className="divide-y divide-slate-100">
                                                 {meal.items.map((item, itemIndex) => (
-                                                    <div key={`${item.name}-${itemIndex}`} className="py-3">
+                                                    <div key={`${item.name}-${itemIndex}`} className="rounded-2xl px-3 py-4 transition-colors hover:bg-slate-50">
                                                         <div className="flex items-start justify-between gap-3">
                                                             <p className="text-sm font-semibold leading-6 text-slate-700">{item.fullText}</p>
                                                             <span className="shrink-0 text-xs font-bold text-slate-500">{item.cal} kcal</span>
                                                         </div>
-                                                        <p className="mt-1 text-xs font-semibold text-slate-600">
-                                                            P {item.macros.protein}g · Y {item.macros.fat}g · K {item.macros.carb}g
-                                                        </p>
+                                                        <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold">
+                                                            <span className="rounded-md bg-rose-50 px-2 py-0.5 text-rose-700">P {item.macros.protein}g</span>
+                                                            <span className="rounded-md bg-amber-50 px-2 py-0.5 text-amber-700">Y {item.macros.fat}g</span>
+                                                            <span className="rounded-md bg-blue-50 px-2 py-0.5 text-blue-700">K {item.macros.carb}g</span>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>

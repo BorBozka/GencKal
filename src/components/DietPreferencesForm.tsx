@@ -106,7 +106,7 @@ export default function DietPreferencesForm({
     };
 
     const handleAllergyKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter" || event.key === "," || event.key === " ") {
+        if (event.key === "Enter" || event.key === "," || event.key === ";") {
             event.preventDefault();
             addAllergyTag(allergyInput);
         }
@@ -169,9 +169,10 @@ export default function DietPreferencesForm({
                                     key={num}
                                     type="button"
                                     onClick={() => field.onChange(num)}
-                                    className={`h-12 cursor-pointer rounded-xl font-extrabold text-base transition-all duration-200 ${field.value === num
-                                        ? "bg-white text-[#3E3AAF] shadow-sm ring-1 ring-indigo-100"
-                                        : "text-slate-500 hover:bg-white/70 hover:text-slate-900"
+                                    aria-pressed={field.value === num}
+                                    className={`h-12 cursor-pointer rounded-xl border font-extrabold text-base transition-all duration-200 ${field.value === num
+                                        ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_18px_rgba(62,58,175,0.22)] ring-2 ring-[#3E3AAF]/20"
+                                        : "border-transparent text-slate-500 hover:bg-white/70 hover:text-slate-900"
                                         }`}
                                 >
                                     {num} <span className="text-xs font-bold">öğün</span>
@@ -200,12 +201,13 @@ export default function DietPreferencesForm({
                                     key={option.key}
                                     type="button"
                                     onClick={() => field.onChange(option.key)}
+                                    aria-pressed={field.value === option.key}
                                     className={`flex min-h-[112px] cursor-pointer flex-col items-center justify-center space-y-3 rounded-2xl border p-4 text-center text-xs font-bold transition-all duration-300 ease-in-out ${field.value === option.key
-                                        ? "border-indigo-200 bg-indigo-50 text-[#3E3AAF] shadow-sm"
+                                        ? "border-[#3E3AAF] bg-[#3E3AAF] text-white shadow-[0_8px_18px_rgba(62,58,175,0.22)] ring-2 ring-[#3E3AAF]/20"
                                         : "border-slate-200 bg-white text-slate-500 hover:border-indigo-200 hover:bg-slate-50 hover:text-slate-700"
                                         }`}
                                 >
-                                    <span className={field.value === option.key ? "text-[#3E3AAF]" : "text-slate-500"}>
+                                    <span className={field.value === option.key ? "text-white" : "text-slate-500"}>
                                         {option.icon}
                                     </span>
                                     <span>{option.label}</span>
@@ -253,7 +255,7 @@ export default function DietPreferencesForm({
                         onKeyDown={handleAllergyKeyDown}
                         onBlur={() => addAllergyTag(allergyInput)}
                         autoComplete="off"
-                        placeholder="Örn: Yumurta, Fıstık, Gluten..."
+                        placeholder="Örn: Yumurta, Yer fıstığı, Gluten..."
                         className="h-9 w-full bg-transparent px-2 text-sm font-medium text-slate-800 outline-none placeholder:text-slate-300"
                     />
                 </div>
@@ -271,7 +273,7 @@ export default function DietPreferencesForm({
                         <div className="w-0.5 h-3.5 bg-white/80 rounded-full"></div>
                         <div className="w-0.5 h-2 bg-white/60 rounded-full"></div>
                     </div>
-                    AI Planımı Oluştur
+                    Diyet Planımı Oluştur
                 </button>
             </div>
             </form>
