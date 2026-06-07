@@ -227,13 +227,13 @@ export default function OnboardingForm() {
                             <span className="text-[18px]">GencKalculator</span>
                         </div>
                         <div className="hidden sm:flex items-center gap-8">
+                            <AuthNavButton />
                             <button
                                 onClick={() => setStep(1)}
                                 className="flex cursor-pointer items-center gap-1 text-base font-normal leading-none text-white transition-colors hover:text-indigo-100"
                             >
                                 Ana Sayfa
                             </button>
-                            <AuthNavButton />
                             <Link href="/iletisim" className="text-base font-normal leading-none text-white transition-colors hover:text-indigo-100">İletişim</Link>
                         </div>
                     </div>
@@ -374,13 +374,13 @@ export default function OnboardingForm() {
                         <span className="text-[18px]">GencKalculator</span>
                     </div>
                     <div className="hidden sm:flex items-center gap-8">
+                        <AuthNavButton />
                         <button
                             onClick={() => setStep(1)}
                             className="flex cursor-pointer items-center gap-1 text-base font-normal leading-none text-white transition-colors hover:text-indigo-100"
                         >
                             Ana Sayfa
                         </button>
-                        <AuthNavButton />
                         <Link href="/iletisim" className="text-base font-normal leading-none text-white transition-colors hover:text-indigo-100">İletişim</Link>
                     </div>
                 </div>

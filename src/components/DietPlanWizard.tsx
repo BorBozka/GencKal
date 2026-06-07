@@ -111,7 +111,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
 
         if (!user || !token) {
             toast("info", "Giriş yapmanız gerekmektedir", "Diyet planını kaydetmek için önce giriş yapın.");
-            router.push("/giris");
+            router.push("/giris?returnTo=%2Fdiyet-planlarim");
             return;
         }
 

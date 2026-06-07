@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, LogIn, UserPlus } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../components/ui/Toast";
@@ -11,7 +11,16 @@ import { useToast } from "../../components/ui/Toast";
 type AuthMode = "signin" | "signup";
 
 export default function LoginPage() {
+    return (
+        <Suspense fallback={null}>
+            <LoginPageContent />
+        </Suspense>
+    );
+}
+
+function LoginPageContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { signin, signup } = useAuth();
     const { toast } = useToast();
     const [mode, setMode] = useState<AuthMode>("signin");
@@ -19,6 +28,8 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const returnTo = searchParams.get("returnTo");
+    const postAuthPath = returnTo === "/diyet-planlarim" ? returnTo : "/";
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -32,7 +43,7 @@ export default function LoginPage() {
                 await signin(email, password);
                 toast("success", "Giriş yapıldı", "Oturumunuz açıldı.");
             }
-            router.push("/");
+            router.push(postAuthPath);
         } catch (error) {
             toast("error", mode === "signup" ? "Kayıt başarısız" : "Giriş başarısız", error instanceof Error ? error.message : "İşlem tamamlanamadı.");
         } finally {

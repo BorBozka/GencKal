@@ -46,10 +46,10 @@ export default function ContactPage() {
                         <span className="text-[18px]">GencKalculator</span>
                     </Link>
                     <div className="hidden sm:flex items-center gap-8">
+                        <AuthNavButton isScrolled />
                         <Link href="/" className="text-base font-normal leading-none text-slate-700 transition-colors hover:text-indigo-600">
                             Ana Sayfa
                         </Link>
-                        <AuthNavButton isScrolled />
                         <Link href="/#diyet" className="text-base font-normal leading-none text-slate-700 transition-colors hover:text-indigo-600">
                             Diyet
                         </Link>
@@ -67,7 +67,7 @@ export default function ContactPage() {
                     </p>
                     
                     <p className="text-slate-600 text-[15px]">
-                        Bizi <a href="#" className="text-indigo-600 hover:underline font-medium">Twitter</a> ve <a href="#" className="text-indigo-600 hover:underline font-medium">Instagram</a> üzerinden takip edin
+                        Bizi <span className="font-medium text-slate-500">Twitter</span> ve <span className="font-medium text-slate-500">Instagram</span> üzerinden takip edebileceksiniz.
                     </p>
                 </div>
             </main>
@@ -79,19 +79,19 @@ export default function ContactPage() {
                 </div>
                 
                 <div className="flex items-center gap-5 flex-1 justify-center">
-                    <a href="#" className="text-slate-600 hover:text-indigo-600 transition-colors bg-slate-50 p-2 rounded-full">
+                    <span className="rounded-full bg-slate-50 p-2 text-slate-400">
                         <span className="sr-only">Instagram</span>
                         <InstagramIcon className="w-4 h-4" />
-                    </a>
-                    <a href="#" className="text-slate-600 hover:text-indigo-600 transition-colors bg-slate-50 p-2 rounded-full">
+                    </span>
+                    <span className="rounded-full bg-slate-50 p-2 text-slate-400">
                         <span className="sr-only">Twitter</span>
                         <TwitterIcon className="w-4 h-4 fill-current" />
-                    </a>
+                    </span>
                 </div>
                 
                 <div className="flex items-center gap-6 flex-1 justify-center md:justify-end">
-                    <a href="#" className="hover:text-indigo-600 transition-colors">Gizlilik Politikası</a>
-                    <a href="#" className="hover:text-indigo-600 transition-colors">Kullanım Koşulları</a>
+                    <span>Gizlilik Politikası</span>
+                    <span>Kullanım Koşulları</span>
                     <Link href="/iletisim" className="hover:text-indigo-600 transition-colors text-indigo-600 font-medium">İletişim</Link>
                 </div>
             </footer>

@@ -95,7 +95,7 @@ export default function SavedDietPlansPage() {
                         <p className="mt-3 text-sm leading-6 text-slate-500">
                             Kayıtlı diyet planlarınızı görmek için hesabınıza giriş yapın.
                         </p>
-                        <Link href="/giris" className="mt-6 inline-flex h-12 items-center justify-center rounded-2xl bg-[#3E3AAF] px-6 text-sm font-bold text-white transition-colors hover:bg-indigo-700">
+                        <Link href="/giris?returnTo=%2Fdiyet-planlarim" className="mt-6 inline-flex h-12 items-center justify-center rounded-2xl bg-[#3E3AAF] px-6 text-sm font-bold text-white transition-colors hover:bg-indigo-700">
                             Giriş Yap
                         </Link>
                     </section>
