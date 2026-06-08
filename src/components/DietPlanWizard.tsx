@@ -58,6 +58,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
     const [generatedPlan, setGeneratedPlan] = useState<{ macros: MacroDistribution; meals: MealCard[] } | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [canViewSavedPlan, setCanViewSavedPlan] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const handleGenerate = useCallback(async (data: DietPreferencesData) => {
@@ -65,6 +66,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
         setStep("generating");
         setGeneratedPlan(null);
         setIsLoading(true);
+        setCanViewSavedPlan(false);
         setError(null);
 
         try {
@@ -139,6 +141,7 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                 throw new Error(errorData?.error || `Sunucu hatası (${response.status})`);
             }
 
+            setCanViewSavedPlan(true);
             toast("success", "Diyet planı kaydedildi", "Planı Diyet Planlarım sayfasında görebilirsiniz.");
         } catch (err) {
             toast("error", "Plan kaydedilemedi", err instanceof Error ? err.message : "Beklenmeyen bir hata oluştu.");
@@ -147,11 +150,16 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
         }
     }, [authHeaders, formData, generatedPlan, router, selectedPlanName, targetCalories, toast, token, user]);
 
+    const handleViewSavedPlan = useCallback(() => {
+        router.push("/diyet-planlarim");
+    }, [router]);
+
     // --- Besin Değişimi (Swap) Handler ---
     const handleSwapFood = useCallback(async (mealId: string, foodId: string) => {
         if (!generatedPlan || !formData) return;
 
         try {
+            setCanViewSavedPlan(false);
             // Hedef öğün ve besini bul
             const targetMeal = generatedPlan.meals.find((m) => m.id === mealId);
             if (!targetMeal) return;
@@ -358,12 +366,12 @@ export default function DietPlanWizard({ targetCalories, selectedPlanName, onBac
                                     </div>
                                     <button
                                         type="button"
-                                        onClick={handleSavePlan}
+                                        onClick={canViewSavedPlan ? handleViewSavedPlan : handleSavePlan}
                                         disabled={isSaving}
                                         className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#3E3AAF] px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:cursor-wait disabled:opacity-70"
                                     >
-                                        <Save className="h-4 w-4" />
-                                        {isSaving ? "Kaydediliyor..." : "Bu Diyet Planını Kaydet"}
+                                        {canViewSavedPlan ? <ChevronRight className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+                                        {isSaving ? "Kaydediliyor..." : canViewSavedPlan ? "Diyet Planlarımı Görüntüle" : "Bu Diyet Planını Kaydet"}
                                     </button>
                                 </div>
 
