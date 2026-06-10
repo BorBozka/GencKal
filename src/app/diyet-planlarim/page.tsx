@@ -45,7 +45,7 @@ export default function SavedDietPlansPage() {
         }
     }, [token, authHeaders, toast]);
 
-    const loadPlanDetail = async (id: string) => {
+    const loadPlanDetail = useCallback(async (id: string) => {
         if (!token) return;
         try {
             const response = await fetch(`/api/diet-plans/${id}`, { headers: authHeaders() });
@@ -55,7 +55,7 @@ export default function SavedDietPlansPage() {
         } catch (error) {
             toast("error", "Plan detayı açılamadı", error instanceof Error ? error.message : "Detay alınamadı.");
         }
-    };
+    }, [token, authHeaders, toast]);
 
     const deleteSelectedPlan = async () => {
         if (!selectedPlan || !token || !window.confirm("Bu diyet planı silinsin mi?")) return;
@@ -81,6 +81,12 @@ export default function SavedDietPlansPage() {
             Promise.resolve().then(loadPlans);
         }
     }, [isLoading, token, loadPlans]);
+
+    useEffect(() => {
+        if (!isFetching && !selectedPlan && plans.length > 0) {
+            Promise.resolve().then(() => loadPlanDetail(plans[0].id));
+        }
+    }, [isFetching, selectedPlan, plans, loadPlanDetail]);
 
     if (!isLoading && !user) {
         return (
