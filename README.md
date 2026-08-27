@@ -1,55 +1,71 @@
-# GençKal Calculator & AI Diyet Planlayıcısı 
+# GençKal — Web Beslenme Planlama Platformu
 
-GençKal, kullanıcıların Beden Kitle İndeksi (BMI), Yağsız Vücut Kütlesi ve Vücut Yağ Kütlesi gibi önemli sağlık metriklerini hesaplayan, ardından bu verileri kullanarak Yapay Zeka (AI) destekli kişiselleştirilmiş diyet ve takviye planları oluşturan modern bir SaaS platformudur.
+Kullanıcıların fiziksel verileri ve hedefleri doğrultusunda vücut kompozisyonu, günlük enerji ihtiyacı ve makro besin dağılımı hesaplamaları yaparak kişiselleştirilmiş beslenme planları oluşturmasını sağlayan web ürünü.
 
-## Özellikler
-* **Canlı Analiz Paneli:** Girilen fiziksel verilere göre anında BMI ve Yağsız Kütle hesaplaması.
-* **İnteraktif Skala:** Matematiksel olarak kusursuz hizalanmış referans değerleri.
-* **Modern UI/UX:** Zengin gradyanlar, asimetrik kart tasarımları ve cam efekti (glassmorphism) detayları.
-* **AI Entegrasyonu:** Kullanıcı verilerine özel diyet planı oluşturma.
+[Canlı uygulamayı görüntüle](https://genckal.vercel.app)
+
+| Vücut kompozisyonu ve hedef simülatörü | Kalori ve makro planlama |
+| --- | --- |
+| ![BMI, FFMI ve hedef kilo simülatörü](genckal-web-dashboard.jpg) | ![Kalori hedefi ve makro besin planlama ekranı](genckal-diet-planner.jpg) |
+
+> **Güncel durum:** Proje aktif geliştirme aşamasındadır. Web uygulamasının hesaplama, hedef belirleme, beslenme planlama ve AI destekli plan üretme akışları canlı ortamda kullanılabilir durumdadır.
+
+## Problem ve Ürün Yaklaşımı
+
+Geleneksel kalori hesaplayıcıları çoğunlukla tek bir sonuç üretir ve kullanıcının vücut kompozisyonunu, hedefini ve beslenme tercihlerini aynı akış içinde değerlendirmez. GençKal; BMI ve FFMI gibi vücut kompozisyonu göstergelerini, TDEE hesaplamasını, kalori hedeflerini ve makro besin dağılımını ortak bir ürün deneyiminde birleştirir.
+
+Ürün, kullanıcının önce mevcut durumunu anlamasını, ardından hedefini belirlemesini ve bu hedefe uygun beslenme planı oluşturmasını sağlayan aşamalı bir bilgi mimarisiyle tasarlanmıştır.
+
+## Rolüm ve Katkılarım
+
+- Ürün kapsamını ve temel kullanıcı ihtiyaçlarını belirledim.
+- Hesaplama, hedef simülasyonu ve beslenme planlama akışlarının bilgi yapısını tasarladım.
+- Kullanıcıların girdi, sonuç ve hedef bilgileri arasında kuracağı etkileşimi değerlendirdim.
+- UI/UX kararlarını alan bilgisi, okunabilirlik ve kullanım kolaylığı açısından yönlendirdim.
+- Web ve mobil ürünler arasındaki özellik ve deneyim tutarlılığını takip ettim.
+- İşleri aşamalara ayırarak görevleri AI ajanlarına tanımladım; çıktıları işlevsel ve görsel gereksinimlere göre değerlendirdim.
+
+> Ürün kararları, kapsam, kullanıcı akışları ve çıktı değerlendirmesi tarafımdan yürütülmüştür. Kod üretimi AI ajanlarıyla gerçekleştirilmiştir.
+
+## Ürün Özellikleri
+
+- BMI, yağsız vücut kütlesi, yağ kütlesi ve FFMI hesaplamaları
+- Hedef kilo ve tahmini yağ oranı simülatörü
+- Aktivite seviyesine göre günlük enerji ihtiyacı hesaplama
+- Bulk, maintain ve cut hedeflerine göre kalori planlama
+- Protein, karbonhidrat ve yağ için makro besin dağılımı
+- Öğün sayısı, beslenme tipi ve hariç tutulacak besin tercihlerinin belirlenmesi
+- Gemini tabanlı kişiselleştirilmiş beslenme planı üretimi
+- Plan içindeki besinleri alternatifleriyle değiştirme
+- Kullanıcı hesabı ve oluşturulan planları kaydetme akışları
 
 ## Teknolojiler
-* Next.js / React
-* Tailwind CSS
-* TypeScript
 
-## Deployment
-This project is configured for Vercel's default Next.js deployment path.
+- Next.js 16, React 19 ve TypeScript
+- Tailwind CSS
+- React Hook Form ve Zod
+- Vercel AI SDK ve Gemini
+- Framer Motion
+- Playwright, axe-core ve Node.js test araçları
 
-* Build command: `npm run build`
-* Install command: `npm ci`
-* Output directory: managed by Next.js and Vercel
+## Yerel Çalıştırma
 
-Do not re-add GitHub Pages static export settings such as `output: 'export'`, `basePath: '/GencKal'`, `assetPrefix: '/GencKal/'`, or Actions jobs that upload a `dist` Pages artifact. Vercel should build the app directly from the repository root.
+    npm install
+    npm run dev
 
-## Proje Görev Zaman Çizelgesi (Gantt Şeması)
+Temel doğrulama komutları:
 
-```mermaid
-%%{init: {'theme': 'dark', 'gantt': {'sectionFontSize': 14, 'fontSize': 12}}}%%
-gantt
-    title GençKal - Geliştirme Takvimi
-    dateFormat  YYYY-MM-DD
-    axisFormat  %d %b
-    tickInterval 1week
+    npm test
+    npm run test:a11y
+    npm run lint
+    npm run build
 
-    section Faz 1: UI
-    Altyapı       :crit,    des1, 2026-02-23, 7d
-    Algoritma     :crit,    des2, 2026-03-02, 7d
+## Mobil Uygulama
 
-    section Faz 2: AI
-    API           :active,  des3, 2026-03-09, 7d
-    Veri Akışı    :         des4, 2026-03-16, 7d
-    Sonuç Ekranı  :         des5, 2026-03-23, 7d
+GençKal'ın mobil istemcisi Expo ve React Native ile ayrı bir depo olarak geliştirilmektedir.
 
-    section Faz 3: Backend
-    Veritabanı    :         des6, 2026-03-30, 7d
-    Auth (Giriş)  :         des7, 2026-04-06, 7d
+[GençKal mobil uygulama deposunu incele](https://github.com/BorBozka/GencKal_mobile)
 
-    section Faz 4: Optimize
-    AI Optimize   :         des8, 2026-04-13, 7d
-    PDF & Mail    :         des9, 2026-04-20, 7d
-    Test & QA     :         des10, 2026-04-27, 7d
+## Kullanım Notu
 
-    section Faz 5: Teslim
-    Deploy        :         des11, 2026-05-04, 7d
-    Sunum         :         des12, 2026-05-11, 7d
+Bu proje eğitim ve portföy amaçlıdır. Üretilen hesaplamalar ve beslenme planları tıbbi değerlendirme veya kişiye özel sağlık hizmeti yerine geçmez.
